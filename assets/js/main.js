@@ -141,6 +141,213 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+        // 12. LOJA ONLINE
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    
+    function atualizarCarrinho() {
+        const carrinhoItens = document.getElementById('carrinho-itens');
+        const carrinhoContador = document.getElementById('carrinho-contador');
+        const carrinhoTotal = document.getElementById('carrinho-total');
+        
+        if (!carrinhoItens) return;
+        
+        if (carrinho.length === 0) {
+            carrinhoItens.innerHTML = '<p class="carrinho-vazio">Seu carrinho está vazio</p>';
+            if (carrinhoContador) carrinhoContador.textContent = '0';
+            if (carrinhoTotal) carrinhoTotal.textContent = 'R$ 0,00';
+            return;
+        }
+        
+        let total = 0;
+        let quantidadeTotal = 0;
+        carrinhoItens.innerHTML = '';
+        
+        carrinho.forEach((item, index) => {
+            const subtotal = item.preco * item.quantidade;
+            total += subtotal;
+            quantidadeTotal += item.quantidade;
+            
+            carrinhoItens.innerHTML += `
+                <div class="carrinho-item">
+                    <div class="carrinho-item-info">
+                        <div class="carrinho-item-nome">${item.nome}</div>
+                        <div class="carrinho-item-preco">R$ ${item.preco.toFixed(2)}</div>
+                    </div>
+                    <div class="carrinho-item-actions">
+                        <button class="carrinho-item-diminuir" data-index="${index}">-</button>
+                        <span class="carrinho-item-qtd">${item.quantidade}</span>
+                        <button class="carrinho-item-aumentar" data-index="${index}">+</button>
+                        <button class="carrinho-item-remove" data-index="${index}">🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        if (carrinhoContador) carrinhoContador.textContent = quantidadeTotal;
+        if (carrinhoTotal) carrinhoTotal.textContent = `R$ ${total.toFixed(2)}`;
+        
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    }
+    
+    function carregarProdutos() {
+        const container = document.getElementById('produtos-container');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        CLIENT_CONFIG.produtos.forEach(produto => {
+            container.innerHTML += `
+                <div class="produto-card">
+                    <img src="${produto.imagem}" alt="${produto.nome}" class="produto-imagem">
+                    <div class="produto-info">
+                        <h3>${produto.nome}</h3>
+                        <p class="produto-descricao">${produto.descricao}</p>
+                        <p class="produto-preco">R$ ${produto.preco.toFixed(2)}</p>
+                        <button class="btn-comprar" data-id="${produto.id}">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        document.querySelectorAll('.btn-comprar').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = parseInt(btn.dataset.id);
+                const produto = CLIENT_CONFIG.produtos.find(p => p.id === id);
+                const itemExistente = carrinho.find(item => item.id === id);
+                
+                if (itemExistente) {
+                    itemExistente.quantidade++;
+                } else {
+                    carrinho.push({
+                        id: produto.id,
+                        nome: produto.nome,
+                        preco: produto.preco,
+                        quantidade: 1
+                    });
+                }
+                
+                atualizarCarrinho();
+                mostrarMensagem(`${produto.nome} adicionado ao carrinho!`);
+            });
+        });
+    }
+    
+    function mostrarMensagem(texto) {
+        const msg = document.createElement('div');
+        msg.className = 'mensagem-confirmacao';
+        msg.textContent = texto;
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 5000);
+    }
+    
+    document.getElementById('carrinho-itens')?.addEventListener('click', (e) => {
+        const index = e.target.dataset.index;
+        if (index === undefined) return;
+        
+        if (e.target.classList.contains('carrinho-item-diminuir')) {
+            if (carrinho[index].quantidade > 1) {
+                carrinho[index].quantidade--;
+            } else {
+                carrinho.splice(index, 1);
+            }
+            atualizarCarrinho();
+        }
+        
+        if (e.target.classList.contains('carrinho-item-aumentar')) {
+            carrinho[index].quantidade++;
+            atualizarCarrinho();
+        }
+        
+        if (e.target.classList.contains('carrinho-item-remove')) {
+            carrinho.splice(index, 1);
+            atualizarCarrinho();
+        }
+    });
+    
+    const modal = document.getElementById('modal-checkout');
+    const btnFinalizar = document.getElementById('btn-finalizar');
+    const modalFechar = document.querySelector('.modal-fechar');
+    
+    if (btnFinalizar) {
+        btnFinalizar.addEventListener('click', () => {
+            if (carrinho.length === 0) {
+                mostrarMensagem('Seu carrinho está vazio!');
+                return;
+            }
+            
+            const total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            const resumo = document.getElementById('resumo-itens');
+            if (resumo) {
+                resumo.innerHTML = '';
+                carrinho.forEach(item => {
+                    resumo.innerHTML += `
+                        <div class="resumo-item">
+                            <span>${item.nome} x${item.quantidade}</span>
+                            <span>R$ ${(item.preco * item.quantidade).toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('modal-total').textContent = `R$ ${total.toFixed(2)}`;
+            modal.style.display = 'flex';
+        });
+    }
+    
+    if (modalFechar) {
+        modalFechar.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    }
+    
+    const formCheckout = document.getElementById('form-checkout');
+    if (formCheckout) {
+        formCheckout.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const pedido = {
+                cliente: {
+                    nome: document.getElementById('cliente-nome').value,
+                    telefone: document.getElementById('cliente-telefone').value,
+                    email: document.getElementById('cliente-email').value
+                },
+                itens: [...carrinho],
+                total: carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0),
+                pagamento: document.getElementById('pagamento-metodo').value,
+                retirada: document.getElementById('retirada').value,
+                observacoes: document.getElementById('observacoes').value,
+                data: new Date().toLocaleString()
+            };
+            
+            console.log('Pedido:', pedido);
+            
+            let mensagemWhatsApp = `🛒 *NOVO PEDIDO - FIGHTCODE*%0a%0a`;
+            mensagemWhatsApp += `👤 *Cliente:* ${pedido.cliente.nome}%0a`;
+            mensagemWhatsApp += `📱 *Telefone:* ${pedido.cliente.telefone}%0a`;
+            mensagemWhatsApp += `📧 *Email:* ${pedido.cliente.email}%0a%0a`;
+            mensagemWhatsApp += `📦 *ITENS:*%0a`;
+            
+            pedido.itens.forEach(item => {
+                mensagemWhatsApp += `- ${item.nome} x${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}%0a`;
+            });
+            
+            mensagemWhatsApp += `%0a💰 *Total:* R$ ${pedido.total.toFixed(2)}%0a`;
+            mensagemWhatsApp += `💳 *Pagamento:* ${pedido.pagamento === 'pix' ? 'PIX (10% OFF)' : 'Cartão'}%0a`;
+            mensagemWhatsApp += `📍 *Retirada:* ${pedido.retirada}%0a`;
+            if (pedido.observacoes) mensagemWhatsApp += `📝 *Observações:* ${pedido.observacoes}%0a`;
+            
+            window.open(`https://wa.me/${CLIENT_CONFIG.contato.whatsapp.replace(/\D/g, '')}?text=${mensagemWhatsApp}`, '_blank');
+            
+            mostrarMensagem('Pedido enviado! Entraremos em contato pelo WhatsApp.');
+            modal.style.display = 'none';
+            carrinho = [];
+            atualizarCarrinho();
+            formCheckout.reset();
+        });
+    }
+    
+    // Inicializar loja
+    carregarProdutos();
+    atualizarCarrinho();
     
     // 11. CARREGAR ANALYTICS (medidor de tráfego)
     function carregarAnalytics() {
