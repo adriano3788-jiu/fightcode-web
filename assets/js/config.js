@@ -30,8 +30,7 @@ const CLIENT_CONFIG = {
     professores: [
         { nome: "Ludy Calixto", especialidade: "Jiu-Jitsu / Faixa Preta 2° Grau", imagem: "assets/img/prof1.jpg" },
         { nome: "Adriano Barbosa", especialidade: "Jiu-Jitsu / Faixa Preta 1° Grau", imagem: "assets/img/prof2.jpg" },
-        { nome: "Fernando Morais", especialidade: "Jiu-Jitsu / Faixa Preta", imagem: "assets/img/prof3.jpg" },
-        { nome: "Thiago Glad", especialidade: "Judô / Faixa Marrom", imagem: "assets/img/prof4.jpg" }
+        { nome: "Fernando Morais", especialidade: "Jiu-Jitsu / Faixa Preta", imagem: "assets/img/prof3.jpg" }
     ],
     
     horarios: [
@@ -42,15 +41,15 @@ const CLIENT_CONFIG = {
     
     contato: {
         endereco: "Rua Bernardino de Campos, 20-12 - Bauru, SP",
-        telefone: "(14) 99865-9415",
+        telefone: "(14) 991971317",
         email: "contato@fightcode.com",
-        whatsapp: "(14) 99865-9415"
+        whatsapp: "(14) 991971317"
     },
     
     social: [
         { plataforma: "Facebook", url: "https://facebook.com", icone: "fab fa-facebook" },
         { plataforma: "Instagram", url: "https://instagram.com", icone: "fab fa-instagram" },
-        { plataforma: "WhatsApp", url: "https://wa.me/5514998659415", icone: "fab fa-whatsapp" }
+        { plataforma: "WhatsApp", url: "https://wa.me/5514991971317", icone: "fab fa-whatsapp" }
     ],
     
     analytics: {
