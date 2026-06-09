@@ -43,7 +43,6 @@ const CLIENT_CONFIG = {
         { nome: "Ludy Calixto", especialidade: "Jiu-Jitsu / Faixa Preta 2° Grau", imagem: "assets/img/prof1.jpg" },
         { nome: "Adriano Barbosa", especialidade: "Jiu-Jitsu / Faixa Preta 1° Grau", imagem: "assets/img/prof2.jpg" },
         { nome: "Fernando Morais", especialidade: "Jiu-Jitsu / Faixa Preta", imagem: "assets/img/prof3.jpg" }
-    
     ],
     
     // Horários das aulas
