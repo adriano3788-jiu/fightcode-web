@@ -65,56 +65,56 @@ const CLIENT_CONFIG = {
         professores: true,
         horarios: true,
         contato: true
-    }
-
+    },
+    
     produtos: [
-    {
-        id: 1,
-        nome: "Kimono Jiu-Jitsu Profissional",
-        descricao: "Kimono premium 550g, algodão peruano, azul royal",
-        preco: 350.00,
-        imagem: "assets/img/produtos/kimono.jpg",
-        parcelas: 3
-    },
-    {
-        id: 2,
-        nome: "Camiseta FightCode",
-        descricao: "Camiseta 100% algodão, estampa FightCode",
-        preco: 79.90,
-        imagem: "assets/img/produtos/camiseta.jpg",
-        parcelas: 1
-    },
-    {
-        id: 3,
-        nome: "Rash Guard NO-GI",
-        descricao: "Rash guard compressão, proteção UV, manga longa",
-        preco: 129.90,
-        imagem: "assets/img/produtos/rashguard.jpg",
-        parcelas: 2
-    },
-    {
-        id: 4,
-        nome: "Bermuda de Jiu-Jitsu",
-        descricao: "Bermuda com reforço, ideal para NO-GI",
-        preco: 149.90,
-        imagem: "assets/img/produtos/bermuda.jpg",
-        parcelas: 2
-    },
-    {
-        id: 5,
-        nome: "Faixa de Jiu-Jitsu",
-        descricao: "Faixa 100% algodão, cores variadas",
-        preco: 45.90,
-        imagem: "assets/img/produtos/faixa.jpg",
-        parcelas: 1
-    },
-    {
-        id: 6,
-        nome: "Mochila FightCode",
-        descricao: "Mochila para equipamentos, 35L",
-        preco: 189.90,
-        imagem: "assets/img/produtos/mochila.jpg",
-        parcelas: 3
-    }
-]
+        {
+            id: 1,
+            nome: "Kimono Jiu-Jitsu Profissional",
+            descricao: "Kimono premium 550g, algodão peruano, azul royal",
+            preco: 350.00,
+            imagem: "assets/img/produtos/kimono.jpg",
+            parcelas: 3
+        },
+        {
+            id: 2,
+            nome: "Camiseta FightCode",
+            descricao: "Camiseta 100% algodão, estampa FightCode",
+            preco: 79.90,
+            imagem: "assets/img/produtos/camiseta.jpg",
+            parcelas: 1
+        },
+        {
+            id: 3,
+            nome: "Rash Guard NO-GI",
+            descricao: "Rash guard compressão, proteção UV, manga longa",
+            preco: 129.90,
+            imagem: "assets/img/produtos/rashguard.jpg",
+            parcelas: 2
+        },
+        {
+            id: 4,
+            nome: "Bermuda de Jiu-Jitsu",
+            descricao: "Bermuda com reforço, ideal para NO-GI",
+            preco: 149.90,
+            imagem: "assets/img/produtos/bermuda.jpg",
+            parcelas: 2
+        },
+        {
+            id: 5,
+            nome: "Faixa de Jiu-Jitsu",
+            descricao: "Faixa 100% algodão, cores variadas",
+            preco: 45.90,
+            imagem: "assets/img/produtos/faixa.jpg",
+            parcelas: 1
+        },
+        {
+            id: 6,
+            nome: "Mochila FightCode",
+            descricao: "Mochila para equipamentos, 35L",
+            preco: 189.90,
+            imagem: "assets/img/produtos/mochila.jpg",
+            parcelas: 3
+        }
+    ]
 };
