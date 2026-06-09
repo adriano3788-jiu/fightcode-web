@@ -4,265 +4,218 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FightCode - Sua Academia</title>
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Tema do cliente (será sobrescrito pelo config) -->
-    <link rel="stylesheet" href="assets/css/theme-default.css" id="theme-style">
-    
-    <!-- Estilos principais -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-    <!-- HEADER / NAVEGAÇÃO -->
-    <header class="header">
+<header class="header">
+    <div class="container">
+        <div class="logo">
+            <h1 id="academia-nome">FIGHTCODE</h1>
+        </div>
+        <nav class="nav">
+            <ul>
+                <li><a href="#home">Início</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#analytics">Tráfego</a></li>
+                <li><a href="#professores">Professores</a></li>
+                <li><a href="#horarios">Horários</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+    </div>
+</header>
+
+<main>
+    <!-- SEÇÃO HERO (INÍCIO) -->
+    <section id="home" class="hero">
         <div class="container">
-            <div class="logo">
-                <img src="assets/img/logo-default.png" alt="Logo" id="logo-img">
-                <h1 id="academia-nome">FIGHTCODE</h1>
+            <div class="hero-content">
+                <h2 id="hero-titulo">TECNOLOGIA PARA EVOLUIR LUTADORES</h2>
+                <p id="hero-subtitulo">Sistema completo para gestão da sua academia</p>
+                <a href="#contato" class="btn-primary">Experimente Grátis</a>
+                <a href="#sobre" class="btn-secondary">Saiba Mais</a>
             </div>
-            <nav class="nav">
+        </div>
+    </section>
+
+    <!-- SEÇÃO SOBRE -->
+    <section id="sobre" class="sobre">
+        <div class="container">
+            <div class="section-title">
+                <span>Sobre Nós</span>
+                <h2>Quem Somos</h2>
+            </div>
+            <p id="sobre-descricao" style="text-align:center; max-width:800px; margin:0 auto;">A FightCode nasceu da paixão por artes marciais e tecnologia. Oferecemos soluções completas para academias que desejam modernizar sua gestão.</p>
+            <div class="sobre-grid" id="pilares-container"></div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO ANALYTICS (MEDIDOR DE TRÁFEGO) -->
+    <section id="analytics" class="analytics">
+        <div class="container">
+            <div class="section-title">
+                <span>Onde nos acompanham</span>
+                <h2>Tráfego da Academia</h2>
+            </div>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <i class="fab fa-instagram"></i>
+                    <h3>Instagram</h3>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-instagram"></div>
+                    </div>
+                    <span id="percent-instagram">0%</span>
+                    <p>dos acessos vêm do Instagram</p>
+                </div>
+                <div class="analytics-card">
+                    <i class="fab fa-facebook"></i>
+                    <h3>Facebook</h3>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-facebook"></div>
+                    </div>
+                    <span id="percent-facebook">0%</span>
+                    <p>dos acessos vêm do Facebook</p>
+                </div>
+                <div class="analytics-card">
+                    <i class="fab fa-twitter"></i>
+                    <h3>Twitter/X</h3>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-twitter"></div>
+                    </div>
+                    <span id="percent-twitter">0%</span>
+                    <p>dos acessos vêm do Twitter</p>
+                </div>
+                <div class="analytics-card">
+                    <i class="fas fa-globe"></i>
+                    <h3>Direto</h3>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-direct"></div>
+                    </div>
+                    <span id="percent-direct">0%</span>
+                    <p>acessos diretos ou outros</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO PROFESSORES -->
+    <section id="professores" class="professores">
+        <div class="container">
+            <div class="section-title">
+                <span>Nossa Equipe</span>
+                <h2>Professores</h2>
+            </div>
+            <div class="professores-grid" id="professores-container"></div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO HORÁRIOS -->
+    <section id="horarios" class="horarios">
+        <div class="container">
+            <div class="section-title">
+                <span>Horários</span>
+                <h2>Grade de Aulas</h2>
+            </div>
+            <div class="tabela-horarios">
+                <table id="tabela-horarios">
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Segunda</th>
+                            <th>Terça</th>
+                            <th>Quarta</th>
+                            <th>Quinta</th>
+                            <th>Sexta</th>
+                            <th>Sábado</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO CONTATO -->
+    <section id="contato" class="contato">
+        <div class="container">
+            <div class="section-title">
+                <span>Contato</span>
+                <h2>Fale Conosco</h2>
+            </div>
+            <div class="contato-grid">
+                <div class="contato-info">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Endereço</h4>
+                            <p id="endereco">Rua Exemplo, 123</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Telefone</h4>
+                            <p id="telefone">(14) 99999-9999</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p id="email">contato@academia.com</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p id="whatsapp">(14) 99999-9999</p>
+                        </div>
+                    </div>
+                </div>
+                <form class="contato-form" id="form-contato">
+                    <input type="text" placeholder="Seu nome" required>
+                    <input type="email" placeholder="Seu e-mail" required>
+                    <input type="tel" placeholder="Telefone">
+                    <textarea placeholder="Mensagem" rows="5" required></textarea>
+                    <button type="submit" class="btn-primary">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>FIGHTCODE</h3>
+                <p>Tecnologia para evoluir lutadores</p>
+            </div>
+            <div class="footer-links">
+                <h4>Links</h4>
                 <ul>
                     <li><a href="#home">Início</a></li>
                     <li><a href="#sobre">Sobre</a></li>
                     <li><a href="#professores">Professores</a></li>
                     <li><a href="#horarios">Horários</a></li>
-                    <li><a href="#contato">Contato</a></li>
                 </ul>
-            </nav>
-            <div class="menu-toggle">
-                <i class="fas fa-bars"></i>
+            </div>
+            <div class="footer-social">
+                <h4>Redes Sociais</h4>
+                <div class="social-icons" id="social-links"></div>
             </div>
         </div>
-    </header>
-
-    <main>
-        <!-- SEÇÃO HERO (INÍCIO) -->
-        <section id="home" class="hero">
-            <div class="hero-overlay"></div>
-            <div class="container">
-                <div class="hero-content">
-                    <h2 id="hero-titulo">TECNOLOGIA PARA EVOLUIR LUTADORES</h2>
-                    <p id="hero-subtitulo">Sistema completo para gestão da sua academia</p>
-                    <div class="hero-buttons">
-                        <a href="#contato" class="btn-primary">Experimente Grátis</a>
-                        <a href="#sobre" class="btn-secondary">Saiba Mais</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SEÇÃO SOBRE -->
-        <section id="sobre" class="sobre">
-            <div class="container">
-                <div class="section-title">
-                    <span>Sobre Nós</span>
-                    <h2>Quem Somos</h2>
-                </div>
-                <div class="sobre-content">
-                    <div class="sobre-texto">
-                        <p id="sobre-descricao">A FightCode nasceu da paixão por artes marciais e tecnologia. Oferecemos soluções completas para academias que desejam modernizar sua gestão e proporcionar a melhor experiência para seus alunos.</p>
-                        <div class="sobre-grid">
-                            <div class="grid-item">
-                                <i class="fas fa-chart-line"></i>
-                                <h3>Tecnologia</h3>
-                                <p>Soluções modernas e eficientes</p>
-                            </div>
-                            <div class="grid-item">
-                                <i class="fas fa-shield-alt"></i>
-                                <h3>Confiança</h3>
-                                <p>Segurança e dados protegidos</p>
-                            </div>
-                            <div class="grid-item">
-                                <i class="fas fa-fist-raised"></i>
-                                <h3>Disciplina</h3>
-                                <p>Foco, consistência e evolução</p>
-                            </div>
-                            <div class="grid-item">
-                                <i class="fas fa-trophy"></i>
-                                <h3>Resultados</h3>
-                                <p>Estratégia que gera vitória</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção Analytics / Medidor de Tráfego -->
-<section id="analytics" class="analytics">
-    <div class="container">
-        <div class="section-title">
-            <span>Onde nos acompanham</span>
-            <h2>Tráfego da Academia</h2>
-        </div>
-        <div class="analytics-grid">
-            <div class="analytics-card">
-                <i class="fab fa-instagram"></i>
-                <h3>Instagram</h3>
-                <div class="progress-bar">
-                    <div class="progress" id="progress-instagram" style="width: 0%"></div>
-                </div>
-                <span id="percent-instagram">0%</span>
-                <p>dos acessos vêm do Instagram</p>
-            </div>
-            <div class="analytics-card">
-                <i class="fab fa-facebook"></i>
-                <h3>Facebook</h3>
-                <div class="progress-bar">
-                    <div class="progress" id="progress-facebook" style="width: 0%"></div>
-                </div>
-                <span id="percent-facebook">0%</span>
-                <p>dos acessos vêm do Facebook</p>
-            </div>
-            <div class="analytics-card">
-                <i class="fab fa-twitter"></i>
-                <h3>Twitter/X</h3>
-                <div class="progress-bar">
-                    <div class="progress" id="progress-twitter" style="width: 0%"></div>
-                </div>
-                <span id="percent-twitter">0%</span>
-                <p>dos acessos vêm do Twitter</p>
-            </div>
-            <div class="analytics-card">
-                <i class="fas fa-globe"></i>
-                <h3>Direto</h3>
-                <div class="progress-bar">
-                    <div class="progress" id="progress-direct" style="width: 0%"></div>
-                </div>
-                <span id="percent-direct">0%</span>
-                <p>acessos diretos ou outros</p>
-            </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 FightCode - Todos os direitos reservados</p>
         </div>
     </div>
-</section>
+</footer>
 
-        <!-- SEÇÃO PROFESSORES -->
-        <section id="professores" class="professores">
-            <div class="container">
-                <div class="section-title">
-                    <span>Nossa Equipe</span>
-                    <h2>Professores</h2>
-                </div>
-                <div class="professores-grid" id="professores-container">
-                    <!-- Professores serão carregados via JavaScript -->
-                </div>
-            </div>
-        </section>
-
-        <!-- SEÇÃO HORÁRIOS -->
-        <section id="horarios" class="horarios">
-            <div class="container">
-                <div class="section-title">
-                    <span>Horários</span>
-                    <h2>Grade de Aulas</h2>
-                </div>
-                <div class="tabela-horarios">
-                    <table id="tabela-horarios">
-                        <thead>
-                            <tr>
-                                <th>Horário</th>
-                                <th>Segunda</th>
-                                <th>Terça</th>
-                                <th>Quarta</th>
-                                <th>Quinta</th>
-                                <th>Sexta</th>
-                                <th>Sábado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dados serão carregados via JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- SEÇÃO CONTATO -->
-        <section id="contato" class="contato">
-            <div class="container">
-                <div class="section-title">
-                    <span>Contato</span>
-                    <h2>Fale Conosco</h2>
-                </div>
-                <div class="contato-grid">
-                    <div class="contato-info">
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <h4>Endereço</h4>
-                                <p id="endereco">Rua Exemplo, 123 - Centro</p>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-phone"></i>
-                            <div>
-                                <h4>Telefone</h4>
-                                <p id="telefone">(14) 99999-9999</p>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <h4>Email</h4>
-                                <p id="email">contato@academia.com</p>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <i class="fab fa-whatsapp"></i>
-                            <div>
-                                <h4>WhatsApp</h4>
-                                <p id="whatsapp">(14) 99999-9999</p>
-                            </div>
-                        </div>
-                    </div>
-                    <form class="contato-form" id="form-contato">
-                        <input type="text" placeholder="Seu nome" required>
-                        <input type="email" placeholder="Seu e-mail" required>
-                        <input type="tel" placeholder="Telefone">
-                        <textarea placeholder="Mensagem" rows="5" required></textarea>
-                        <button type="submit" class="btn-primary">Enviar Mensagem</button>
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="assets/img/logo-branco.png" alt="FightCode">
-                    <p>Tecnologia para evoluir lutadores</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Links Rápidos</h4>
-                    <ul>
-                        <li><a href="#home">Início</a></li>
-                        <li><a href="#sobre">Sobre</a></li>
-                        <li><a href="#professores">Professores</a></li>
-                        <li><a href="#horarios">Horários</a></li>
-                    </ul>
-                </div>
-                <div class="footer-social">
-                    <h4>Redes Sociais</h4>
-                    <div class="social-icons" id="social-links">
-                        <!-- Links serão carregados via JavaScript -->
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 FightCode - Todos os direitos reservados</p>
-                <p>Desenvolvido com <i class="fas fa-heart"></i> para sua academia</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScripts -->
-    <script src="assets/js/config.js"></script>
-    <script src="assets/js/main.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
