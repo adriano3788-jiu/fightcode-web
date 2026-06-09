@@ -76,4 +76,11 @@ const CLIENT_CONFIG = {
         horarios: true,
         contato: true
     }
+    analytics: {
+    instagram: 45,
+    facebook: 25,
+    twitter: 10,
+    direct: 20
+}
 };
+
