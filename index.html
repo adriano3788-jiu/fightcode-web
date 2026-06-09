@@ -138,6 +138,86 @@
         </div>
     </section>
 
+    <!-- SEÇÃO LOJA ONLINE -->
+<section id="loja" class="loja">
+    <div class="container">
+        <div class="section-title">
+            <span>Produtos</span>
+            <h2>Nossa Loja</h2>
+            <p>Adquira nossos produtos e treine com estilo</p>
+        </div>
+        
+        <div class="loja-grid" id="produtos-container">
+            <!-- Produtos serão carregados via JavaScript -->
+        </div>
+        
+        <!-- CARRINHO DE COMPRAS -->
+        <div class="carrinho" id="carrinho">
+            <div class="carrinho-header">
+                <h3><i class="fas fa-shopping-cart"></i> Meu Carrinho</h3>
+                <span id="carrinho-contador">0</span>
+            </div>
+            <div class="carrinho-itens" id="carrinho-itens">
+                <p class="carrinho-vazio">Seu carrinho está vazio</p>
+            </div>
+            <div class="carrinho-total">
+                <span>Total:</span>
+                <strong id="carrinho-total">R$ 0,00</strong>
+            </div>
+            <button class="btn-primary btn-finalizar" id="btn-finalizar">Finalizar Compra</button>
+        </div>
+    </div>
+</section>
+
+<!-- MODAL DE CHECKOUT -->
+<div class="modal" id="modal-checkout">
+    <div class="modal-content">
+        <span class="modal-fechar">&times;</span>
+        <h2>Finalizar Pedido</h2>
+        <form id="form-checkout">
+            <div class="form-group">
+                <label>Nome completo</label>
+                <input type="text" id="cliente-nome" required>
+            </div>
+            <div class="form-group">
+                <label>Telefone (WhatsApp)</label>
+                <input type="tel" id="cliente-telefone" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="cliente-email" required>
+            </div>
+            <div class="form-group">
+                <label>Forma de pagamento</label>
+                <select id="pagamento-metodo" required>
+                    <option value="">Selecione</option>
+                    <option value="pix">PIX (10% OFF)</option>
+                    <option value="cartao">Cartão de Crédito</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Retirada</label>
+                <select id="retirada" required>
+                    <option value="academia">Retirar na Academia (Gratuito)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Observações (opcional)</label>
+                <textarea id="observacoes" rows="2"></textarea>
+            </div>
+            <div class="pedido-resumo">
+                <h3>Resumo do Pedido</h3>
+                <div id="resumo-itens"></div>
+                <div class="pedido-total">
+                    <span>Total:</span>
+                    <strong id="modal-total">R$ 0,00</strong>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">Confirmar Pedido</button>
+        </form>
+    </div>
+</div>
+
     <!-- SEÇÃO CONTATO -->
     <section id="contato" class="contato">
         <div class="container">
