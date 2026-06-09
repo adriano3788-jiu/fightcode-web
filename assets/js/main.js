@@ -144,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    
     // INICIALIZAR TUDO
     aplicarTema();
     carregarInfoAcademia();
@@ -156,4 +157,43 @@ document.addEventListener('DOMContentLoaded', function() {
     initFormContato();
     gerenciarSecoes();
     
+});
+// Simulação de dados de tráfego (vindo de redes sociais)
+// Depois podemos integrar com Google Analytics ou API real
+
+function carregarAnalytics() {
+    // Dados simulados - mostra de onde vieram os visitantes
+    const trafego = {
+        instagram: 45,
+        facebook: 25,
+        twitter: 10,
+        direct: 20
+    };
+    
+    // Atualizar barras de progresso
+    const progressInsta = document.getElementById('progress-instagram');
+    const progressFb = document.getElementById('progress-facebook');
+    const progressTwitter = document.getElementById('progress-twitter');
+    const progressDirect = document.getElementById('progress-direct');
+    
+    if (progressInsta) progressInsta.style.width = trafego.instagram + '%';
+    if (progressFb) progressFb.style.width = trafego.facebook + '%';
+    if (progressTwitter) progressTwitter.style.width = trafego.twitter + '%';
+    if (progressDirect) progressDirect.style.width = trafego.direct + '%';
+    
+    // Atualizar percentuais
+    const percentInsta = document.getElementById('percent-instagram');
+    const percentFb = document.getElementById('percent-facebook');
+    const percentTwitter = document.getElementById('percent-twitter');
+    const percentDirect = document.getElementById('percent-direct');
+    
+    if (percentInsta) percentInsta.textContent = trafego.instagram + '%';
+    if (percentFb) percentFb.textContent = trafego.facebook + '%';
+    if (percentTwitter) percentTwitter.textContent = trafego.twitter + '%';
+    if (percentDirect) percentDirect.textContent = trafego.direct + '%';
+}
+
+// Chamar a função ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    carregarAnalytics();
 });
