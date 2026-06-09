@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         CLIENT_CONFIG.professores.forEach(prof => {
             const card = `
                 <div class="professor-card">
-                    <img src="${prof.imagem}" alt="${prof.nome}">
+                    <img src="${prof.imagem}" alt="${prof.nome}" onerror="this.src='https://via.placeholder.com/300x250/E53935/white?text=${prof.nome}'">
                     <h3>${prof.nome}</h3>
                     <p>${prof.especialidade}</p>
                 </div>
@@ -141,8 +141,47 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-        // 12. LOJA ONLINE
+    
+    // 11. CARREGAR ANALYTICS (medidor de tráfego)
+    function carregarAnalytics() {
+        const trafego = CLIENT_CONFIG.analytics || {
+            instagram: 45,
+            facebook: 25,
+            twitter: 10,
+            direct: 20
+        };
+        
+        const progressInsta = document.getElementById('progress-instagram');
+        const progressFb = document.getElementById('progress-facebook');
+        const progressTwitter = document.getElementById('progress-twitter');
+        const progressDirect = document.getElementById('progress-direct');
+        
+        if (progressInsta) progressInsta.style.width = trafego.instagram + '%';
+        if (progressFb) progressFb.style.width = trafego.facebook + '%';
+        if (progressTwitter) progressTwitter.style.width = trafego.twitter + '%';
+        if (progressDirect) progressDirect.style.width = trafego.direct + '%';
+        
+        const percentInsta = document.getElementById('percent-instagram');
+        const percentFb = document.getElementById('percent-facebook');
+        const percentTwitter = document.getElementById('percent-twitter');
+        const percentDirect = document.getElementById('percent-direct');
+        
+        if (percentInsta) percentInsta.textContent = trafego.instagram + '%';
+        if (percentFb) percentFb.textContent = trafego.facebook + '%';
+        if (percentTwitter) percentTwitter.textContent = trafego.twitter + '%';
+        if (percentDirect) percentDirect.textContent = trafego.direct + '%';
+    }
+    
+    // 12. LOJA ONLINE
     let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    
+    function mostrarMensagem(texto) {
+        const msg = document.createElement('div');
+        msg.className = 'mensagem-confirmacao';
+        msg.textContent = texto;
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 5000);
+    }
     
     function atualizarCarrinho() {
         const carrinhoItens = document.getElementById('carrinho-itens');
@@ -194,10 +233,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!container) return;
         
         container.innerHTML = '';
+        
+        if (!CLIENT_CONFIG.produtos || CLIENT_CONFIG.produtos.length === 0) {
+            container.innerHTML = '<p style="text-align:center">Nenhum produto cadastrado.</p>';
+            return;
+        }
+        
         CLIENT_CONFIG.produtos.forEach(produto => {
             container.innerHTML += `
                 <div class="produto-card">
-                    <img src="${produto.imagem}" alt="${produto.nome}" class="produto-imagem">
+                    <img src="${produto.imagem}" alt="${produto.nome}" class="produto-imagem" onerror="this.src='https://via.placeholder.com/300x250/E53935/white?text=${produto.nome}'">
                     <div class="produto-info">
                         <h3>${produto.nome}</h3>
                         <p class="produto-descricao">${produto.descricao}</p>
@@ -231,38 +276,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    function mostrarMensagem(texto) {
-        const msg = document.createElement('div');
-        msg.className = 'mensagem-confirmacao';
-        msg.textContent = texto;
-        document.body.appendChild(msg);
-        setTimeout(() => msg.remove(), 5000);
+    // Eventos do carrinho
+    const carrinhoItensElement = document.getElementById('carrinho-itens');
+    if (carrinhoItensElement) {
+        carrinhoItensElement.addEventListener('click', (e) => {
+            const index = e.target.dataset.index;
+            if (index === undefined) return;
+            
+            if (e.target.classList.contains('carrinho-item-diminuir')) {
+                if (carrinho[index].quantidade > 1) {
+                    carrinho[index].quantidade--;
+                } else {
+                    carrinho.splice(index, 1);
+                }
+                atualizarCarrinho();
+            }
+            
+            if (e.target.classList.contains('carrinho-item-aumentar')) {
+                carrinho[index].quantidade++;
+                atualizarCarrinho();
+            }
+            
+            if (e.target.classList.contains('carrinho-item-remove')) {
+                carrinho.splice(index, 1);
+                atualizarCarrinho();
+            }
+        });
     }
     
-    document.getElementById('carrinho-itens')?.addEventListener('click', (e) => {
-        const index = e.target.dataset.index;
-        if (index === undefined) return;
-        
-        if (e.target.classList.contains('carrinho-item-diminuir')) {
-            if (carrinho[index].quantidade > 1) {
-                carrinho[index].quantidade--;
-            } else {
-                carrinho.splice(index, 1);
-            }
-            atualizarCarrinho();
-        }
-        
-        if (e.target.classList.contains('carrinho-item-aumentar')) {
-            carrinho[index].quantidade++;
-            atualizarCarrinho();
-        }
-        
-        if (e.target.classList.contains('carrinho-item-remove')) {
-            carrinho.splice(index, 1);
-            atualizarCarrinho();
-        }
-    });
-    
+    // Modal checkout
     const modal = document.getElementById('modal-checkout');
     const btnFinalizar = document.getElementById('btn-finalizar');
     const modalFechar = document.querySelector('.modal-fechar');
@@ -287,13 +329,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     `;
                 });
             }
-            document.getElementById('modal-total').textContent = `R$ ${total.toFixed(2)}`;
-            modal.style.display = 'flex';
+            const modalTotal = document.getElementById('modal-total');
+            if (modalTotal) modalTotal.textContent = `R$ ${total.toFixed(2)}`;
+            if (modal) modal.style.display = 'flex';
         });
     }
     
     if (modalFechar) {
-        modalFechar.addEventListener('click', () => modal.style.display = 'none');
+        modalFechar.addEventListener('click', () => {
+            if (modal) modal.style.display = 'none';
+        });
         window.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
         });
@@ -301,82 +346,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const formCheckout = document.getElementById('form-checkout');
     if (formCheckout) {
-        formCheckout.addEventListener('submit', async (e) => {
+        formCheckout.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const pedido = {
-                cliente: {
-                    nome: document.getElementById('cliente-nome').value,
-                    telefone: document.getElementById('cliente-telefone').value,
-                    email: document.getElementById('cliente-email').value
-                },
-                itens: [...carrinho],
-                total: carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0),
-                pagamento: document.getElementById('pagamento-metodo').value,
-                retirada: document.getElementById('retirada').value,
-                observacoes: document.getElementById('observacoes').value,
-                data: new Date().toLocaleString()
-            };
-            
-            console.log('Pedido:', pedido);
+            const clienteNome = document.getElementById('cliente-nome')?.value || '';
+            const clienteTelefone = document.getElementById('cliente-telefone')?.value || '';
+            const clienteEmail = document.getElementById('cliente-email')?.value || '';
+            const pagamentoMetodo = document.getElementById('pagamento-metodo')?.value || '';
+            const retirada = document.getElementById('retirada')?.value || '';
+            const observacoes = document.getElementById('observacoes')?.value || '';
             
             let mensagemWhatsApp = `🛒 *NOVO PEDIDO - FIGHTCODE*%0a%0a`;
-            mensagemWhatsApp += `👤 *Cliente:* ${pedido.cliente.nome}%0a`;
-            mensagemWhatsApp += `📱 *Telefone:* ${pedido.cliente.telefone}%0a`;
-            mensagemWhatsApp += `📧 *Email:* ${pedido.cliente.email}%0a%0a`;
+            mensagemWhatsApp += `👤 *Cliente:* ${clienteNome}%0a`;
+            mensagemWhatsApp += `📱 *Telefone:* ${clienteTelefone}%0a`;
+            mensagemWhatsApp += `📧 *Email:* ${clienteEmail}%0a%0a`;
             mensagemWhatsApp += `📦 *ITENS:*%0a`;
             
-            pedido.itens.forEach(item => {
+            carrinho.forEach(item => {
                 mensagemWhatsApp += `- ${item.nome} x${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}%0a`;
             });
             
-            mensagemWhatsApp += `%0a💰 *Total:* R$ ${pedido.total.toFixed(2)}%0a`;
-            mensagemWhatsApp += `💳 *Pagamento:* ${pedido.pagamento === 'pix' ? 'PIX (10% OFF)' : 'Cartão'}%0a`;
-            mensagemWhatsApp += `📍 *Retirada:* ${pedido.retirada}%0a`;
-            if (pedido.observacoes) mensagemWhatsApp += `📝 *Observações:* ${pedido.observacoes}%0a`;
+            const total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            mensagemWhatsApp += `%0a💰 *Total:* R$ ${total.toFixed(2)}%0a`;
+            mensagemWhatsApp += `💳 *Pagamento:* ${pagamentoMetodo === 'pix' ? 'PIX' : 'Cartão'}%0a`;
+            mensagemWhatsApp += `📍 *Retirada:* ${retirada}%0a`;
+            if (observacoes) mensagemWhatsApp += `📝 *Observações:* ${observacoes}%0a`;
             
-            window.open(`https://wa.me/${CLIENT_CONFIG.contato.whatsapp.replace(/\D/g, '')}?text=${mensagemWhatsApp}`, '_blank');
+            const whatsappNumber = CLIENT_CONFIG.contato.whatsapp.replace(/\D/g, '');
+            window.open(`https://wa.me/${whatsappNumber}?text=${mensagemWhatsApp}`, '_blank');
             
             mostrarMensagem('Pedido enviado! Entraremos em contato pelo WhatsApp.');
-            modal.style.display = 'none';
+            if (modal) modal.style.display = 'none';
             carrinho = [];
             atualizarCarrinho();
             formCheckout.reset();
         });
-    }
-    
-    // Inicializar loja
-    carregarProdutos();
-    atualizarCarrinho();
-    
-    // 11. CARREGAR ANALYTICS (medidor de tráfego)
-    function carregarAnalytics() {
-        const trafego = CLIENT_CONFIG.analytics || {
-            instagram: 45,
-            facebook: 25,
-            twitter: 10,
-            direct: 20
-        };
-        
-        const progressInsta = document.getElementById('progress-instagram');
-        const progressFb = document.getElementById('progress-facebook');
-        const progressTwitter = document.getElementById('progress-twitter');
-        const progressDirect = document.getElementById('progress-direct');
-        
-        if (progressInsta) progressInsta.style.width = trafego.instagram + '%';
-        if (progressFb) progressFb.style.width = trafego.facebook + '%';
-        if (progressTwitter) progressTwitter.style.width = trafego.twitter + '%';
-        if (progressDirect) progressDirect.style.width = trafego.direct + '%';
-        
-        const percentInsta = document.getElementById('percent-instagram');
-        const percentFb = document.getElementById('percent-facebook');
-        const percentTwitter = document.getElementById('percent-twitter');
-        const percentDirect = document.getElementById('percent-direct');
-        
-        if (percentInsta) percentInsta.textContent = trafego.instagram + '%';
-        if (percentFb) percentFb.textContent = trafego.facebook + '%';
-        if (percentTwitter) percentTwitter.textContent = trafego.twitter + '%';
-        if (percentDirect) percentDirect.textContent = trafego.direct + '%';
     }
     
     // INICIALIZAR TUDO
@@ -390,6 +394,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScroll();
     initFormContato();
     gerenciarSecoes();
-    carregarAnalytics();  // Carrega o medidor de tráfego
+    carregarAnalytics();
+    carregarProdutos();
+    atualizarCarrinho();
     
 });
