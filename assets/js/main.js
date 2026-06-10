@@ -2,6 +2,9 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     
+    console.log('Main.js carregado!');
+    console.log('CLIENT_CONFIG:', CLIENT_CONFIG);
+    
     // 1. APLICAR CORES DO TEMA
     function aplicarTema() {
         const root = document.documentElement;
@@ -13,143 +16,130 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 2. CARREGAR INFORMAÇÕES DA ACADEMIA
     function carregarInfoAcademia() {
-        document.getElementById('academia-nome').textContent = CLIENT_CONFIG.academia.nome;
-        const logoImg = document.getElementById('logo-img');
-        if (logoImg) logoImg.src = CLIENT_CONFIG.academia.logo;
+        const nomeElement = document.getElementById('academia-nome');
+        if (nomeElement) nomeElement.textContent = CLIENT_CONFIG.academia.nome;
         
-        document.getElementById('hero-titulo').textContent = CLIENT_CONFIG.hero.titulo;
-        document.getElementById('hero-subtitulo').textContent = CLIENT_CONFIG.hero.subtitulo;
+        const heroSubtitulo = document.getElementById('hero-subtitulo');
+        if (heroSubtitulo) heroSubtitulo.textContent = CLIENT_CONFIG.hero.subtitulo;
         
-        document.getElementById('sobre-descricao').textContent = CLIENT_CONFIG.sobre.descricao;
+        const sobreDescricao = document.getElementById('sobre-descricao');
+        if (sobreDescricao) sobreDescricao.textContent = CLIENT_CONFIG.sobre.descricao;
     }
     
-    // 3. CARREGAR PROFESSORES
-    function carregarProfessores() {
-        const container = document.getElementById('professores-container');
-        if (!container) return;
+    // 3. CARREGAR PILARES (SOBRE)
+    function carregarPilares() {
+        const container = document.getElementById('pilares-container');
+        if (!container) {
+            console.log('Container de pilares não encontrado');
+            return;
+        }
         
         container.innerHTML = '';
+        CLIENT_CONFIG.sobre.pilares.forEach(pilar => {
+            container.innerHTML += `
+                <div class="grid-item">
+                    <i class="${pilar.icone}"></i>
+                    <h3>${pilar.titulo}</h3>
+                    <p>${pilar.descricao}</p>
+                </div>
+            `;
+        });
+        console.log('Pilares carregados:', CLIENT_CONFIG.sobre.pilares.length);
+    }
+    
+    // 4. CARREGAR PROFESSORES
+    function carregarProfessores() {
+        const container = document.getElementById('professores-container');
+        if (!container) {
+            console.log('Container de professores não encontrado');
+            return;
+        }
+        
+        container.innerHTML = '';
+        if (!CLIENT_CONFIG.professores || CLIENT_CONFIG.professores.length === 0) {
+            container.innerHTML = '<p style="text-align:center">Nenhum professor cadastrado.</p>';
+            return;
+        }
+        
         CLIENT_CONFIG.professores.forEach(prof => {
-            const card = `
+            container.innerHTML += `
                 <div class="professor-card">
                     <img src="${prof.imagem}" alt="${prof.nome}" onerror="this.src='https://via.placeholder.com/300x250/E53935/white?text=${prof.nome}'">
                     <h3>${prof.nome}</h3>
                     <p>${prof.especialidade}</p>
                 </div>
             `;
-            container.innerHTML += card;
         });
+        console.log('Professores carregados:', CLIENT_CONFIG.professores.length);
     }
     
-    // 4. CARREGAR HORÁRIOS
+    // 5. CARREGAR HORÁRIOS
     function carregarHorarios() {
-        const tabela = document.getElementById('tabela-horarios').querySelector('tbody');
-        if (!tabela) return;
+        const tabela = document.getElementById('tabela-horarios');
+        if (!tabela) {
+            console.log('Tabela de horários não encontrada');
+            return;
+        }
         
-        tabela.innerHTML = '';
+        let tbody = tabela.querySelector('tbody');
+        if (!tbody) {
+            tbody = document.createElement('tbody');
+            tabela.appendChild(tbody);
+        }
+        
+        tbody.innerHTML = '';
+        if (!CLIENT_CONFIG.horarios || CLIENT_CONFIG.horarios.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7">Nenhum horário cadastrado.</td></tr>';
+            return;
+        }
+        
         CLIENT_CONFIG.horarios.forEach(linha => {
-            const row = `
+            tbody.innerHTML += `
                 <tr>
                     <td class="horario">${linha.horario}</td>
-                    <td>${linha.seg}</td>
-                    <td>${linha.ter}</td>
-                    <td>${linha.qua}</td>
-                    <td>${linha.qui}</td>
-                    <td>${linha.sex}</td>
-                    <td>${linha.sab}</td>
+                    <td>${linha.seg || '-'}</td>
+                    <td>${linha.ter || '-'}</td>
+                    <td>${linha.qua || '-'}</td>
+                    <td>${linha.qui || '-'}</td>
+                    <td>${linha.sex || '-'}</td>
+                    <td>${linha.sab || '-'}</td>
                 </tr>
             `;
-            tabela.innerHTML += row;
         });
+        console.log('Horários carregados:', CLIENT_CONFIG.horarios.length);
     }
     
-    // 5. CARREGAR CONTATO
+    // 6. CARREGAR CONTATO
     function carregarContato() {
-        document.getElementById('endereco').textContent = CLIENT_CONFIG.contato.endereco;
-        document.getElementById('telefone').textContent = CLIENT_CONFIG.contato.telefone;
-        document.getElementById('email').textContent = CLIENT_CONFIG.contato.email;
-        document.getElementById('whatsapp').textContent = CLIENT_CONFIG.contato.whatsapp;
+        const endereco = document.getElementById('endereco');
+        const telefone = document.getElementById('telefone');
+        const email = document.getElementById('email');
+        const whatsapp = document.getElementById('whatsapp');
+        
+        if (endereco) endereco.textContent = CLIENT_CONFIG.contato.endereco;
+        if (telefone) telefone.textContent = CLIENT_CONFIG.contato.telefone;
+        if (email) email.textContent = CLIENT_CONFIG.contato.email;
+        if (whatsapp) whatsapp.textContent = CLIENT_CONFIG.contato.whatsapp;
     }
     
-    // 6. CARREGAR REDES SOCIAIS
+    // 7. CARREGAR REDES SOCIAIS
     function carregarSocial() {
         const container = document.getElementById('social-links');
         if (!container) return;
         
         container.innerHTML = '';
         CLIENT_CONFIG.social.forEach(social => {
-            const link = `
+            container.innerHTML += `
                 <a href="${social.url}" target="_blank" title="${social.plataforma}">
                     <i class="${social.icone}"></i>
                 </a>
             `;
-            container.innerHTML += link;
         });
     }
     
-    // 7. MENU MOBILE (responsivo)
-    function initMobileMenu() {
-        const menuToggle = document.querySelector('.menu-toggle');
-        const nav = document.querySelector('.nav');
-        
-        if (menuToggle) {
-            menuToggle.addEventListener('click', () => {
-                nav.classList.toggle('active');
-            });
-        }
-    }
-    
-    // 8. SMOOTH SCROLL (rolagem suave)
-    function initSmoothScroll() {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                    document.querySelector('.nav')?.classList.remove('active');
-                }
-            });
-        });
-    }
-    
-    // 9. FORMULÁRIO DE CONTATO
-    function initFormContato() {
-        const form = document.getElementById('form-contato');
-        if (form) {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                alert('Mensagem enviada! Em breve entraremos em contato.');
-                form.reset();
-            });
-        }
-    }
-    
-    // 10. GERENCIAR SEÇÕES
-    function gerenciarSecoes() {
-        const secoes = {
-            hero: document.getElementById('home'),
-            sobre: document.getElementById('sobre'),
-            professores: document.getElementById('professores'),
-            horarios: document.getElementById('horarios'),
-            contato: document.getElementById('contato')
-        };
-        
-        for (const [key, element] of Object.entries(secoes)) {
-            if (element && CLIENT_CONFIG.secoes[key] === false) {
-                element.style.display = 'none';
-            }
-        }
-    }
-    
-    // 11. CARREGAR ANALYTICS (medidor de tráfego)
+    // 8. CARREGAR ANALYTICS
     function carregarAnalytics() {
-        const trafego = CLIENT_CONFIG.analytics || {
-            instagram: 45,
-            facebook: 25,
-            twitter: 10,
-            direct: 20
-        };
+        const trafego = CLIENT_CONFIG.analytics || { instagram: 45, facebook: 25, twitter: 10, direct: 20 };
         
         const progressInsta = document.getElementById('progress-instagram');
         const progressFb = document.getElementById('progress-facebook');
@@ -172,7 +162,37 @@ document.addEventListener('DOMContentLoaded', function() {
         if (percentDirect) percentDirect.textContent = trafego.direct + '%';
     }
     
-    // 12. LOJA ONLINE
+    // 9. CARREGAR PRODUTOS
+    function carregarProdutos() {
+        const container = document.getElementById('produtos-container');
+        if (!container) {
+            console.log('Container de produtos não encontrado');
+            return;
+        }
+        
+        container.innerHTML = '';
+        if (!CLIENT_CONFIG.produtos || CLIENT_CONFIG.produtos.length === 0) {
+            container.innerHTML = '<p style="text-align:center">Nenhum produto cadastrado.</p>';
+            return;
+        }
+        
+        CLIENT_CONFIG.produtos.forEach(produto => {
+            container.innerHTML += `
+                <div class="produto-card">
+                    <img src="${produto.imagem}" alt="${produto.nome}" class="produto-imagem" onerror="this.src='https://via.placeholder.com/300x250/E53935/white?text=${produto.nome}'">
+                    <div class="produto-info">
+                        <h3>${produto.nome}</h3>
+                        <p class="produto-descricao">${produto.descricao}</p>
+                        <p class="produto-preco">R$ ${produto.preco.toFixed(2)}</p>
+                        <button class="btn-comprar" data-id="${produto.id}">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+            `;
+        });
+        console.log('Produtos carregados:', CLIENT_CONFIG.produtos.length);
+    }
+    
+    // 10. CARRINHO E CHECKOUT
     let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
     
     function mostrarMensagem(texto) {
@@ -228,81 +248,49 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('carrinho', JSON.stringify(carrinho));
     }
     
-    function carregarProdutos() {
-        const container = document.getElementById('produtos-container');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        if (!CLIENT_CONFIG.produtos || CLIENT_CONFIG.produtos.length === 0) {
-            container.innerHTML = '<p style="text-align:center">Nenhum produto cadastrado.</p>';
-            return;
+    // Eventos de clique nos produtos
+    document.addEventListener('click', function(e) {
+        if (e.target.classList && e.target.classList.contains('btn-comprar')) {
+            const id = parseInt(e.target.dataset.id);
+            const produto = CLIENT_CONFIG.produtos.find(p => p.id === id);
+            const itemExistente = carrinho.find(item => item.id === id);
+            
+            if (itemExistente) {
+                itemExistente.quantidade++;
+            } else {
+                carrinho.push({
+                    id: produto.id,
+                    nome: produto.nome,
+                    preco: produto.preco,
+                    quantidade: 1
+                });
+            }
+            atualizarCarrinho();
+            mostrarMensagem(`${produto.nome} adicionado ao carrinho!`);
         }
         
-        CLIENT_CONFIG.produtos.forEach(produto => {
-            container.innerHTML += `
-                <div class="produto-card">
-                    <img src="${produto.imagem}" alt="${produto.nome}" class="produto-imagem" onerror="this.src='https://via.placeholder.com/300x250/E53935/white?text=${produto.nome}'">
-                    <div class="produto-info">
-                        <h3>${produto.nome}</h3>
-                        <p class="produto-descricao">${produto.descricao}</p>
-                        <p class="produto-preco">R$ ${produto.preco.toFixed(2)}</p>
-                        <button class="btn-comprar" data-id="${produto.id}">Adicionar ao Carrinho</button>
-                    </div>
-                </div>
-            `;
-        });
-        
-        document.querySelectorAll('.btn-comprar').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = parseInt(btn.dataset.id);
-                const produto = CLIENT_CONFIG.produtos.find(p => p.id === id);
-                const itemExistente = carrinho.find(item => item.id === id);
-                
-                if (itemExistente) {
-                    itemExistente.quantidade++;
-                } else {
-                    carrinho.push({
-                        id: produto.id,
-                        nome: produto.nome,
-                        preco: produto.preco,
-                        quantidade: 1
-                    });
-                }
-                
-                atualizarCarrinho();
-                mostrarMensagem(`${produto.nome} adicionado ao carrinho!`);
-            });
-        });
-    }
-    
-    // Eventos do carrinho
-    const carrinhoItensElement = document.getElementById('carrinho-itens');
-    if (carrinhoItensElement) {
-        carrinhoItensElement.addEventListener('click', (e) => {
-            const index = e.target.dataset.index;
-            if (index === undefined) return;
-            
-            if (e.target.classList.contains('carrinho-item-diminuir')) {
-                if (carrinho[index].quantidade > 1) {
-                    carrinho[index].quantidade--;
-                } else {
-                    carrinho.splice(index, 1);
-                }
-                atualizarCarrinho();
-            }
-            
-            if (e.target.classList.contains('carrinho-item-aumentar')) {
-                carrinho[index].quantidade++;
-                atualizarCarrinho();
-            }
-            
-            if (e.target.classList.contains('carrinho-item-remove')) {
+        if (e.target.classList && e.target.classList.contains('carrinho-item-diminuir')) {
+            const index = parseInt(e.target.dataset.index);
+            if (carrinho[index].quantidade > 1) {
+                carrinho[index].quantidade--;
+            } else {
                 carrinho.splice(index, 1);
-                atualizarCarrinho();
             }
-        });
-    }
+            atualizarCarrinho();
+        }
+        
+        if (e.target.classList && e.target.classList.contains('carrinho-item-aumentar')) {
+            const index = parseInt(e.target.dataset.index);
+            carrinho[index].quantidade++;
+            atualizarCarrinho();
+        }
+        
+        if (e.target.classList && e.target.classList.contains('carrinho-item-remove')) {
+            const index = parseInt(e.target.dataset.index);
+            carrinho.splice(index, 1);
+            atualizarCarrinho();
+        }
+    });
     
     // Modal checkout
     const modal = document.getElementById('modal-checkout');
@@ -383,19 +371,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // MENU MOBILE
+    function initMobileMenu() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const nav = document.querySelector('.nav');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+        }
+    }
+    
+    // SMOOTH SCROLL
+    function initSmoothScroll() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    }
+    
     // INICIALIZAR TUDO
+    console.log('Inicializando...');
     aplicarTema();
     carregarInfoAcademia();
+    carregarPilares();
     carregarProfessores();
     carregarHorarios();
     carregarContato();
     carregarSocial();
-    initMobileMenu();
-    initSmoothScroll();
-    initFormContato();
-    gerenciarSecoes();
     carregarAnalytics();
     carregarProdutos();
+    initMobileMenu();
+    initSmoothScroll();
     atualizarCarrinho();
     
+    console.log('Inicialização concluída!');
 });
