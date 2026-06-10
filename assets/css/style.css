@@ -91,12 +91,18 @@ body {
     background-repeat: no-repeat;
     display: flex;
     align-items: center;
+    justify-content: center;
     text-align: center;
+}
+
+.hero .container {
+    width: 100%;
 }
 
 .hero-content {
     color: white;
     width: 100%;
+    text-align: center;
 }
 
 .hero-content h2 {
