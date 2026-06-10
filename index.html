@@ -33,14 +33,16 @@
 </header>
 
 <main>
-    <!-- SEÇÃO HERO -->
-    <section id="home" class="hero" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/img/banner/fundo.jpeg'); background-size: cover; background-position: center;">
+    <!-- SEÇÃO HERO - A imagem de fundo já contém o texto "FIGHTCODE" e "TECNOLOGIA QUE ELEVA" -->
+    <section id="home" class="hero" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/img/banner/fundo.jpeg'); background-size: cover; background-position: center; min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center;">
         <div class="container">
             <div class="hero-content">
-                <h2 id="hero-titulo">TECNOLOGIA QUE ELEVA SUA ACADEMIA</h2>
-                <p id="hero-subtitulo">Sites e sistemas personalizados para academias de lutas</p>
-                <a href="#contato" class="btn-primary">Falar com Especialista</a>
-                <a href="#sobre" class="btn-secondary">Saiba Mais</a>
+                <!-- TÍTULO REMOVIDO - pois já está na imagem de fundo -->
+                <p id="hero-subtitulo" style="font-size: 1.3rem; margin-bottom: 30px; margin-top: 40vh;">Sites e sistemas personalizados para academias de lutas</p>
+                <div>
+                    <a href="#contato" class="btn-primary">Falar com Especialista</a>
+                    <a href="#sobre" class="btn-secondary">Saiba Mais</a>
+                </div>
             </div>
         </div>
     </section>
@@ -50,7 +52,7 @@
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO SOBRE (com fundo inline) -->
+    <!-- SEÇÃO SOBRE -->
     <section id="sobre" style="background-image: url('assets/img/banner/baixo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 80px 0;">
         <div class="container">
             <div class="section-title">
@@ -137,9 +139,7 @@
             </div>
             <div class="tabela-horarios">
                 <table id="tabela-horarios" style="background: rgba(255,255,255,0.95);">
-                    <thead>
-                        <tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th></tr>
-                    </thead>
+                    <thead><tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -183,22 +183,10 @@
             </div>
             <div class="contato-grid">
                 <div class="contato-info">
-                    <div class="info-item" style="background: rgba(255,255,255,0.9);">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div><h4>Endereço</h4><p id="endereco">Rua Bernardino de Campos, 20-12 - Bauru, SP</p></div>
-                    </div>
-                    <div class="info-item" style="background: rgba(255,255,255,0.9);">
-                        <i class="fas fa-phone"></i>
-                        <div><h4>Telefone</h4><p id="telefone">(14) 991971317</p></div>
-                    </div>
-                    <div class="info-item" style="background: rgba(255,255,255,0.9);">
-                        <i class="fas fa-envelope"></i>
-                        <div><h4>Email</h4><p id="email">contato@fightcode.com</p></div>
-                    </div>
-                    <div class="info-item" style="background: rgba(255,255,255,0.9);">
-                        <i class="fab fa-whatsapp"></i>
-                        <div><h4>WhatsApp</h4><p id="whatsapp">(14) 991971317</p></div>
-                    </div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-map-marker-alt"></i><div><h4>Endereço</h4><p id="endereco">Rua Bernardino de Campos, 20-12 - Bauru, SP</p></div></div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-phone"></i><div><h4>Telefone</h4><p id="telefone">(14) 991971317</p></div></div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-envelope"></i><div><h4>Email</h4><p id="email">contato@fightcode.com</p></div></div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fab fa-whatsapp"></i><div><h4>WhatsApp</h4><p id="whatsapp">(14) 991971317</p></div></div>
                 </div>
                 <form class="contato-form" id="form-contato" style="background: rgba(255,255,255,0.9); padding: 20px; border-radius: 10px;">
                     <input type="text" placeholder="Seu nome" required>
