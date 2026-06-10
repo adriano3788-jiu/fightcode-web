@@ -3,7 +3,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Main.js carregado!');
-    console.log('CLIENT_CONFIG:', CLIENT_CONFIG);
     
     // 1. APLICAR CORES DO TEMA
     function aplicarTema() {
@@ -29,10 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 3. CARREGAR PILARES (SOBRE)
     function carregarPilares() {
         const container = document.getElementById('pilares-container');
-        if (!container) {
-            console.log('Container de pilares não encontrado');
-            return;
-        }
+        if (!container) return;
         
         container.innerHTML = '';
         CLIENT_CONFIG.sobre.pilares.forEach(pilar => {
@@ -44,23 +40,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         });
-        console.log('Pilares carregados:', CLIENT_CONFIG.sobre.pilares.length);
     }
     
     // 4. CARREGAR PROFESSORES
     function carregarProfessores() {
         const container = document.getElementById('professores-container');
-        if (!container) {
-            console.log('Container de professores não encontrado');
-            return;
-        }
+        if (!container) return;
         
         container.innerHTML = '';
-        if (!CLIENT_CONFIG.professores || CLIENT_CONFIG.professores.length === 0) {
-            container.innerHTML = '<p style="text-align:center">Nenhum professor cadastrado.</p>';
-            return;
-        }
-        
         CLIENT_CONFIG.professores.forEach(prof => {
             container.innerHTML += `
                 <div class="professor-card">
@@ -70,16 +57,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         });
-        console.log('Professores carregados:', CLIENT_CONFIG.professores.length);
     }
     
     // 5. CARREGAR HORÁRIOS
     function carregarHorarios() {
         const tabela = document.getElementById('tabela-horarios');
-        if (!tabela) {
-            console.log('Tabela de horários não encontrada');
-            return;
-        }
+        if (!tabela) return;
         
         let tbody = tabela.querySelector('tbody');
         if (!tbody) {
@@ -88,11 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         tbody.innerHTML = '';
-        if (!CLIENT_CONFIG.horarios || CLIENT_CONFIG.horarios.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7">Nenhum horário cadastrado.</td></tr>';
-            return;
-        }
-        
         CLIENT_CONFIG.horarios.forEach(linha => {
             tbody.innerHTML += `
                 <tr>
@@ -106,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </tr>
             `;
         });
-        console.log('Horários carregados:', CLIENT_CONFIG.horarios.length);
     }
     
     // 6. CARREGAR CONTATO
@@ -165,17 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 9. CARREGAR PRODUTOS
     function carregarProdutos() {
         const container = document.getElementById('produtos-container');
-        if (!container) {
-            console.log('Container de produtos não encontrado');
-            return;
-        }
+        if (!container) return;
         
         container.innerHTML = '';
-        if (!CLIENT_CONFIG.produtos || CLIENT_CONFIG.produtos.length === 0) {
-            container.innerHTML = '<p style="text-align:center">Nenhum produto cadastrado.</p>';
-            return;
-        }
-        
         CLIENT_CONFIG.produtos.forEach(produto => {
             container.innerHTML += `
                 <div class="produto-card">
@@ -189,10 +158,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         });
-        console.log('Produtos carregados:', CLIENT_CONFIG.produtos.length);
     }
     
-    // 10. CARRINHO E CHECKOUT
+    // 10. CARRINHO
     let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
     
     function mostrarMensagem(texto) {
@@ -222,8 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
         carrinhoItens.innerHTML = '';
         
         carrinho.forEach((item, index) => {
-            const subtotal = item.preco * item.quantidade;
-            total += subtotal;
+            total += item.preco * item.quantidade;
             quantidadeTotal += item.quantidade;
             
             carrinhoItens.innerHTML += `
@@ -244,11 +211,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (carrinhoContador) carrinhoContador.textContent = quantidadeTotal;
         if (carrinhoTotal) carrinhoTotal.textContent = `R$ ${total.toFixed(2)}`;
-        
         localStorage.setItem('carrinho', JSON.stringify(carrinho));
     }
     
-    // Eventos de clique nos produtos
+    // Eventos do carrinho
     document.addEventListener('click', function(e) {
         if (e.target.classList && e.target.classList.contains('btn-comprar')) {
             const id = parseInt(e.target.dataset.id);
@@ -292,85 +258,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Modal checkout
-    const modal = document.getElementById('modal-checkout');
-    const btnFinalizar = document.getElementById('btn-finalizar');
-    const modalFechar = document.querySelector('.modal-fechar');
-    
-    if (btnFinalizar) {
-        btnFinalizar.addEventListener('click', () => {
-            if (carrinho.length === 0) {
-                mostrarMensagem('Seu carrinho está vazio!');
-                return;
-            }
-            
-            const total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
-            const resumo = document.getElementById('resumo-itens');
-            if (resumo) {
-                resumo.innerHTML = '';
-                carrinho.forEach(item => {
-                    resumo.innerHTML += `
-                        <div class="resumo-item">
-                            <span>${item.nome} x${item.quantidade}</span>
-                            <span>R$ ${(item.preco * item.quantidade).toFixed(2)}</span>
-                        </div>
-                    `;
-                });
-            }
-            const modalTotal = document.getElementById('modal-total');
-            if (modalTotal) modalTotal.textContent = `R$ ${total.toFixed(2)}`;
-            if (modal) modal.style.display = 'flex';
-        });
-    }
-    
-    if (modalFechar) {
-        modalFechar.addEventListener('click', () => {
-            if (modal) modal.style.display = 'none';
-        });
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) modal.style.display = 'none';
-        });
-    }
-    
-    const formCheckout = document.getElementById('form-checkout');
-    if (formCheckout) {
-        formCheckout.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const clienteNome = document.getElementById('cliente-nome')?.value || '';
-            const clienteTelefone = document.getElementById('cliente-telefone')?.value || '';
-            const clienteEmail = document.getElementById('cliente-email')?.value || '';
-            const pagamentoMetodo = document.getElementById('pagamento-metodo')?.value || '';
-            const retirada = document.getElementById('retirada')?.value || '';
-            const observacoes = document.getElementById('observacoes')?.value || '';
-            
-            let mensagemWhatsApp = `🛒 *NOVO PEDIDO - FIGHTCODE*%0a%0a`;
-            mensagemWhatsApp += `👤 *Cliente:* ${clienteNome}%0a`;
-            mensagemWhatsApp += `📱 *Telefone:* ${clienteTelefone}%0a`;
-            mensagemWhatsApp += `📧 *Email:* ${clienteEmail}%0a%0a`;
-            mensagemWhatsApp += `📦 *ITENS:*%0a`;
-            
-            carrinho.forEach(item => {
-                mensagemWhatsApp += `- ${item.nome} x${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}%0a`;
-            });
-            
-            const total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
-            mensagemWhatsApp += `%0a💰 *Total:* R$ ${total.toFixed(2)}%0a`;
-            mensagemWhatsApp += `💳 *Pagamento:* ${pagamentoMetodo === 'pix' ? 'PIX' : 'Cartão'}%0a`;
-            mensagemWhatsApp += `📍 *Retirada:* ${retirada}%0a`;
-            if (observacoes) mensagemWhatsApp += `📝 *Observações:* ${observacoes}%0a`;
-            
-            const whatsappNumber = CLIENT_CONFIG.contato.whatsapp.replace(/\D/g, '');
-            window.open(`https://wa.me/${whatsappNumber}?text=${mensagemWhatsApp}`, '_blank');
-            
-            mostrarMensagem('Pedido enviado! Entraremos em contato pelo WhatsApp.');
-            if (modal) modal.style.display = 'none';
-            carrinho = [];
-            atualizarCarrinho();
-            formCheckout.reset();
-        });
-    }
-    
     // MENU MOBILE
     function initMobileMenu() {
         const menuToggle = document.querySelector('.menu-toggle');
@@ -395,8 +282,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // INICIALIZAR TUDO
-    console.log('Inicializando...');
+    // FORMULÁRIO CONTATO
+    function initFormContato() {
+        const form = document.getElementById('form-contato');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Mensagem enviada! Em breve entraremos em contato.');
+                form.reset();
+            });
+        }
+    }
+    
+    // INICIALIZAR
     aplicarTema();
     carregarInfoAcademia();
     carregarPilares();
@@ -408,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
     carregarProdutos();
     initMobileMenu();
     initSmoothScroll();
+    initFormContato();
     atualizarCarrinho();
     
-    console.log('Inicialização concluída!');
 });
