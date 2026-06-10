@@ -1,37 +1,53 @@
-// MAIN.JS - Carrega todas as configurações dinamicamente
+// MAIN.JS - Carrega todas as configurações dinamicamente via API
+
+// URL da API
+const API_URL = 'https://fightcode-api.onrender.com';
 
 document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Main.js carregado!');
     
-    // 1. APLICAR CORES DO TEMA
-    function aplicarTema() {
-        const root = document.documentElement;
-        root.style.setProperty('--primary-color', CLIENT_CONFIG.tema.primaria);
-        root.style.setProperty('--secondary-color', CLIENT_CONFIG.tema.secundaria);
-        root.style.setProperty('--bg-dark', CLIENT_CONFIG.tema.escuro);
-        root.style.setProperty('--bg-light', CLIENT_CONFIG.tema.claro);
+    // 1. CARREGAR CONFIGURAÇÕES DO SITE (via API)
+    async function carregarConfiguracoes() {
+        try {
+            const response = await fetch(`${API_URL}/api/configuracoes`);
+            const config = await response.json();
+            
+            // Aplicar cores do tema
+            const root = document.documentElement;
+            if (config.tema_primaria) root.style.setProperty('--primary-color', config.tema_primaria);
+            if (config.tema_secundaria) root.style.setProperty('--secondary-color', config.tema_secundaria);
+            
+            // Atualizar textos do site
+            const academiaNome = document.getElementById('academia-nome');
+            if (academiaNome && config.academia_nome) academiaNome.textContent = config.academia_nome;
+            
+            const heroSubtitulo = document.getElementById('hero-subtitulo');
+            if (heroSubtitulo && config.hero_subtitulo) heroSubtitulo.textContent = config.hero_subtitulo;
+            
+            const sobreDescricao = document.getElementById('sobre-descricao');
+            if (sobreDescricao && config.sobre_descricao) sobreDescricao.textContent = config.sobre_descricao;
+            
+            console.log('Configurações carregadas da API');
+        } catch (error) {
+            console.error('Erro ao carregar configurações:', error);
+        }
     }
     
-    // 2. CARREGAR INFORMAÇÕES DA ACADEMIA
-    function carregarInfoAcademia() {
-        const nomeElement = document.getElementById('academia-nome');
-        if (nomeElement) nomeElement.textContent = CLIENT_CONFIG.academia.nome;
-        
-        const heroSubtitulo = document.getElementById('hero-subtitulo');
-        if (heroSubtitulo) heroSubtitulo.textContent = CLIENT_CONFIG.hero.subtitulo;
-        
-        const sobreDescricao = document.getElementById('sobre-descricao');
-        if (sobreDescricao) sobreDescricao.textContent = CLIENT_CONFIG.sobre.descricao;
-    }
-    
-    // 3. CARREGAR PILARES (SOBRE)
+    // 2. CARREGAR PILARES (fixos - não vêm da API)
     function carregarPilares() {
         const container = document.getElementById('pilares-container');
         if (!container) return;
         
+        const pilares = [
+            { icone: "fas fa-chart-line", titulo: "Tecnologia", descricao: "Soluções modernas e eficientes" },
+            { icone: "fas fa-shield-alt", titulo: "Confiança", descricao: "Segurança e dados protegidos" },
+            { icone: "fas fa-fist-raised", titulo: "Disciplina", descricao: "Foco, consistência e evolução" },
+            { icone: "fas fa-trophy", titulo: "Resultados", descricao: "Estratégia que gera vitória" }
+        ];
+        
         container.innerHTML = '';
-        CLIENT_CONFIG.sobre.pilares.forEach(pilar => {
+        pilares.forEach(pilar => {
             container.innerHTML += `
                 <div class="grid-item">
                     <i class="${pilar.icone}"></i>
@@ -42,25 +58,39 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 4. CARREGAR PROFESSORES
-    function carregarProfessores() {
+    // 3. CARREGAR PROFESSORES (via API)
+    async function carregarProfessores() {
         const container = document.getElementById('professores-container');
         if (!container) return;
         
-        container.innerHTML = '';
-        CLIENT_CONFIG.professores.forEach(prof => {
-            container.innerHTML += `
-                <div class="professor-card">
-                    <img src="${prof.imagem}" alt="${prof.nome}" onerror="this.src='https://via.placeholder.com/300x250/E53935/white?text=${prof.nome}'">
-                    <h3>${prof.nome}</h3>
-                    <p>${prof.especialidade}</p>
-                </div>
-            `;
-        });
+        try {
+            const response = await fetch(`${API_URL}/api/professores`);
+            const professores = await response.json();
+            
+            container.innerHTML = '';
+            if (professores.length === 0) {
+                container.innerHTML = '<p style="text-align:center">Nenhum professor cadastrado.</p>';
+                return;
+            }
+            
+            professores.forEach(prof => {
+                container.innerHTML += `
+                    <div class="professor-card">
+                        <img src="${prof.imagem_url || 'https://via.placeholder.com/300x250/E53935/white?text=' + prof.nome}" alt="${prof.nome}">
+                        <h3>${prof.nome}</h3>
+                        <p>${prof.especialidade || 'Professor'}</p>
+                    </div>
+                `;
+            });
+            console.log('Professores carregados da API:', professores.length);
+        } catch (error) {
+            console.error('Erro ao carregar professores:', error);
+            container.innerHTML = '<p style="text-align:center">Erro ao carregar professores. Tente novamente.</p>';
+        }
     }
     
-    // 5. CARREGAR HORÁRIOS
-    function carregarHorarios() {
+    // 4. CARREGAR HORÁRIOS (via API)
+    async function carregarHorarios() {
         const tabela = document.getElementById('tabela-horarios');
         if (!tabela) return;
         
@@ -70,53 +100,110 @@ document.addEventListener('DOMContentLoaded', function() {
             tabela.appendChild(tbody);
         }
         
-        tbody.innerHTML = '';
-        CLIENT_CONFIG.horarios.forEach(linha => {
-            tbody.innerHTML += `
-                <tr>
-                    <td class="horario">${linha.horario}</td>
-                    <td>${linha.seg || '-'}</td>
-                    <td>${linha.ter || '-'}</td>
-                    <td>${linha.qua || '-'}</td>
-                    <td>${linha.qui || '-'}</td>
-                    <td>${linha.sex || '-'}</td>
-                    <td>${linha.sab || '-'}</td>
-                </tr>
-            `;
-        });
+        try {
+            const response = await fetch(`${API_URL}/api/horarios`);
+            const horarios = await response.json();
+            
+            tbody.innerHTML = '';
+            if (horarios.length === 0) {
+                tbody.innerHTML = ' hilab<td colspan="7">Nenhum horário cadastrado.堰</tr>';
+                return;
+            }
+            
+            horarios.forEach(linha => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="horario">${linha.horario}</td>
+                        <td>${linha.segunda || '-'}</td>
+                        <td>${linha.terca || '-'}</td>
+                        <td>${linha.quarta || '-'}</td>
+                        <td>${linha.quinta || '-'}</td>
+                        <td>${linha.sexta || '-'}</td>
+                        <td>${linha.sabado || '-'}</td>
+                    </tr>
+                `;
+            });
+            console.log('Horários carregados da API:', horarios.length);
+        } catch (error) {
+            console.error('Erro ao carregar horários:', error);
+            tbody.innerHTML = '<tr><td colspan="7">Erro ao carregar horários.堰</tr>';
+        }
     }
     
-    // 6. CARREGAR CONTATO
+    // 5. CARREGAR PRODUTOS (via API)
+    async function carregarProdutos() {
+        const container = document.getElementById('produtos-container');
+        if (!container) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/api/produtos`);
+            const produtos = await response.json();
+            
+            container.innerHTML = '';
+            if (produtos.length === 0) {
+                container.innerHTML = '<p style="text-align:center">Nenhum produto cadastrado.</p>';
+                return;
+            }
+            
+            produtos.forEach(produto => {
+                container.innerHTML += `
+                    <div class="produto-card">
+                        <img src="${produto.imagem_url || 'https://via.placeholder.com/300x250/E53935/white?text=' + produto.nome}" alt="${produto.nome}" class="produto-imagem">
+                        <div class="produto-info">
+                            <h3>${produto.nome}</h3>
+                            <p class="produto-descricao">${produto.descricao || ''}</p>
+                            <p class="produto-preco">R$ ${parseFloat(produto.preco).toFixed(2)}</p>
+                            <button class="btn-comprar" data-id="${produto.id}">Adicionar ao Carrinho</button>
+                        </div>
+                    </div>
+                `;
+            });
+            console.log('Produtos carregados da API:', produtos.length);
+        } catch (error) {
+            console.error('Erro ao carregar produtos:', error);
+            container.innerHTML = '<p style="text-align:center">Erro ao carregar produtos.堰</p>';
+        }
+    }
+    
+    // 6. CARREGAR CONTATO (dados fixos por enquanto)
     function carregarContato() {
         const endereco = document.getElementById('endereco');
         const telefone = document.getElementById('telefone');
         const email = document.getElementById('email');
         const whatsapp = document.getElementById('whatsapp');
         
-        if (endereco) endereco.textContent = CLIENT_CONFIG.contato.endereco;
-        if (telefone) telefone.textContent = CLIENT_CONFIG.contato.telefone;
-        if (email) email.textContent = CLIENT_CONFIG.contato.email;
-        if (whatsapp) whatsapp.textContent = CLIENT_CONFIG.contato.whatsapp;
+        if (endereco) endereco.textContent = 'Rua Bernardino de Campos, 20-12 - Bauru, SP';
+        if (telefone) telefone.textContent = '(14) 991971317';
+        if (email) email.textContent = 'contato@fightcode.com';
+        if (whatsapp) whatsapp.textContent = '(14) 991971317';
     }
     
-    // 7. CARREGAR REDES SOCIAIS
-    function carregarSocial() {
+    // 7. CARREGAR REDES SOCIAIS (via API)
+    async function carregarSocial() {
         const container = document.getElementById('social-links');
         if (!container) return;
         
-        container.innerHTML = '';
-        CLIENT_CONFIG.social.forEach(social => {
-            container.innerHTML += `
-                <a href="${social.url}" target="_blank" title="${social.plataforma}">
-                    <i class="${social.icone}"></i>
-                </a>
-            `;
-        });
+        try {
+            const response = await fetch(`${API_URL}/api/redes-sociais`);
+            const social = await response.json();
+            
+            container.innerHTML = '';
+            social.forEach(link => {
+                container.innerHTML += `
+                    <a href="${link.url}" target="_blank" title="${link.plataforma}">
+                        <i class="${link.icone}"></i>
+                    </a>
+                `;
+            });
+            console.log('Redes sociais carregadas da API');
+        } catch (error) {
+            console.error('Erro ao carregar redes sociais:', error);
+        }
     }
     
-    // 8. CARREGAR ANALYTICS
+    // 8. CARREGAR ANALYTICS (simulado)
     function carregarAnalytics() {
-        const trafego = CLIENT_CONFIG.analytics || { instagram: 45, facebook: 25, twitter: 10, direct: 20 };
+        const trafego = { instagram: 45, facebook: 25, twitter: 10, direct: 20 };
         
         const progressInsta = document.getElementById('progress-instagram');
         const progressFb = document.getElementById('progress-facebook');
@@ -139,28 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (percentDirect) percentDirect.textContent = trafego.direct + '%';
     }
     
-    // 9. CARREGAR PRODUTOS
-    function carregarProdutos() {
-        const container = document.getElementById('produtos-container');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        CLIENT_CONFIG.produtos.forEach(produto => {
-            container.innerHTML += `
-                <div class="produto-card">
-                    <img src="${produto.imagem}" alt="${produto.nome}" class="produto-imagem" onerror="this.src='https://via.placeholder.com/300x250/E53935/white?text=${produto.nome}'">
-                    <div class="produto-info">
-                        <h3>${produto.nome}</h3>
-                        <p class="produto-descricao">${produto.descricao}</p>
-                        <p class="produto-preco">R$ ${produto.preco.toFixed(2)}</p>
-                        <button class="btn-comprar" data-id="${produto.id}">Adicionar ao Carrinho</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-    
-    // 10. CARRINHO
+    // 9. CARRINHO DE COMPRAS
     let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
     
     function mostrarMensagem(texto) {
@@ -215,24 +281,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Eventos do carrinho
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', async (e) => {
         if (e.target.classList && e.target.classList.contains('btn-comprar')) {
             const id = parseInt(e.target.dataset.id);
-            const produto = CLIENT_CONFIG.produtos.find(p => p.id === id);
-            const itemExistente = carrinho.find(item => item.id === id);
             
-            if (itemExistente) {
-                itemExistente.quantidade++;
-            } else {
-                carrinho.push({
-                    id: produto.id,
-                    nome: produto.nome,
-                    preco: produto.preco,
-                    quantidade: 1
-                });
+            try {
+                const response = await fetch(`${API_URL}/api/produtos`);
+                const produtos = await response.json();
+                const produto = produtos.find(p => p.id === id);
+                
+                if (produto) {
+                    const itemExistente = carrinho.find(item => item.id === id);
+                    if (itemExistente) {
+                        itemExistente.quantidade++;
+                    } else {
+                        carrinho.push({
+                            id: produto.id,
+                            nome: produto.nome,
+                            preco: parseFloat(produto.preco),
+                            quantidade: 1
+                        });
+                    }
+                    atualizarCarrinho();
+                    mostrarMensagem(`${produto.nome} adicionado ao carrinho!`);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar produto:', error);
             }
-            atualizarCarrinho();
-            mostrarMensagem(`${produto.nome} adicionado ao carrinho!`);
         }
         
         if (e.target.classList && e.target.classList.contains('carrinho-item-diminuir')) {
@@ -257,6 +332,35 @@ document.addEventListener('DOMContentLoaded', function() {
             atualizarCarrinho();
         }
     });
+    
+    // Finalizar compra
+    const btnFinalizar = document.getElementById('btn-finalizar');
+    if (btnFinalizar) {
+        btnFinalizar.addEventListener('click', () => {
+            if (carrinho.length === 0) {
+                mostrarMensagem('Seu carrinho está vazio!');
+                return;
+            }
+            
+            let mensagemWhatsApp = `🛒 *NOVO PEDIDO - FIGHTCODE*%0a%0a`;
+            mensagemWhatsApp += `📦 *ITENS:*%0a`;
+            
+            let total = 0;
+            carrinho.forEach(item => {
+                mensagemWhatsApp += `- ${item.nome} x${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}%0a`;
+                total += item.preco * item.quantidade;
+            });
+            
+            mensagemWhatsApp += `%0a💰 *Total:* R$ ${total.toFixed(2)}%0a`;
+            mensagemWhatsApp += `📍 *Retirada:* Retirar na Academia%0a`;
+            
+            window.open(`https://wa.me/5514991971317?text=${mensagemWhatsApp}`, '_blank');
+            
+            mostrarMensagem('Pedido enviado! Entraremos em contato pelo WhatsApp.');
+            carrinho = [];
+            atualizarCarrinho();
+        });
+    }
     
     // MENU MOBILE
     function initMobileMenu() {
@@ -294,19 +398,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // INICIALIZAR
-    aplicarTema();
-    carregarInfoAcademia();
-    carregarPilares();
-    carregarProfessores();
-    carregarHorarios();
-    carregarContato();
-    carregarSocial();
-    carregarAnalytics();
-    carregarProdutos();
-    initMobileMenu();
-    initSmoothScroll();
-    initFormContato();
-    atualizarCarrinho();
+    // INICIALIZAR TUDO
+    async function init() {
+        await carregarConfiguracoes();
+        carregarPilares();
+        await carregarProfessores();
+        await carregarHorarios();
+        await carregarProdutos();
+        carregarContato();
+        await carregarSocial();
+        carregarAnalytics();
+        initMobileMenu();
+        initSmoothScroll();
+        initFormContato();
+        atualizarCarrinho();
+        
+        console.log('Inicialização concluída!');
+    }
+    
+    init();
     
 });
