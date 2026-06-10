@@ -95,8 +95,9 @@ body {
 
 .hero-content {
     color: white;
-    width: 80%;
+    width: 100%;
     text-align: center;
+    margin-bottom: 80px;
 }
 
 /* BOTÕES */
