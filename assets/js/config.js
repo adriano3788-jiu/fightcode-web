@@ -1,7 +1,7 @@
 const CLIENT_CONFIG = {
     academia: {
         nome: "FIGHTCODE",
-        logo: "assets/img/logo-default.png",
+        logo: "assets/img/logo.jpeg",
         slogan: "Tecnologia para evoluir lutadores"
     },
     
@@ -13,8 +13,8 @@ const CLIENT_CONFIG = {
     },
     
     hero: {
-        titulo: "TECNOLOGIA PARA EVOLUIR LUTADORES",
-        subtitulo: "Sistema completo para gestão da sua academia"
+        titulo: "TECNOLOGIA QUE ELEVA SUA ACADEMIA",
+        subtitulo: "Sites e sistemas personalizados para academias de lutas"
     },
     
     sobre: {
@@ -28,9 +28,9 @@ const CLIENT_CONFIG = {
     },
     
     professores: [
-        { nome: "Ludy Calixto", especialidade: "Jiu-Jitsu / Faixa Preta 2° Grau", imagem: "https://via.placeholder.com/300x250/E53935/white?text=Ludy+Calixto" },
-        { nome: "Adriano Barbosa", especialidade: "Jiu-Jitsu / Faixa Preta 1° Grau", imagem: "https://via.placeholder.com/300x250/E53935/white?text=Adriano+Barbosa" },
-        { nome: "Fernando Morais", especialidade: "Jiu-Jitsu / Faixa Preta", imagem: "https://via.placeholder.com/300x250/E53935/white?text=Fernando+Morais" }
+        { nome: "Ludy Calixto", especialidade: "Jiu-Jitsu / Faixa Preta 2° Grau", imagem: "assets/img/professores/ludy.jpg" },
+        { nome: "Adriano Barbosa", especialidade: "Jiu-Jitsu / Faixa Preta 1° Grau", imagem: "assets/img/professores/adriano.jpg" },
+        { nome: "Fernando Morais", especialidade: "Jiu-Jitsu / Faixa Preta", imagem: "assets/img/professores/fernando.jpg" }
     ],
     
     horarios: [
@@ -73,7 +73,7 @@ const CLIENT_CONFIG = {
             nome: "Kimono Jiu-Jitsu Profissional",
             descricao: "Kimono premium 550g, algodão peruano, azul royal",
             preco: 350.00,
-            imagem: "https://via.placeholder.com/300x250/E53935/white?text=Kimono+JJ",
+            imagem: "assets/img/loja/kimono.jpg",
             parcelas: 3
         },
         {
@@ -81,7 +81,7 @@ const CLIENT_CONFIG = {
             nome: "Camiseta FightCode",
             descricao: "Camiseta 100% algodão, estampa FightCode",
             preco: 79.90,
-            imagem: "https://via.placeholder.com/300x250/E53935/white?text=Camiseta",
+            imagem: "assets/img/loja/camiseta.jpg",
             parcelas: 1
         },
         {
@@ -89,7 +89,7 @@ const CLIENT_CONFIG = {
             nome: "Rash Guard NO-GI",
             descricao: "Rash guard compressão, proteção UV, manga longa",
             preco: 129.90,
-            imagem: "https://via.placeholder.com/300x250/E53935/white?text=Rash+Guard",
+            imagem: "assets/img/loja/rashguard.jpg",
             parcelas: 2
         },
         {
@@ -97,7 +97,7 @@ const CLIENT_CONFIG = {
             nome: "Bermuda de Jiu-Jitsu",
             descricao: "Bermuda com reforço, ideal para NO-GI",
             preco: 149.90,
-            imagem: "https://via.placeholder.com/300x250/E53935/white?text=Bermuda",
+            imagem: "assets/img/loja/bermuda.jpg",
             parcelas: 2
         },
         {
@@ -105,7 +105,7 @@ const CLIENT_CONFIG = {
             nome: "Faixa de Jiu-Jitsu",
             descricao: "Faixa 100% algodão, cores variadas",
             preco: 45.90,
-            imagem: "https://via.placeholder.com/300x250/E53935/white?text=Faixa",
+            imagem: "assets/img/loja/faixa.jpg",
             parcelas: 1
         },
         {
@@ -113,7 +113,7 @@ const CLIENT_CONFIG = {
             nome: "Mochila FightCode",
             descricao: "Mochila para equipamentos, 35L",
             preco: 189.90,
-            imagem: "https://via.placeholder.com/300x250/E53935/white?text=Mochila",
+            imagem: "assets/img/loja/mochila.jpg",
             parcelas: 3
         }
     ]
