@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FightCode - Sua Academia</title>
     
-    <!-- ÍCONE DO SITE (FAVICON) - DENTRO DA PASTA BANNER -->
+    <!-- ÍCONE DO SITE -->
     <link rel="icon" type="image/jpeg" href="assets/img/banner/icon.jpeg">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -16,8 +16,7 @@
 <header class="header">
     <div class="container">
         <div class="logo">
-            <!-- LOGO - DENTRO DA PASTA BANNER -->
-            <img src="assets/img/banner/logo.jpeg" alt="FightCode Logo" style="height: 50px;">
+            <img src="assets/img/banner/logo.jpeg" alt="FightCode Logo">
             <h1 id="academia-nome">FIGHTCODE</h1>
         </div>
         <nav class="nav">
@@ -36,8 +35,8 @@
 </header>
 
 <main>
-    <!-- SEÇÃO HERO (INÍCIO) COM IMAGEM DE FUNDO - DENTRO DA PASTA BANNER -->
-    <section id="home" class="hero" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/img/banner/fundo.jpeg'); background-size: cover; background-position: center;">
+    <!-- SEÇÃO HERO (INÍCIO) - Fundo diferente -->
+    <section id="home" class="hero">
         <div class="container">
             <div class="hero-content">
                 <h2 id="hero-titulo">TECNOLOGIA QUE ELEVA SUA ACADEMIA</h2>
@@ -48,13 +47,13 @@
         </div>
     </section>
 
-    <!-- IMAGEM DE TRANSIÇÃO (entre seções) - DENTRO DA PASTA BANNER -->
-    <div class="transicao-imagem">
-        <img src="assets/img/banner/transi.png" alt="Transição FightCode">
+    <!-- DIVISOR DE TRANSIÇÃO 1 -->
+    <div class="divisor-transicao">
+        <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO SOBRE -->
-    <section id="sobre" class="sobre">
+    <!-- SEÇÃO SOBRE (com fundo baixo) -->
+    <section id="sobre" class="secao-com-fundo">
         <div class="container">
             <div class="section-title">
                 <span>Sobre Nós</span>
@@ -65,13 +64,13 @@
         </div>
     </section>
 
-    <!-- IMAGEM DE BAIXO (após a seção Sobre) - DENTRO DA PASTA BANNER -->
-    <div class="imagem-base">
-        <img src="assets/img/banner/baixo.jpeg" alt="FightCode Base">
+    <!-- DIVISOR DE TRANSIÇÃO 2 -->
+    <div class="divisor-transicao">
+        <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO ANALYTICS (MEDIDOR DE TRÁFEGO) -->
-    <section id="analytics" class="analytics">
+    <!-- SEÇÃO ANALYTICS (com fundo baixo) -->
+    <section id="analytics" class="secao-com-fundo">
         <div class="container">
             <div class="section-title">
                 <span>Onde nos acompanham</span>
@@ -81,36 +80,28 @@
                 <div class="analytics-card">
                     <i class="fab fa-instagram"></i>
                     <h3>Instagram</h3>
-                    <div class="progress-bar">
-                        <div class="progress" id="progress-instagram"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress" id="progress-instagram"></div></div>
                     <span id="percent-instagram">0%</span>
                     <p>dos acessos vêm do Instagram</p>
                 </div>
                 <div class="analytics-card">
                     <i class="fab fa-facebook"></i>
                     <h3>Facebook</h3>
-                    <div class="progress-bar">
-                        <div class="progress" id="progress-facebook"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress" id="progress-facebook"></div></div>
                     <span id="percent-facebook">0%</span>
                     <p>dos acessos vêm do Facebook</p>
                 </div>
                 <div class="analytics-card">
                     <i class="fab fa-twitter"></i>
                     <h3>Twitter/X</h3>
-                    <div class="progress-bar">
-                        <div class="progress" id="progress-twitter"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress" id="progress-twitter"></div></div>
                     <span id="percent-twitter">0%</span>
                     <p>dos acessos vêm do Twitter</p>
                 </div>
                 <div class="analytics-card">
                     <i class="fas fa-globe"></i>
                     <h3>Direto</h3>
-                    <div class="progress-bar">
-                        <div class="progress" id="progress-direct"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress" id="progress-direct"></div></div>
                     <span id="percent-direct">0%</span>
                     <p>acessos diretos ou outros</p>
                 </div>
@@ -118,8 +109,13 @@
         </div>
     </section>
 
-    <!-- SEÇÃO PROFESSORES -->
-    <section id="professores" class="professores">
+    <!-- DIVISOR DE TRANSIÇÃO 3 -->
+    <div class="divisor-transicao">
+        <img src="assets/img/banner/transi.png" alt="Divisor">
+    </div>
+
+    <!-- SEÇÃO PROFESSORES (com fundo baixo) -->
+    <section id="professores" class="secao-com-fundo">
         <div class="container">
             <div class="section-title">
                 <span>Nossa Equipe</span>
@@ -129,8 +125,13 @@
         </div>
     </section>
 
-    <!-- SEÇÃO HORÁRIOS -->
-    <section id="horarios" class="horarios">
+    <!-- DIVISOR DE TRANSIÇÃO 4 -->
+    <div class="divisor-transicao">
+        <img src="assets/img/banner/transi.png" alt="Divisor">
+    </div>
+
+    <!-- SEÇÃO HORÁRIOS (com fundo baixo) -->
+    <section id="horarios" class="secao-com-fundo">
         <div class="container">
             <div class="section-title">
                 <span>Horários</span>
@@ -139,15 +140,7 @@
             <div class="tabela-horarios">
                 <table id="tabela-horarios">
                     <thead>
-                        <tr>
-                            <th>Horário</th>
-                            <th>Segunda</th>
-                            <th>Terça</th>
-                            <th>Quarta</th>
-                            <th>Quinta</th>
-                            <th>Sexta</th>
-                            <th>Sábado</th>
-                        </tr>
+                        <tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th></tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -155,39 +148,36 @@
         </div>
     </section>
 
-    <!-- SEÇÃO LOJA ONLINE -->
-    <section id="loja" class="loja">
+    <!-- DIVISOR DE TRANSIÇÃO 5 -->
+    <div class="divisor-transicao">
+        <img src="assets/img/banner/transi.png" alt="Divisor">
+    </div>
+
+    <!-- SEÇÃO LOJA (com fundo baixo) -->
+    <section id="loja" class="secao-com-fundo">
         <div class="container">
             <div class="section-title">
                 <span>Produtos</span>
                 <h2>Nossa Loja</h2>
                 <p>Adquira nossos produtos e treine com estilo</p>
             </div>
-            
-            <div class="loja-grid" id="produtos-container">
-                <!-- Produtos serão carregados via JavaScript -->
-            </div>
-            
-            <!-- CARRINHO DE COMPRAS -->
+            <div class="loja-grid" id="produtos-container"></div>
             <div class="carrinho" id="carrinho">
-                <div class="carrinho-header">
-                    <h3><i class="fas fa-shopping-cart"></i> Meu Carrinho</h3>
-                    <span id="carrinho-contador">0</span>
-                </div>
-                <div class="carrinho-itens" id="carrinho-itens">
-                    <p class="carrinho-vazio">Seu carrinho está vazio</p>
-                </div>
-                <div class="carrinho-total">
-                    <span>Total:</span>
-                    <strong id="carrinho-total">R$ 0,00</strong>
-                </div>
+                <div class="carrinho-header"><h3><i class="fas fa-shopping-cart"></i> Meu Carrinho</h3><span id="carrinho-contador">0</span></div>
+                <div class="carrinho-itens" id="carrinho-itens"><p class="carrinho-vazio">Seu carrinho está vazio</p></div>
+                <div class="carrinho-total"><span>Total:</span><strong id="carrinho-total">R$ 0,00</strong></div>
                 <button class="btn-primary btn-finalizar" id="btn-finalizar">Finalizar Compra</button>
             </div>
         </div>
     </section>
 
-    <!-- SEÇÃO CONTATO -->
-    <section id="contato" class="contato">
+    <!-- DIVISOR DE TRANSIÇÃO 6 -->
+    <div class="divisor-transicao">
+        <img src="assets/img/banner/transi.png" alt="Divisor">
+    </div>
+
+    <!-- SEÇÃO CONTATO (com fundo baixo) -->
+    <section id="contato" class="secao-com-fundo">
         <div class="container">
             <div class="section-title">
                 <span>Contato</span>
@@ -195,34 +185,10 @@
             </div>
             <div class="contato-grid">
                 <div class="contato-info">
-                    <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h4>Endereço</h4>
-                            <p id="endereco">Rua Exemplo, 123</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h4>Telefone</h4>
-                            <p id="telefone">(14) 99999-9999</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h4>Email</h4>
-                            <p id="email">contato@academia.com</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <i class="fab fa-whatsapp"></i>
-                        <div>
-                            <h4>WhatsApp</h4>
-                            <p id="whatsapp">(14) 99999-9999</p>
-                        </div>
-                    </div>
+                    <div class="info-item"><i class="fas fa-map-marker-alt"></i><div><h4>Endereço</h4><p id="endereco">Rua Bernardino de Campos, 20-12 - Bauru, SP</p></div></div>
+                    <div class="info-item"><i class="fas fa-phone"></i><div><h4>Telefone</h4><p id="telefone">(14) 991971317</p></div></div>
+                    <div class="info-item"><i class="fas fa-envelope"></i><div><h4>Email</h4><p id="email">contato@fightcode.com</p></div></div>
+                    <div class="info-item"><i class="fab fa-whatsapp"></i><div><h4>WhatsApp</h4><p id="whatsapp">(14) 991971317</p></div></div>
                 </div>
                 <form class="contato-form" id="form-contato">
                     <input type="text" placeholder="Seu nome" required>
@@ -240,18 +206,12 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-logo">
-                <!-- LOGO NO FOOTER - DENTRO DA PASTA BANNER -->
-                <img src="assets/img/banner/logo.jpeg" alt="FightCode" style="height: 50px;">
+                <img src="assets/img/banner/logo.jpeg" alt="FightCode">
                 <p>Tecnologia para evoluir lutadores</p>
             </div>
             <div class="footer-links">
                 <h4>Links</h4>
-                <ul>
-                    <li><a href="#home">Início</a></li>
-                    <li><a href="#sobre">Sobre</a></li>
-                    <li><a href="#professores">Professores</a></li>
-                    <li><a href="#horarios">Horários</a></li>
-                </ul>
+                <ul><li><a href="#home">Início</a></li><li><a href="#sobre">Sobre</a></li><li><a href="#professores">Professores</a></li><li><a href="#horarios">Horários</a></li></ul>
             </div>
             <div class="footer-social">
                 <h4>Redes Sociais</h4>
