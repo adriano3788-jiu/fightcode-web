@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FightCode - Sua Academia</title>
     
-    <!-- ÍCONE DO SITE -->
     <link rel="icon" type="image/jpeg" href="assets/img/banner/icon.jpeg">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -35,8 +33,8 @@
 </header>
 
 <main>
-    <!-- SEÇÃO HERO (INÍCIO) - Fundo diferente -->
-    <section id="home" class="hero">
+    <!-- SEÇÃO HERO -->
+    <section id="home" class="hero" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/img/banner/fundo.jpeg'); background-size: cover; background-position: center;">
         <div class="container">
             <div class="hero-content">
                 <h2 id="hero-titulo">TECNOLOGIA QUE ELEVA SUA ACADEMIA</h2>
@@ -47,30 +45,30 @@
         </div>
     </section>
 
-    <!-- DIVISOR DE TRANSIÇÃO 1 -->
+    <!-- DIVISOR -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO SOBRE (com fundo baixo) -->
-    <section id="sobre" class="secao-com-fundo">
+    <!-- SEÇÃO SOBRE (com fundo inline) -->
+    <section id="sobre" style="background-image: url('assets/img/banner/baixo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 80px 0;">
         <div class="container">
             <div class="section-title">
                 <span>Sobre Nós</span>
                 <h2>Quem Somos</h2>
             </div>
-            <p id="sobre-descricao" style="text-align:center; max-width:800px; margin:0 auto;">A FightCode nasceu da paixão por artes marciais e tecnologia. Oferecemos soluções completas para academias que desejam modernizar sua gestão.</p>
+            <p id="sobre-descricao" style="text-align:center; max-width:800px; margin:0 auto; background: rgba(255,255,255,0.85); padding: 20px; border-radius: 10px;">A FightCode nasceu da paixão por artes marciais e tecnologia. Oferecemos soluções completas para academias que desejam modernizar sua gestão.</p>
             <div class="sobre-grid" id="pilares-container"></div>
         </div>
     </section>
 
-    <!-- DIVISOR DE TRANSIÇÃO 2 -->
+    <!-- DIVISOR -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO ANALYTICS (com fundo baixo) -->
-    <section id="analytics" class="secao-com-fundo">
+    <!-- SEÇÃO ANALYTICS -->
+    <section id="analytics" style="background-image: url('assets/img/banner/baixo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 80px 0;">
         <div class="container">
             <div class="section-title">
                 <span>Onde nos acompanham</span>
@@ -109,13 +107,13 @@
         </div>
     </section>
 
-    <!-- DIVISOR DE TRANSIÇÃO 3 -->
+    <!-- DIVISOR -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO PROFESSORES (com fundo baixo) -->
-    <section id="professores" class="secao-com-fundo">
+    <!-- SEÇÃO PROFESSORES -->
+    <section id="professores" style="background-image: url('assets/img/banner/baixo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 80px 0;">
         <div class="container">
             <div class="section-title">
                 <span>Nossa Equipe</span>
@@ -125,20 +123,20 @@
         </div>
     </section>
 
-    <!-- DIVISOR DE TRANSIÇÃO 4 -->
+    <!-- DIVISOR -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO HORÁRIOS (com fundo baixo) -->
-    <section id="horarios" class="secao-com-fundo">
+    <!-- SEÇÃO HORÁRIOS -->
+    <section id="horarios" style="background-image: url('assets/img/banner/baixo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 80px 0;">
         <div class="container">
             <div class="section-title">
                 <span>Horários</span>
                 <h2>Grade de Aulas</h2>
             </div>
             <div class="tabela-horarios">
-                <table id="tabela-horarios">
+                <table id="tabela-horarios" style="background: rgba(255,255,255,0.95);">
                     <thead>
                         <tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th></tr>
                     </thead>
@@ -148,13 +146,13 @@
         </div>
     </section>
 
-    <!-- DIVISOR DE TRANSIÇÃO 5 -->
+    <!-- DIVISOR -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO LOJA (com fundo baixo) -->
-    <section id="loja" class="secao-com-fundo">
+    <!-- SEÇÃO LOJA -->
+    <section id="loja" style="background-image: url('assets/img/banner/baixo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 80px 0;">
         <div class="container">
             <div class="section-title">
                 <span>Produtos</span>
@@ -162,7 +160,7 @@
                 <p>Adquira nossos produtos e treine com estilo</p>
             </div>
             <div class="loja-grid" id="produtos-container"></div>
-            <div class="carrinho" id="carrinho">
+            <div class="carrinho" id="carrinho" style="background: rgba(255,255,255,0.95);">
                 <div class="carrinho-header"><h3><i class="fas fa-shopping-cart"></i> Meu Carrinho</h3><span id="carrinho-contador">0</span></div>
                 <div class="carrinho-itens" id="carrinho-itens"><p class="carrinho-vazio">Seu carrinho está vazio</p></div>
                 <div class="carrinho-total"><span>Total:</span><strong id="carrinho-total">R$ 0,00</strong></div>
@@ -171,13 +169,13 @@
         </div>
     </section>
 
-    <!-- DIVISOR DE TRANSIÇÃO 6 -->
+    <!-- DIVISOR -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
 
-    <!-- SEÇÃO CONTATO (com fundo baixo) -->
-    <section id="contato" class="secao-com-fundo">
+    <!-- SEÇÃO CONTATO -->
+    <section id="contato" style="background-image: url('assets/img/banner/baixo.jpeg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 80px 0;">
         <div class="container">
             <div class="section-title">
                 <span>Contato</span>
@@ -185,12 +183,24 @@
             </div>
             <div class="contato-grid">
                 <div class="contato-info">
-                    <div class="info-item"><i class="fas fa-map-marker-alt"></i><div><h4>Endereço</h4><p id="endereco">Rua Bernardino de Campos, 20-12 - Bauru, SP</p></div></div>
-                    <div class="info-item"><i class="fas fa-phone"></i><div><h4>Telefone</h4><p id="telefone">(14) 991971317</p></div></div>
-                    <div class="info-item"><i class="fas fa-envelope"></i><div><h4>Email</h4><p id="email">contato@fightcode.com</p></div></div>
-                    <div class="info-item"><i class="fab fa-whatsapp"></i><div><h4>WhatsApp</h4><p id="whatsapp">(14) 991971317</p></div></div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div><h4>Endereço</h4><p id="endereco">Rua Bernardino de Campos, 20-12 - Bauru, SP</p></div>
+                    </div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);">
+                        <i class="fas fa-phone"></i>
+                        <div><h4>Telefone</h4><p id="telefone">(14) 991971317</p></div>
+                    </div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);">
+                        <i class="fas fa-envelope"></i>
+                        <div><h4>Email</h4><p id="email">contato@fightcode.com</p></div>
+                    </div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);">
+                        <i class="fab fa-whatsapp"></i>
+                        <div><h4>WhatsApp</h4><p id="whatsapp">(14) 991971317</p></div>
+                    </div>
                 </div>
-                <form class="contato-form" id="form-contato">
+                <form class="contato-form" id="form-contato" style="background: rgba(255,255,255,0.9); padding: 20px; border-radius: 10px;">
                     <input type="text" placeholder="Seu nome" required>
                     <input type="email" placeholder="Seu e-mail" required>
                     <input type="tel" placeholder="Telefone">
