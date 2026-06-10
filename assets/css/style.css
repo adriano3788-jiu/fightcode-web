@@ -721,3 +721,54 @@ tr:hover {
         grid-template-columns: 1fr;
     }
 }
+/* IMAGEM DE TRANSIÇÃO ENTRE SEÇÕES */
+.transicao-imagem {
+    width: 100%;
+    text-align: center;
+    background: var(--bg-light);
+}
+
+.transicao-imagem img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* IMAGEM DE FUNDO (BAIXO) */
+.imagem-base {
+    width: 100%;
+    text-align: center;
+    background: var(--bg-light);
+}
+
+.imagem-base img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* LOGO NO HEADER */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+}
+
+/* FOOTER LOGO */
+.footer-logo img {
+    margin-bottom: 15px;
+}
+
+/* HERO SEM TEXTO DUPLICADO */
+.hero {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
