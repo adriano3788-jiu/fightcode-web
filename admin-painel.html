@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - FightCode</title>
+    <link rel="icon" type="image/jpeg" href="assets/img/banner/icon.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        /* Header */
+        .admin-header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .admin-header h1 {
+            color: #E53935;
+            font-size: 24px;
+        }
+        
+        .admin-header h1 i {
+            margin-right: 10px;
+        }
+        
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .admin-info span {
+            color: #666;
+        }
+        
+        .btn-sair {
+            background: #E53935;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .btn-sair:hover {
+            background: #c62828;
+        }
+        
+        /* Container */
+        .admin-container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            padding: 20px 0;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-item:hover {
+            background: #f5f5f5;
+            color: #E53935;
+        }
+        
+        .sidebar-item.active {
+            background: #ffebee;
+            color: #E53935;
+            border-left-color: #E53935;
+        }
+        
+        .sidebar-item i {
+            width: 20px;
+        }
+        
+        /* Content */
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+        
+        .content-header {
+            margin-bottom: 30px;
+        }
+        
+        .content-header h2 {
+            color: #333;
+            font-size: 28px;
+        }
+        
+        /* Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card i {
+            font-size: 40px;
+            color: #E53935;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card h3 {
+            font-size: 28px;
+            color: #333;
+        }
+        
+        .stat-card p {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* Tabelas */
+        .tabela-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .acao-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 16px;
+        }
+        
+        .btn-editar { color: #2196F3; }
+        .btn-excluir { color: #E53935; }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+        }
+        
+        .modal-content h3 {
+            margin-bottom: 20px;
+        }
+        
+        .modal-content input,
+        .modal-content textarea,
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .btn-salvar {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-cancelar {
+            background: #999;
+            color: white;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .btn-adicionar {
+            background: #E53935;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .btn-adicionar:hover {
+            background: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1><i class="fas fa-tachometer-alt"></i> FightCode Admin</h1>
+        <div class="admin-info">
+            <span id="admin-nome">Carregando...</span>
+            <button class="btn-sair" onclick="logout()">Sair</button>
+        </div>
+    </div>
+    
+    <div class="admin-container">
+        <div class="sidebar">
+            <div class="sidebar-item active" data-section="dashboard">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </div>
+            <div class="sidebar-item" data-section="alunos">
+                <i class="fas fa-users"></i> Alunos
+            </div>
+            <div class="sidebar-item" data-section="professores">
+                <i class="fas fa-chalkboard-user"></i> Professores
+            </div>
+            <div class="sidebar-item" data-section="produtos">
+                <i class="fas fa-box"></i> Produtos
+            </div>
+            <div class="sidebar-item" data-section="config">
+                <i class="fas fa-cog"></i> Configurações
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Dashboard -->
+            <div id="dashboard" class="section active">
+                <div class="content-header">
+                    <h2>Dashboard</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3 id="total-alunos">0</h3>
+                        <p>Alunos</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chalkboard-user"></i>
+                        <h3 id="total-professores">0</h3>
+                        <p>Professores</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-box"></i>
+                        <h3 id="total-produtos">0</h3>
+                        <p>Produtos</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alunos -->
+            <div id="alunos" class="section">
+                <div class="content-header">
+                    <h2>Gerenciar Alunos</h2>
+                </div>
+                <button class="btn-adicionar" onclick="abrirModalAluno()">+ Novo Aluno</button>
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Nome</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="alunos-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Professores -->
+            <div id="professores" class="section">
+                <div class="content-header">
+                    <h2>Gerenciar Professores</h2>
+                </div>
+                <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
+                <div class="tabela-container">
+                    <table>
+                        <thead><tr><th>ID</th><th>Nome</th><th>Especialidade</th><th>Ações</th></tr></thead>
+                        <tbody id="professores-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Produtos -->
+            <div id="produtos" class="section">
+                <div class="content-header">
+                    <h2>Gerenciar Produtos</h2>
+                </div>
+                <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
+                <div class="tabela-container">
+                    <table>
+                        <thead><tr><th>ID</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr></thead>
+                        <tbody id="produtos-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Configurações -->
+            <div id="config" class="section">
+                <div class="content-header">
+                    <h2>Configurações do Site</h2>
+                </div>
+                <div class="tabela-container" style="padding: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <label>Nome da Academia:</label>
+                        <input type="text" id="config-academia-nome" style="width: 100%; padding: 10px; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>Cor Primária:</label>
+                        <input type="color" id="config-tema-primaria" style="width: 100%; padding: 5px; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>Cor Secundária:</label>
+                        <input type="color" id="config-tema-secundaria" style="width: 100%; padding: 5px; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>Texto do Hero:</label>
+                        <textarea id="config-hero-subtitulo" rows="2" style="width: 100%; padding: 10px;"></textarea>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>Descrição Sobre:</label>
+                        <textarea id="config-sobre-descricao" rows="4" style="width: 100%; padding: 10px;"></textarea>
+                    </div>
+                    <button onclick="salvarConfiguracoes()" style="background: #E53935; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer;">Salvar Configurações</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Aluno -->
+    <div id="modal-aluno" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-aluno-titulo">Novo Aluno</h3>
+            <input type="hidden" id="aluno-id">
+            <input type="text" id="aluno-nome" placeholder="Nome completo">
+            <input type="email" id="aluno-email" placeholder="E-mail">
+            <input type="tel" id="aluno-telefone" placeholder="Telefone">
+            <select id="aluno-plano">
+                <option value="Mensal">Mensal</option>
+                <option value="Trimestral">Trimestral</option>
+                <option value="Semestral">Semestral</option>
+                <option value="Anual">Anual</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="btn-salvar" onclick="salvarAluno()">Salvar</button>
+                <button class="btn-cancelar" onclick="fecharModal('modal-aluno')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Professor -->
+    <div id="modal-professor" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-professor-titulo">Novo Professor</h3>
+            <input type="hidden" id="professor-id">
+            <input type="text" id="professor-nome" placeholder="Nome do professor">
+            <input type="text" id="professor-especialidade" placeholder="Especialidade (ex: Jiu-Jitsu / Faixa Preta)">
+            <div class="modal-buttons">
+                <button class="btn-salvar" onclick="salvarProfessor()">Salvar</button>
+                <button class="btn-cancelar" onclick="fecharModal('modal-professor')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Produto -->
+    <div id="modal-produto" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-produto-titulo">Novo Produto</h3>
+            <input type="hidden" id="produto-id">
+            <input type="text" id="produto-nome" placeholder="Nome do produto">
+            <textarea id="produto-descricao" placeholder="Descrição do produto" rows="3"></textarea>
+            <input type="number" id="produto-preco" placeholder="Preço (R$)" step="0.01">
+            <div class="modal-buttons">
+                <button class="btn-salvar" onclick="salvarProduto()">Salvar</button>
+                <button class="btn-cancelar" onclick="fecharModal('modal-produto')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://fightcode-api.onrender.com';
+        
+        // Verificar token
+        function verificarToken() {
+            const token = localStorage.getItem('admin_token');
+            if (!token) {
+                window.location.href = 'admin-login.html';
+            }
+            const nome = localStorage.getItem('admin_nome');
+            document.getElementById('admin-nome').textContent = nome || 'Admin';
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'admin-login.html';
+        }
+        
+        // Navegação
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.dataset.section;
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+                carregarDados(section);
+            });
+        });
+        
+        async function carregarDados(section) {
+            if (section === 'dashboard') await carregarDashboard();
+            if (section === 'alunos') await carregarAlunos();
+            if (section === 'professores') await carregarProfessores();
+            if (section === 'produtos') await carregarProdutos();
+            if (section === 'config') await carregarConfiguracoes();
+        }
+        
+        async function carregarDashboard() {
+            try {
+                const [alunos, professores, produtos] = await Promise.all([
+                    fetch(`${API_URL}/api/alunos`).then(r => r.json()),
+                    fetch(`${API_URL}/api/professores`).then(r => r.json()),
+                    fetch(`${API_URL}/api/produtos`).then(r => r.json())
+                ]);
+                document.getElementById('total-alunos').textContent = alunos.length;
+                document.getElementById('total-professores').textContent = professores.length;
+                document.getElementById('total-produtos').textContent = produtos.length;
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+        
+        async function carregarAlunos() {
+            try {
+                const response = await fetch(`${API_URL}/api/alunos`);
+                const alunos = await response.json();
+                const tbody = document.getElementById('alunos-tbody');
+                tbody.innerHTML = '';
+                alunos.forEach(aluno => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${aluno.id}</td><td>${aluno.nome}</td><td>${aluno.email || '-'}</td><td>${aluno.telefone || '-'}</td><td>${aluno.plano || 'Mensal'}</td>
+                            <td>
+                                <button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button>
+                                <button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Erro ao carregar alunos:', error);
+            }
+        }
+        
+        async function carregarProfessores() {
+            try {
+                const response = await fetch(`${API_URL}/api/professores`);
+                const professores = await response.json();
+                const tbody = document.getElementById('professores-tbody');
+                tbody.innerHTML = '';
+                professores.forEach(prof => {
+                    tbody.innerHTML += `
+                        <tr><td>${prof.id}</td><td>${prof.nome}</td><td>${prof.especialidade || '-'}</td>
+                        <td>
+                            <button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button>
+                            <button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Erro ao carregar professores:', error);
+            }
+        }
+        
+        async function carregarProdutos() {
+            try {
+                const response = await fetch(`${API_URL}/api/produtos`);
+                const produtos = await response.json();
+                const tbody = document.getElementById('produtos-tbody');
+                tbody.innerHTML = '';
+                produtos.forEach(prod => {
+                    tbody.innerHTML += `
+                        <tr><td>${prod.id}</td><td>${prod.nome}</td><td>${prod.descricao || '-'}</td><td>R$ ${parseFloat(prod.preco).toFixed(2)}</td>
+                        <td>
+                            <button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button>
+                            <button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+            }
+        }
+        
+        async function carregarConfiguracoes() {
+            try {
+                const response = await fetch(`${API_URL}/api/configuracoes`);
+                const config = await response.json();
+                document.getElementById('config-academia-nome').value = config.academia_nome || '';
+                document.getElementById('config-tema-primaria').value = config.tema_primaria || '#E53935';
+                document.getElementById('config-tema-secundaria').value = config.tema_secundaria || '#0DDDDD';
+                document.getElementById('config-hero-subtitulo').value = config.hero_subtitulo || '';
+                document.getElementById('config-sobre-descricao').value = config.sobre_descricao || '';
+            } catch (error) {
+                console.error('Erro ao carregar configurações:', error);
+            }
+        }
+        
+        // Alunos CRUD
+        function abrirModalAluno() {
+            document.getElementById('modal-aluno-titulo').textContent = 'Novo Aluno';
+            document.getElementById('aluno-id').value = '';
+            document.getElementById('aluno-nome').value = '';
+            document.getElementById('aluno-email').value = '';
+            document.getElementById('aluno-telefone').value = '';
+            document.getElementById('aluno-plano').value = 'Mensal';
+            document.getElementById('modal-aluno').style.display = 'flex';
+        }
+        
+        function editarAluno(id) {
+            // Buscar aluno e preencher modal
+            fetch(`${API_URL}/api/alunos/${id}`)
+                .then(r => r.json())
+                .then(aluno => {
+                    document.getElementById('modal-aluno-titulo').textContent = 'Editar Aluno';
+                    document.getElementById('aluno-id').value = aluno.id;
+                    document.getElementById('aluno-nome').value = aluno.nome;
+                    document.getElementById('aluno-email').value = aluno.email || '';
+                    document.getElementById('aluno-telefone').value = aluno.telefone || '';
+                    document.getElementById('aluno-plano').value = aluno.plano || 'Mensal';
+                    document.getElementById('modal-aluno').style.display = 'flex';
+                });
+        }
+        
+        async function salvarAluno() {
+            const id = document.getElementById('aluno-id').value;
+            const data = {
+                nome: document.getElementById('aluno-nome').value,
+                email: document.getElementById('aluno-email').value,
+                telefone: document.getElementById('aluno-telefone').value,
+                plano: document.getElementById('aluno-plano').value
+            };
+            
+            const url = id ? `${API_URL}/api/alunos/${id}` : `${API_URL}/api/alunos`;
+            const method = id ? 'PUT' : 'POST';
+            
+            await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            fecharModal('modal-aluno');
+            carregarAlunos();
+            carregarDashboard();
+        }
+        
+        async function excluirAluno(id) {
+            if (confirm('Tem certeza que deseja excluir este aluno?')) {
+                await fetch(`${API_URL}/api/alunos/${id}`, { method: 'DELETE' });
+                carregarAlunos();
+                carregarDashboard();
+            }
+        }
+        
+        // Professores CRUD
+        function abrirModalProfessor() {
+            document.getElementById('modal-professor-titulo').textContent = 'Novo Professor';
+            document.getElementById('professor-id').value = '';
+            document.getElementById('professor-nome').value = '';
+            document.getElementById('professor-especialidade').value = '';
+            document.getElementById('modal-professor').style.display = 'flex';
+        }
+        
+        function editarProfessor(id) {
+            fetch(`${API_URL}/api/professores/${id}`)
+                .then(r => r.json())
+                .then(prof => {
+                    document.getElementById('modal-professor-titulo').textContent = 'Editar Professor';
+                    document.getElementById('professor-id').value = prof.id;
+                    document.getElementById('professor-nome').value = prof.nome;
+                    document.getElementById('professor-especialidade').value = prof.especialidade || '';
+                    document.getElementById('modal-professor').style.display = 'flex';
+                });
+        }
+        
+        async function salvarProfessor() {
+            const id = document.getElementById('professor-id').value;
+            const data = {
+                nome: document.getElementById('professor-nome').value,
+                especialidade: document.getElementById('professor-especialidade').value
+            };
+            
+            const url = id ? `${API_URL}/api/professores/${id}` : `${API_URL}/api/professores`;
+            const method = id ? 'PUT' : 'POST';
+            
+            await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            fecharModal('modal-professor');
+            carregarProfessores();
+            carregarDashboard();
+        }
+        
+        async function excluirProfessor(id) {
+            if (confirm('Tem certeza que deseja excluir este professor?')) {
+                await fetch(`${API_URL}/api/professores/${id}`, { method: 'DELETE' });
+                carregarProfessores();
+                carregarDashboard();
+            }
+        }
+        
+        // Produtos CRUD
+        function abrirModalProduto() {
+            document.getElementById('modal-produto-titulo').textContent = 'Novo Produto';
+            document.getElementById('produto-id').value = '';
+            document.getElementById('produto-nome').value = '';
+            document.getElementById('produto-descricao').value = '';
+            document.getElementById('produto-preco').value = '';
+            document.getElementById('modal-produto').style.display = 'flex';
+        }
+        
+        function editarProduto(id) {
+            fetch(`${API_URL}/api/produtos/${id}`)
+                .then(r => r.json())
+                .then(prod => {
+                    document.getElementById('modal-produto-titulo').textContent = 'Editar Produto';
+                    document.getElementById('produto-id').value = prod.id;
+                    document.getElementById('produto-nome').value = prod.nome;
+                    document.getElementById('produto-descricao').value = prod.descricao || '';
+                    document.getElementById('produto-preco').value = prod.preco;
+                    document.getElementById('modal-produto').style.display = 'flex';
+                });
+        }
+        
+        async function salvarProduto() {
+            const id = document.getElementById('produto-id').value;
+            const data = {
+                nome: document.getElementById('produto-nome').value,
+                descricao: document.getElementById('produto-descricao').value,
+                preco: parseFloat(document.getElementById('produto-preco').value)
+            };
+            
+            const url = id ? `${API_URL}/api/produtos/${id}` : `${API_URL}/api/produtos`;
+            const method = id ? 'PUT' : 'POST';
+            
+            await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            fecharModal('modal-produto');
+            carregarProdutos();
+            carregarDashboard();
+        }
+        
+        async function excluirProduto(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                await fetch(`${API_URL}/api/produtos/${id}`, { method: 'DELETE' });
+                carregarProdutos();
+                carregarDashboard();
+            }
+        }
+        
+        async function salvarConfiguracoes() {
+            const configuracoes = [
+                { chave: 'academia_nome', valor: document.getElementById('config-academia-nome').value },
+                { chave: 'tema_primaria', valor: document.getElementById('config-tema-primaria').value },
+                { chave: 'tema_secundaria', valor: document.getElementById('config-tema-secundaria').value },
+                { chave: 'hero_subtitulo', valor: document.getElementById('config-hero-subtitulo').value },
+                { chave: 'sobre_descricao', valor: document.getElementById('config-sobre-descricao').value }
+            ];
+            
+            for (const config of configuracoes) {
+                await fetch(`${API_URL}/api/configuracoes/${config.chave}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ valor: config.valor })
+                });
+            }
+            
+            alert('Configurações salvas com sucesso!');
+        }
+        
+        function fecharModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Adicionar rota GET para professores/:id no server.js primeiro
+        // Por enquanto, vamos inicializar
+        verificarToken();
+        carregarDashboard();
+    </script>
+</body>
+</html>
