@@ -1,7 +1,7 @@
 const CLIENT_CONFIG = {
     academia: {
         nome: "FIGHTCODE",
-        logo: "assets/img/logo.jpeg",
+        logo: "assets/img/banner/logo.jpeg",
         slogan: "Tecnologia para evoluir lutadores"
     },
     
