@@ -33,11 +33,12 @@
 </header>
 
 <main>
-    <!-- SEÇÃO HERO -->
-    <section id="home" class="hero" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/img/banner/fundo.jpeg'); background-size: cover; background-position: center; min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center;">
+    <!-- SEÇÃO HERO - A imagem já tem o texto FIGHTCODE e TECNOLOGIA -->
+    <section id="home" class="hero" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/img/banner/fundo.jpeg'); background-size: cover; background-position: center; min-height: calc(100vh - 80px); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 80px;">
         <div class="container">
-            <div class="hero-content">
-                <p id="hero-subtitulo" style="font-size: 1.3rem; margin-bottom: 30px;">Sites e sistemas personalizados para academias de lutas</p>
+            <div class="hero-content" style="text-align: center;">
+                <!-- Texto abaixo da imagem -->
+                <p id="hero-subtitulo" style="font-size: 1.3rem; margin-bottom: 30px; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Sites e sistemas personalizados para academias de lutas</p>
                 <div>
                     <a href="#contato" class="btn-primary">Falar com Especialista</a>
                     <a href="#sobre" class="btn-secondary">Saiba Mais</a>
@@ -46,7 +47,7 @@
         </div>
     </section>
 
-    <!-- DIVISOR -->
+    <!-- DIVISOR DE TRANSIÇÃO -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
@@ -63,7 +64,7 @@
         </div>
     </section>
 
-    <!-- DIVISOR -->
+    <!-- DIVISOR DE TRANSIÇÃO -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
@@ -108,7 +109,7 @@
         </div>
     </section>
 
-    <!-- DIVISOR -->
+    <!-- DIVISOR DE TRANSIÇÃO -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
@@ -125,7 +126,7 @@
         </div>
     </section>
 
-    <!-- DIVISOR -->
+    <!-- DIVISOR DE TRANSIÇÃO -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
@@ -151,13 +152,13 @@
                             <th>Sábado</th>
                         </tr>
                     </thead>
-                    <tbody id="horarios-tbody"></tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
     </section>
 
-    <!-- DIVISOR -->
+    <!-- DIVISOR DE TRANSIÇÃO -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
@@ -171,6 +172,7 @@
                 <p>Adquira nossos produtos e treine com estilo</p>
             </div>
             <div class="loja-grid" id="produtos-container"></div>
+            
             <div class="carrinho" id="carrinho" style="background: rgba(255,255,255,0.95); border-radius: 15px; padding: 20px; margin-top: 30px;">
                 <div class="carrinho-header" style="display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 15px;">
                     <h3><i class="fas fa-shopping-cart"></i> Meu Carrinho</h3>
@@ -188,7 +190,7 @@
         </div>
     </section>
 
-    <!-- DIVISOR -->
+    <!-- DIVISOR DE TRANSIÇÃO -->
     <div class="divisor-transicao">
         <img src="assets/img/banner/transi.png" alt="Divisor">
     </div>
@@ -202,10 +204,10 @@
             </div>
             <div class="contato-grid">
                 <div class="contato-info">
-                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-map-marker-alt"></i><div><h4>Endereço</h4><p id="endereco">Rua Bernardino de Campos, 20-12 - Bauru, SP</p></div></div>
-                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-phone"></i><div><h4>Telefone</h4><p id="telefone">(14) 991971317</p></div></div>
-                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-envelope"></i><div><h4>Email</h4><p id="email">contato@fightcode.com</p></div></div>
-                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fab fa-whatsapp"></i><div><h4>WhatsApp</h4><p id="whatsapp">(14) 991971317</p></div></div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-map-marker-alt"></i><div><h4>Endereço</h4><p id="endereco">Carregando...</p></div></div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-phone"></i><div><h4>Telefone</h4><p id="telefone">Carregando...</p></div></div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fas fa-envelope"></i><div><h4>Email</h4><p id="email">Carregando...</p></div></div>
+                    <div class="info-item" style="background: rgba(255,255,255,0.9);"><i class="fab fa-whatsapp"></i><div><h4>WhatsApp</h4><p id="whatsapp">Carregando...</p></div></div>
                 </div>
                 <form class="contato-form" id="form-contato" style="background: rgba(255,255,255,0.9); padding: 20px; border-radius: 10px;">
                     <input type="text" placeholder="Seu nome" required>
