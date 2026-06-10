@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Cliente - FightCode</title>
+    <link rel="icon" type="image/jpeg" href="assets/img/banner/icon.jpeg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E53935, #c62828);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 400px;
+            padding: 40px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header img {
+            height: 60px;
+            margin-bottom: 15px;
+        }
+        
+        .login-header h2 {
+            color: #333;
+            font-size: 24px;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #E53935;
+            box-shadow: 0 0 5px rgba(229,57,53,0.3);
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #E53935;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-login:hover {
+            background: #c62828;
+        }
+        
+        .erro-msg {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .info {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #E53935;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="assets/img/banner/logo.jpeg" alt="FightCode">
+            <h2>Área do Cliente</h2>
+            <p>Acesse o painel administrativo</p>
+        </div>
+        
+        <div id="erroMsg" class="erro-msg"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="email" placeholder="admin@fightcode.com" required>
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="senha" placeholder="••••••" required>
+            </div>
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px;">Autenticando...</p>
+        </div>
+        
+        <div class="info">
+            <p>🔐 Credenciais de teste:<br>Email: admin@fightcode.com<br>Senha: admin123</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://fightcode-api.onrender.com';
+        
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('erroMsg').style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    localStorage.setItem('admin_token', data.token);
+                    localStorage.setItem('admin_nome', data.usuario.nome);
+                    localStorage.setItem('admin_email', data.usuario.email);
+                    window.location.href = 'admin-painel.html';
+                } else {
+                    throw new Error(data.erro || 'Erro ao fazer login');
+                }
+            } catch (error) {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('loading').style.display = 'none';
+                const erroMsg = document.getElementById('erroMsg');
+                erroMsg.textContent = error.message || 'E-mail ou senha incorretos';
+                erroMsg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
