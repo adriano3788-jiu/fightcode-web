@@ -173,40 +173,61 @@
             setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
 
-        // ==================== PWA - INSTALAÇÃO DO APP ====================
-        let deferredPrompt;
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            const btnInstalar = document.getElementById('btn-instalar-pwa');
-            if (btnInstalar) btnInstalar.style.display = 'block';
-        });
+        // ==================== PWA - INSTALAÇÃO DO APP (MULTI-NAVEGADOR) ====================
+let deferredPrompt;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
 
-        // Registrar Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(reg => console.log('Service Worker registrado!', reg))
-                .catch(err => console.log('Erro ao registrar Service Worker:', err));
-        }
+// Para Chrome, Edge, Samsung Internet
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    const btnInstalar = document.getElementById('btn-instalar-pwa');
+    if (btnInstalar && !isIOS && !isFirefox) {
+        btnInstalar.style.display = 'block';
+    }
+});
 
-        // Botão manual de instalação (sempre visível)
-        const btnManual = document.getElementById('btn-instalar-manual');
-        if (btnManual) {
-            btnManual.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        console.log('App instalado!');
-                    }
-                    deferredPrompt = null;
-                } else {
-                    alert('Para instalar, abra este site no navegador Chrome e toque em "Adicionar à tela inicial"');
+// Registrar Service Worker
+if ('serviceWorker' in navigator && !isIOS) {
+    navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registrado!', reg))
+        .catch(err => console.log('Erro ao registrar Service Worker:', err));
+}
+
+// Botão manual de instalação
+const btnManual = document.getElementById('btn-instalar-manual');
+if (btnManual) {
+    // Personalizar texto e ação por navegador
+    if (isIOS) {
+        btnManual.textContent = '📱 Adicionar à Tela de Início';
+        btnManual.style.background = '#2196F3';
+        btnManual.onclick = () => {
+            alert('No iPhone/iPad:\n\n1. Toque no ícone Compartilhar\n2. Role para baixo e toque em "Adicionar à Tela de Início"\n3. Confirme em "Adicionar"');
+        };
+    } else if (isFirefox) {
+        btnManual.textContent = '⭐ Adicionar aos Favoritos';
+        btnManual.style.background = '#FF9800';
+        btnManual.onclick = () => {
+            alert('No Firefox, pressione Ctrl+D (Windows) ou Cmd+D (Mac) para adicionar aos favoritos.\n\nNo celular, toque no menu ⋮ e selecione "Adicionar aos favoritos"');
+        };
+    } else {
+        btnManual.onclick = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('App instalado!');
+                    btnManual.style.display = 'none';
                 }
-            });
-        }
+                deferredPrompt = null;
+            } else {
+                alert('Para instalar, abra este site no navegador Chrome e toque em "Adicionar à tela inicial"');
+            }
+        };
+    }
+}
     </script>
 </body>
 </html>
