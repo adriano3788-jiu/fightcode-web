@@ -2,16 +2,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Cliente - FightCode</title>
-    <link rel="icon" type="image/jpeg" href="assets/img/banner/icon.jpeg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#E53935">
+    <title>Login Admin - FightCode</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #E53935, #c62828);
@@ -19,189 +14,147 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
-        
-        .login-container {
+        .login-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            width: 400px;
+            border-radius: 30px;
             padding: 40px;
-        }
-        
-        .login-header {
             text-align: center;
-            margin-bottom: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-        
-        .login-header img {
-            height: 60px;
-            margin-bottom: 15px;
-        }
-        
-        .login-header h2 {
-            color: #333;
-            font-size: 24px;
-        }
-        
-        .login-header p {
-            color: #666;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-        
-        .form-group {
+        .login-card img {
+            height: 80px;
             margin-bottom: 20px;
         }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
+        .login-card h1 {
             color: #333;
-            font-weight: 500;
+            margin-bottom: 10px;
         }
-        
-        .form-group input {
+        .login-card p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 15px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
-            border-radius: 10px;
+            border-radius: 15px;
             font-size: 16px;
-            transition: all 0.3s;
         }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: #E53935;
-            box-shadow: 0 0 5px rgba(229,57,53,0.3);
-        }
-        
-        .btn-login {
+        button {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             background: #E53935;
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 15px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
         }
-        
-        .btn-login:hover {
-            background: #c62828;
-        }
-        
-        .erro-msg {
-            background: #ffebee;
-            color: #c62828;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-            display: none;
-        }
-        
-        .info {
-            text-align: center;
+        button:hover { background: #c62828; }
+        .mensagem {
             margin-top: 20px;
-            font-size: 12px;
-            color: #999;
-        }
-        
-        .loading {
+            padding: 10px;
+            border-radius: 10px;
             display: none;
-            text-align: center;
-            margin-top: 15px;
         }
-        
+        .erro { background: #f8d7da; color: #721c24; }
+        .loading { display: none; margin-top: 20px; }
         .spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #E53935;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #E53935;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .voltar {
+            margin-top: 20px;
+        }
+        .voltar a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .voltar a:hover {
+            color: #E53935;
+        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <img src="assets/img/banner/logo.jpeg" alt="FightCode">
-            <h2>Área do Cliente</h2>
-            <p>Acesse o painel administrativo</p>
-        </div>
-        
-        <div id="erroMsg" class="erro-msg"></div>
-        
-        <form id="loginForm">
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" id="email" placeholder="admin@fightcode.com" required>
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="senha" placeholder="••••••" required>
-            </div>
-            <button type="submit" class="btn-login">Entrar</button>
-        </form>
-        
+    <div class="login-card">
+        <img src="assets/img/banner/logo.jpeg" alt="FightCode">
+        <h1>Área do Cliente</h1>
+        <p>Acesse o painel administrativo</p>
+
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="senha" placeholder="Senha">
+        <button onclick="fazerLogin()">Entrar</button>
+
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p style="margin-top: 10px;">Autenticando...</p>
         </div>
+        <div id="mensagem" class="mensagem"></div>
         
-        <div class="info">
-            <p>🔐 Credenciais de teste:<br>Email: admin@fightcode.com<br>Senha: admin123</p>
+        <div class="voltar">
+            <a href="index.html">← Voltar para o site</a>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://fightcode-api.onrender.com';
-        
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
+
+        async function fazerLogin() {
+            const email = document.getElementById('email').value.trim();
             const senha = document.getElementById('senha').value;
-            
-            document.getElementById('loginForm').style.display = 'none';
+
+            if (!email || !senha) {
+                mostrarMensagem('Preencha email e senha', 'erro');
+                return;
+            }
+
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('erroMsg').style.display = 'none';
-            
+
             try {
                 const response = await fetch(`${API_URL}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, senha })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok && data.sucesso) {
                     localStorage.setItem('admin_token', data.token);
                     localStorage.setItem('admin_nome', data.usuario.nome);
-                    localStorage.setItem('admin_email', data.usuario.email);
                     window.location.href = 'admin-painel.html';
                 } else {
-                    throw new Error(data.erro || 'Erro ao fazer login');
+                    mostrarMensagem(data.erro || 'Email ou senha incorretos', 'erro');
                 }
             } catch (error) {
-                document.getElementById('loginForm').style.display = 'block';
-                document.getElementById('loading').style.display = 'none';
-                const erroMsg = document.getElementById('erroMsg');
-                erroMsg.textContent = error.message || 'E-mail ou senha incorretos';
-                erroMsg.style.display = 'block';
+                mostrarMensagem('Erro de conexão. Tente novamente.', 'erro');
             }
-        });
+
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function mostrarMensagem(texto, tipo) {
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.textContent = texto;
+            msgDiv.className = `mensagem ${tipo}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+        }
     </script>
 </body>
 </html>
