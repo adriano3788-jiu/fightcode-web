@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Professor - FightCode</title>
     <link rel="manifest" href="professor-manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Prof FC">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Prof FC">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -83,6 +83,28 @@
         .voltar a:hover {
             color: #E53935;
         }
+        
+        /* Botão de instalação PWA */
+        #btn-instalar-pwa {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #E53935;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none;
+            border: none;
+        }
+        #btn-instalar-pwa:hover {
+            background: #c62828;
+        }
     </style>
 </head>
 <body>
@@ -101,6 +123,9 @@
             <a href="index.html">← Voltar para o site</a>
         </div>
     </div>
+
+    <!-- Botão de instalação PWA -->
+    <button id="btn-instalar-pwa">📱 Instalar App</button>
 
     <script>
         const API_URL = 'https://fightcode-api.onrender.com';
@@ -147,59 +172,36 @@
             msgDiv.style.display = 'block';
             setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
+
+        // ==================== PWA - INSTALAÇÃO DO APP ====================
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            const btnInstalar = document.getElementById('btn-instalar-pwa');
+            btnInstalar.style.display = 'block';
+            
+            btnInstalar.onclick = async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('App instalado!');
+                    }
+                    deferredPrompt = null;
+                    btnInstalar.style.display = 'none';
+                }
+            };
+        });
+
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registrado!', reg))
+                .catch(err => console.log('Erro ao registrar Service Worker:', err));
+        }
     </script>
 </body>
 </html>
-// PWA - Instalação do App
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    
-    // Criar botão de instalação flutuante
-    const btnInstalar = document.createElement('div');
-    btnInstalar.id = 'btn-instalar-pwa';
-    btnInstalar.innerHTML = '📱 Instalar App';
-    btnInstalar.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #E53935;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: bold;
-        cursor: pointer;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        display: none;
-    `;
-    btnInstalar.onclick = async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                console.log('App instalado!');
-            }
-            deferredPrompt = null;
-            btnInstalar.style.display = 'none';
-        }
-    };
-    document.body.appendChild(btnInstalar);
-    
-    // Mostrar botão após um tempo
-    setTimeout(() => {
-        if (deferredPrompt) {
-            btnInstalar.style.display = 'block';
-        }
-    }, 3000);
-});
-
-// Registrar Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('Service Worker registrado!', reg))
-        .catch(err => console.log('Erro ao registrar Service Worker:', err));
-}
