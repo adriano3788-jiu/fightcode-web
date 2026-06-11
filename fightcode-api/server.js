@@ -94,7 +94,7 @@ app.post('/api/login', async (req, res) => {
 
 // ==================== ROTAS DE UPLOAD DE IMAGENS ====================
 
-// Upload de imagem para professor (site)
+// Upload de imagem para professor
 app.post('/api/upload/professor', upload.single('imagem'), async (req, res) => {
     try {
         if (!req.file) {
@@ -223,15 +223,36 @@ app.post('/api/professores', async (req, res) => {
 app.put('/api/professores/:id', async (req, res) => {
     const { id } = req.params;
     const { nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, senha } = req.body;
+    
     try {
         let query, params;
         if (senha) {
-            query = `UPDATE professores SET nome = $1, especialidade = $2, imagem_url = COALESCE($3, imagem_url), ordem = $4, email = $5, telefone = $6, horario_trabalho = $7, usuario = $8, senha = $9 WHERE id = $10 RETURNING *`;
+            query = `UPDATE professores SET 
+                nome = $1, 
+                especialidade = $2, 
+                imagem_url = COALESCE($3, imagem_url), 
+                ordem = $4, 
+                email = $5, 
+                telefone = $6, 
+                horario_trabalho = $7, 
+                usuario = $8, 
+                senha = $9 
+            WHERE id = $10 RETURNING *`;
             params = [nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, senha, id];
         } else {
-            query = `UPDATE professores SET nome = $1, especialidade = $2, imagem_url = COALESCE($3, imagem_url), ordem = $4, email = $5, telefone = $6, horario_trabalho = $7, usuario = $8 WHERE id = $9 RETURNING *`;
+            query = `UPDATE professores SET 
+                nome = $1, 
+                especialidade = $2, 
+                imagem_url = COALESCE($3, imagem_url), 
+                ordem = $4, 
+                email = $5, 
+                telefone = $6, 
+                horario_trabalho = $7, 
+                usuario = $8 
+            WHERE id = $9 RETURNING *`;
             params = [nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, id];
         }
+        
         const result = await pool.query(query, params);
         if (result.rows.length === 0) {
             return res.status(404).json({ erro: 'Professor não encontrado' });
@@ -243,7 +264,7 @@ app.put('/api/professores/:id', async (req, res) => {
     }
 });
 
-// Remover professor (soft delete)
+// Remover professor
 app.delete('/api/professores/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -775,28 +796,40 @@ app.put('/api/aluno/alterar-senha', async (req, res) => {
     }
 });
 
-// ==================== ROTAS PARA PROFESSORES (SISTEMA) ====================
+// ==================== ROTAS PARA PROFESSORES (LOGIN) ====================
 
-// Login do professor (sistema)
+// Login do professor
 app.post('/api/professor/login', async (req, res) => {
     const { email, senha } = req.body;
     try {
         const result = await pool.query(
-            'SELECT * FROM professores_sistema WHERE email = $1 AND senha = $2',
+            'SELECT id, nome, email, usuario, senha, horario_trabalho, imagem_url FROM professores WHERE (email = $1 OR usuario = $1) AND senha = $2 AND ativo = true',
             [email, senha]
         );
+        
         if (result.rows.length === 0) {
             return res.status(401).json({ erro: 'Email ou senha inválidos' });
         }
+        
         const professor = result.rows[0];
         const token = jwt.sign(
             { id: professor.id, nome: professor.nome, email: professor.email },
             process.env.JWT_SECRET || 'fightcode_secret_key',
             { expiresIn: '24h' }
         );
-        res.json({ sucesso: true, token, professor: { id: professor.id, nome: professor.nome, email: professor.email } });
+        
+        res.json({ 
+            sucesso: true, 
+            token, 
+            professor: { 
+                id: professor.id, 
+                nome: professor.nome, 
+                email: professor.email,
+                usuario: professor.usuario
+            } 
+        });
     } catch (error) {
-        console.error(error);
+        console.error('Erro no login do professor:', error);
         res.status(500).json({ erro: 'Erro no servidor' });
     }
 });
@@ -806,7 +839,7 @@ app.get('/api/professor/perfil/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const result = await pool.query(
-            'SELECT id, nome, email, horario_trabalho, foto_url FROM professores_sistema WHERE id = $1',
+            'SELECT id, nome, email, usuario, horario_trabalho, imagem_url, telefone FROM professores WHERE id = $1',
             [id]
         );
         if (result.rows.length === 0) {
@@ -814,7 +847,7 @@ app.get('/api/professor/perfil/:id', async (req, res) => {
         }
         res.json(result.rows[0]);
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao buscar perfil:', error);
         res.status(500).json({ erro: 'Erro ao buscar perfil' });
     }
 });
@@ -826,18 +859,18 @@ app.put('/api/professor/perfil/:id', async (req, res) => {
     try {
         if (senha) {
             await pool.query(
-                'UPDATE professores_sistema SET nome = $1, email = $2, horario_trabalho = $3, senha = $4 WHERE id = $5',
+                'UPDATE professores SET nome = $1, email = $2, horario_trabalho = $3, senha = $4 WHERE id = $5',
                 [nome, email, horario, senha, id]
             );
         } else {
             await pool.query(
-                'UPDATE professores_sistema SET nome = $1, email = $2, horario_trabalho = $3 WHERE id = $4',
+                'UPDATE professores SET nome = $1, email = $2, horario_trabalho = $3 WHERE id = $4',
                 [nome, email, horario, id]
             );
         }
         res.json({ sucesso: true });
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao atualizar perfil:', error);
         res.status(500).json({ erro: 'Erro ao atualizar perfil' });
     }
 });
