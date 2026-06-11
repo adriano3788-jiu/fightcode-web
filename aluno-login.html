@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#E53935">
+    <title>Login Aluno - FightCode</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E53935, #c62828);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .login-card img {
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        .login-card h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .login-card p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #E53935;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover { background: #c62828; }
+        .mensagem {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+        }
+        .erro { background: #f8d7da; color: #721c24; }
+        .loading { display: none; margin-top: 20px; }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #E53935;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn-instalar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            display: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <img src="assets/img/banner/logo.jpeg" alt="FightCode">
+        <h1>Área do Aluno</h1>
+        <p>Acesse seu painel pessoal</p>
+
+        <input type="text" id="usuario" placeholder="Usuário (seu nome ou e-mail)">
+        <input type="password" id="senha" placeholder="Senha">
+        <button onclick="fazerLogin()">Entrar</button>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+        <div id="mensagem" class="mensagem"></div>
+    </div>
+
+    <div id="btn-instalar" class="btn-instalar">📱 Instalar App</div>
+
+    <script>
+        const API_URL = 'https://fightcode-api.onrender.com';
+
+        async function fazerLogin() {
+            const usuario = document.getElementById('usuario').value.trim();
+            const senha = document.getElementById('senha').value;
+
+            if (!usuario || !senha) {
+                mostrarMensagem('Preencha usuário e senha', 'erro');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_URL}/api/aluno/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, senha })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.sucesso) {
+                    localStorage.setItem('aluno_token', data.token);
+                    localStorage.setItem('aluno_id', data.aluno.id);
+                    localStorage.setItem('aluno_nome', data.aluno.nome);
+                    localStorage.setItem('aluno_categoria', data.aluno.categoria);
+                    window.location.href = 'aluno-dashboard.html';
+                } else {
+                    mostrarMensagem(data.erro || 'Usuário ou senha incorretos', 'erro');
+                }
+            } catch (error) {
+                mostrarMensagem('Erro de conexão. Tente novamente.', 'erro');
+            }
+
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function mostrarMensagem(texto, tipo) {
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.textContent = texto;
+            msgDiv.className = `mensagem ${tipo}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+        }
+
+        // PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('btn-instalar').style.display = 'block';
+        });
+        document.getElementById('btn-instalar').addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                    document.getElementById('btn-instalar').style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
