@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const path = require('path');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
@@ -32,6 +33,15 @@ cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configurar Nodemailer (envio de e-mail)
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
 });
 
 // Conexão com o banco de dados (Neon)
@@ -135,6 +145,46 @@ app.post('/api/upload/produto', upload.single('imagem'), async (req, res) => {
     } catch (error) {
         console.error('Erro no upload:', error);
         res.status(500).json({ erro: 'Erro ao fazer upload da imagem' });
+    }
+});
+
+// ==================== ROTAS DE E-MAIL ====================
+
+// Enviar e-mail com nova senha
+app.post('/api/enviar-senha', async (req, res) => {
+    const { email, nome, novaSenha, tipo } = req.body;
+    
+    if (!email) {
+        return res.status(400).json({ erro: 'E-mail não informado' });
+    }
+    
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: `FightCode - Sua nova senha de acesso (${tipo === 'aluno' ? 'Aluno' : 'Professor'})`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="https://fightcode-web.onrender.com/assets/img/banner/logo.jpeg" alt="FightCode" style="height: 80px;">
+                    </div>
+                    <h2 style="color: #E53935; text-align: center;">Olá, ${nome}!</h2>
+                    <p>Sua senha foi redefinida com sucesso.</p>
+                    <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                        <strong style="font-size: 18px;">Nova senha: ${novaSenha}</strong>
+                    </div>
+                    <p style="color: #666; font-size: 12px;">Recomendamos que você altere sua senha após o primeiro acesso.</p>
+                    <hr style="margin: 20px 0;">
+                    <p style="color: #999; font-size: 12px; text-align: center;">FightCode - Tecnologia para evoluir lutadores</p>
+                </div>
+            `
+        };
+        
+        await transporter.sendMail(mailOptions);
+        res.json({ sucesso: true, mensagem: 'E-mail enviado com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao enviar e-mail:', error);
+        res.status(500).json({ erro: 'Erro ao enviar e-mail: ' + error.message });
     }
 });
 
