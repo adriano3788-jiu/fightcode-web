@@ -1,0 +1,46 @@
+{
+    "name": "FightCode Admin",
+    "short_name": "Admin FC",
+    "description": "Painel administrativo FightCode",
+    "start_url": "/admin-login.html",
+    "display": "standalone",
+    "theme_color": "#E53935",
+    "background_color": "#ffffff",
+    "icons": [
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "72x72",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "96x96",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "128x128",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "144x144",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "152x152",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ]
+}
