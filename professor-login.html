@@ -71,9 +71,17 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .voltar { margin-top: 20px; }
-        .voltar a { color: #999; text-decoration: none; font-size: 14px; }
-        .voltar a:hover { color: #E53935; }
+        .voltar {
+            margin-top: 20px;
+        }
+        .voltar a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .voltar a:hover {
+            color: #E53935;
+        }
         
         /* Botões PWA */
         #btn-instalar-pwa {
@@ -113,8 +121,7 @@
         <input type="password" id="senha" placeholder="Senha">
         <button onclick="fazerLogin()">Entrar</button>
 
-        <!-- Botão manual de instalação (sempre visível) -->
-        <button id="btn-instalar-manual">📱 Instalar App (Manual)</button>
+        <button id="btn-instalar-manual">📱 Instalar App</button>
 
         <div id="loading" class="loading"><div class="spinner"></div></div>
         <div id="mensagem" class="mensagem"></div>
@@ -124,7 +131,6 @@
         </div>
     </div>
 
-    <!-- Botão flutuante PWA -->
     <button id="btn-instalar-pwa">📱 Instalar App</button>
 
     <script>
@@ -173,61 +179,73 @@
             setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
 
-        // ==================== PWA - INSTALAÇÃO DO APP (MULTI-NAVEGADOR) ====================
-let deferredPrompt;
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
+        // ==================== PWA - INSTALAÇÃO DO APP ====================
+        let deferredPrompt;
 
-// Para Chrome, Edge, Samsung Internet
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    
-    const btnInstalar = document.getElementById('btn-instalar-pwa');
-    if (btnInstalar && !isIOS && !isFirefox) {
-        btnInstalar.style.display = 'block';
-    }
-});
-
-// Registrar Service Worker
-if ('serviceWorker' in navigator && !isIOS) {
-    navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('Service Worker registrado!', reg))
-        .catch(err => console.log('Erro ao registrar Service Worker:', err));
-}
-
-// Botão manual de instalação
-const btnManual = document.getElementById('btn-instalar-manual');
-if (btnManual) {
-    // Personalizar texto e ação por navegador
-    if (isIOS) {
-        btnManual.textContent = '📱 Adicionar à Tela de Início';
-        btnManual.style.background = '#2196F3';
-        btnManual.onclick = () => {
-            alert('No iPhone/iPad:\n\n1. Toque no ícone Compartilhar\n2. Role para baixo e toque em "Adicionar à Tela de Início"\n3. Confirme em "Adicionar"');
-        };
-    } else if (isFirefox) {
-        btnManual.textContent = '⭐ Adicionar aos Favoritos';
-        btnManual.style.background = '#FF9800';
-        btnManual.onclick = () => {
-            alert('No Firefox, pressione Ctrl+D (Windows) ou Cmd+D (Mac) para adicionar aos favoritos.\n\nNo celular, toque no menu ⋮ e selecione "Adicionar aos favoritos"');
-        };
-    } else {
-        btnManual.onclick = async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('App instalado!');
-                    btnManual.style.display = 'none';
-                }
-                deferredPrompt = null;
-            } else {
-                alert('Para instalar, abra este site no navegador Chrome e toque em "Adicionar à tela inicial"');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('Evento beforeinstallprompt capturado!');
+            
+            const btnFlutuante = document.getElementById('btn-instalar-pwa');
+            if (btnFlutuante) btnFlutuante.style.display = 'block';
+            
+            const btnManual = document.getElementById('btn-instalar-manual');
+            if (btnManual) {
+                btnManual.textContent = '📱 Instalar App';
+                btnManual.style.background = '#4CAF50';
             }
-        };
-    }
-}
+        });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registrado!', reg))
+                .catch(err => console.log('Erro ao registrar Service Worker:', err));
+        }
+
+        const btnFlutuante = document.getElementById('btn-instalar-pwa');
+        if (btnFlutuante) {
+            btnFlutuante.onclick = async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('App instalado com sucesso!');
+                        btnFlutuante.style.display = 'none';
+                        const btnManual = document.getElementById('btn-instalar-manual');
+                        if (btnManual) btnManual.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                } else {
+                    alert('Aguardando permissão do navegador. Tente novamente em alguns segundos.');
+                }
+            };
+        }
+
+        const btnManual = document.getElementById('btn-instalar-manual');
+        if (btnManual) {
+            btnManual.onclick = async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('App instalado com sucesso!');
+                        btnManual.style.display = 'none';
+                        const btnFlutuante = document.getElementById('btn-instalar-pwa');
+                        if (btnFlutuante) btnFlutuante.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                } else {
+                    if (/Android/i.test(navigator.userAgent)) {
+                        alert('📱 Para instalar:\n\n1. Toque nos 3 pontos ⋮ no canto superior\n2. Selecione "Instalar aplicativo"\n3. Confirme a instalação');
+                    } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                        alert('📱 Para instalar:\n\n1. Toque no ícone Compartilhar\n2. Role para baixo\n3. Toque em "Adicionar à Tela de Início"');
+                    } else {
+                        alert('💻 Para instalar o app, acesse este site pelo seu celular Android com Chrome.');
+                    }
+                }
+            };
+        }
     </script>
 </body>
 </html>
