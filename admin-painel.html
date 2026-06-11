@@ -170,7 +170,7 @@
             <input type="text" id="aluno-usuario" placeholder="Usuário (login para o app)">
             <div style="display: flex; gap: 10px; align-items: center;">
                 <input type="password" id="aluno-senha" placeholder="Senha" style="flex: 1;">
-                <button type="button" onclick="gerarSenhaAleatoria()" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; white-space: nowrap;"><i class="fas fa-sync-alt"></i> Gerar</button>
+                <button type="button" onclick="gerarSenhaAleatoria()" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;"><i class="fas fa-sync-alt"></i> Gerar</button>
             </div>
             <select id="aluno-plano"><option value="Mensal">Mensal</option><option value="Trimestral">Trimestral</option><option value="Semestral">Semestral</option><option value="Anual">Anual</option></select>
             <select id="aluno-categoria"><option value="adulto">Adulto</option><option value="crianca">Criança</option></select>
@@ -303,7 +303,7 @@
                     const fotoUrl = prof.imagem_url ? prof.imagem_url : `https://via.placeholder.com/50x50/E53935/white?text=${prof.nome.charAt(0)}`;
                     tbody.innerHTML += `<tr><td>${prof.id}</td><td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'"></td><td>${prof.nome}</td><td>${prof.usuario || '-'}</td><td>${prof.especialidade || '-'}</td><td>${prof.email || '-'}</td><td>${prof.telefone || '-'}</td><td>${prof.horario_trabalho || '-'}</td><td>${prof.ordem || 0}</td><td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
-            } catch (error) { console.error(error); document.getElementById('professores-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.</td></tr>'; }
+            } catch (error) { console.error('Erro ao carregar professores:', error); document.getElementById('professores-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.</td></tr>'; }
         }
         
         async function carregarHorarios() {
