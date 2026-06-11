@@ -753,3 +753,125 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+// ==================== ROTAS PARA PROFESSORES ====================
+
+// Login do professor
+app.post('/api/professor/login', async (req, res) => {
+    const { email, senha } = req.body;
+    try {
+        const result = await pool.query(
+            'SELECT * FROM professores_sistema WHERE email = $1 AND senha = $2',
+            [email, senha]
+        );
+        if (result.rows.length === 0) {
+            return res.status(401).json({ erro: 'Email ou senha inválidos' });
+        }
+        const professor = result.rows[0];
+        const token = jwt.sign(
+            { id: professor.id, nome: professor.nome, email: professor.email },
+            process.env.JWT_SECRET || 'fightcode_secret_key',
+            { expiresIn: '24h' }
+        );
+        res.json({ sucesso: true, token, professor: { id: professor.id, nome: professor.nome, email: professor.email } });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro no servidor' });
+    }
+});
+
+// Buscar solicitações de check-in pendentes (para o professor)
+app.get('/api/presencas/pendentes', async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT p.*, a.nome as aluno_nome, a.categoria 
+             FROM presencas p 
+             JOIN alunos a ON p.aluno_id = a.id 
+             WHERE p.status = 'pendente' AND p.data_presenca = CURRENT_DATE 
+             ORDER BY p.hora_presenca`
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao buscar solicitações' });
+    }
+});
+
+// Aprovar check-in
+app.put('/api/presencas/aprovar/:id', async (req, res) => {
+    const { id } = req.params;
+    const { professor_id } = req.body;
+    try {
+        const result = await pool.query(
+            `UPDATE presencas 
+             SET status = 'aprovado', professor_id = $1, data_aprovacao = CURRENT_DATE 
+             WHERE id = $2 RETURNING *`,
+            [professor_id, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ erro: 'Solicitação não encontrada' });
+        }
+        res.json({ sucesso: true, presenca: result.rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao aprovar check-in' });
+    }
+});
+
+// Rejeitar check-in
+app.put('/api/presencas/rejeitar/:id', async (req, res) => {
+    const { id } = req.params;
+    const { motivo } = req.body;
+    try {
+        const result = await pool.query(
+            `UPDATE presencas 
+             SET status = 'rejeitado' 
+             WHERE id = $1 RETURNING *`,
+            [id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ erro: 'Solicitação não encontrada' });
+        }
+        res.json({ sucesso: true, presenca: result.rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao rejeitar check-in' });
+    }
+});
+
+// Buscar alunos por horário
+app.get('/api/alunos/por-horario/:horario', async (req, res) => {
+    const { horario } = req.params;
+    try {
+        // Buscar alunos que solicitaram check-in neste horário
+        const result = await pool.query(
+            `SELECT a.id, a.nome, a.categoria, p.hora_presenca, p.status 
+             FROM alunos a 
+             JOIN presencas p ON a.id = p.aluno_id 
+             WHERE p.data_presenca = CURRENT_DATE AND p.hora_presenca::time BETWEEN $1::time - interval '1 hour' AND $1::time + interval '1 hour'
+             ORDER BY p.hora_presenca`,
+            [horario]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao buscar alunos' });
+    }
+});
+
+// Buscar total de aulas do aluno (para o professor)
+app.get('/api/aluno/total-aulas/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(
+            'SELECT nome, total_aulas, categoria FROM alunos WHERE id = $1',
+            [id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ erro: 'Aluno não encontrado' });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao buscar total de aulas' });
+    }
+});
