@@ -113,7 +113,7 @@
                 <div class="content-header"><h2>Gerenciar Professores</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
-                    <table>
+                    <tr>
                         <thead><tr><th>ID</th><th>Foto</th><th>Nome</th><th>Usuário</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horário</th><th>Ordem</th><th>Ações</th></tr></thead>
                         <tbody id="professores-tbody"></tbody>
                     </table>
@@ -125,7 +125,7 @@
                 <div class="content-header"><h2>Gerenciar Horários</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horário</button>
                 <div class="tabela-container">
-                    <table>
+                    <tr>
                         <thead><tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Ações</th></tr></thead>
                         <tbody id="horarios-tbody"></tbody>
                     </table>
@@ -137,7 +137,7 @@
                 <div class="content-header"><h2>Gerenciar Produtos</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
-                    <table>
+                    </table>
                         <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr></thead>
                         <tbody id="produtos-tbody"></tbody>
                     </table>
@@ -298,12 +298,12 @@
                 const professores = await response.json();
                 const tbody = document.getElementById('professores-tbody');
                 tbody.innerHTML = '';
-                if (professores.length === 0) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.</td></tr>'; return; }
+                if (professores.length === 0) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.堰</tr>'; return; }
                 professores.forEach(prof => {
                     const fotoUrl = prof.imagem_url ? prof.imagem_url : `https://via.placeholder.com/50x50/E53935/white?text=${prof.nome.charAt(0)}`;
                     tbody.innerHTML += `<tr><td>${prof.id}</td><td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'"></td><td>${prof.nome}</td><td>${prof.usuario || '-'}</td><td>${prof.especialidade || '-'}</td><td>${prof.email || '-'}</td><td>${prof.telefone || '-'}</td><td>${prof.horario_trabalho || '-'}</td><td>${prof.ordem || 0}</td><td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
-            } catch (error) { console.error('Erro ao carregar professores:', error); document.getElementById('professores-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.</td></tr>'; }
+            } catch (error) { console.error('Erro ao carregar professores:', error); document.getElementById('professores-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.堰</tr>'; }
         }
         
         async function carregarHorarios() {
@@ -325,7 +325,7 @@
                 const tbody = document.getElementById('produtos-tbody');
                 tbody.innerHTML = '';
                 produtos.forEach(prod => {
-                    tbody.innerHTML += `<tr><td>${prod.id}</td><td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td><td>${prod.nome}</td><td>${prod.descricao || '-'}</td><td>R$ ${parseFloat(prod.preco).toFixed(2)}</td><td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                    tbody.innerHTML += `<td>${prod.id}</td><td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td><td>${prod.nome}</td><td>${prod.descricao || '-'}</td><td>R$ ${parseFloat(prod.preco).toFixed(2)}</td><td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
             } catch (error) { console.error(error); }
         }
@@ -372,6 +372,31 @@
         document.getElementById('professor-imagem').addEventListener('change', function() { previewImagem(this, 'professor-imagem-preview'); });
         document.getElementById('produto-imagem').addEventListener('change', function() { previewImagem(this, 'produto-imagem-preview'); });
         
+        // ==================== FUNÇÃO DE ENVIO DE E-MAIL ====================
+        async function enviarEmailSenha(email, nome, novaSenha, tipo) {
+            if (!email) {
+                console.log('E-mail não informado, não é possível enviar');
+                return false;
+            }
+            try {
+                const response = await fetch(`${API_URL}/api/enviar-senha`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, nome, novaSenha, tipo })
+                });
+                if (response.ok) {
+                    console.log('E-mail enviado com sucesso!');
+                    return true;
+                } else {
+                    console.error('Erro ao enviar e-mail');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Erro ao enviar e-mail:', error);
+                return false;
+            }
+        }
+        
         // Alunos CRUD
         function abrirModalAluno() {
             document.getElementById('modal-aluno-titulo').textContent = 'Novo Aluno';
@@ -403,15 +428,54 @@
         
         async function salvarAluno() {
             const id = document.getElementById('aluno-id').value;
-            const data = { nome: document.getElementById('aluno-nome').value, email: document.getElementById('aluno-email').value, telefone: document.getElementById('aluno-telefone').value, plano: document.getElementById('aluno-plano').value, categoria: document.getElementById('aluno-categoria').value, usuario: document.getElementById('aluno-usuario').value };
+            const email = document.getElementById('aluno-email').value;
+            const nome = document.getElementById('aluno-nome').value;
             const senha = document.getElementById('aluno-senha').value;
+            
+            const data = {
+                nome: nome,
+                email: email,
+                telefone: document.getElementById('aluno-telefone').value,
+                plano: document.getElementById('aluno-plano').value,
+                categoria: document.getElementById('aluno-categoria').value,
+                usuario: document.getElementById('aluno-usuario').value
+            };
             if (senha) data.senha = senha;
+            
             const url = id ? `${API_URL}/api/alunos/${id}` : `${API_URL}/api/alunos`;
             const method = id ? 'PUT' : 'POST';
-            await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-            fecharModal('modal-aluno');
-            carregarAlunos();
-            carregarDashboard();
+            const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            
+            if (response.ok) {
+                if (senha && email) {
+                    await enviarEmailSenha(email, nome, senha, 'aluno');
+                }
+                fecharModal('modal-aluno');
+                carregarAlunos();
+                carregarDashboard();
+                mostrarMensagem(id ? 'Aluno atualizado com sucesso!' : 'Aluno adicionado com sucesso!');
+            } else {
+                const error = await response.json();
+                alert('Erro: ' + (error.erro || 'Não foi possível salvar'));
+            }
+        }
+        
+        function gerarSenhaAleatoria() {
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let senha = '';
+            for (let i = 0; i < 8; i++) senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            document.getElementById('aluno-senha').value = senha;
+            
+            const alunoId = document.getElementById('aluno-id').value;
+            const alunoEmail = document.getElementById('aluno-email').value;
+            const alunoNome = document.getElementById('aluno-nome').value;
+            
+            if (alunoId && alunoEmail) {
+                enviarEmailSenha(alunoEmail, alunoNome, senha, 'aluno');
+                alert(`Senha gerada e enviada para o e-mail: ${alunoEmail}`);
+            } else {
+                alert(`Senha gerada: ${senha}\n\nApós salvar o aluno, a senha será enviada por e-mail.`);
+            }
         }
         
         async function excluirAluno(id) {
@@ -456,20 +520,61 @@
             });
         }
         
+        function gerarSenhaProfessor() {
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let senha = '';
+            for (let i = 0; i < 8; i++) senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            document.getElementById('professor-senha').value = senha;
+            
+            const professorId = document.getElementById('professor-id').value;
+            const professorEmail = document.getElementById('professor-email').value;
+            const professorNome = document.getElementById('professor-nome').value;
+            
+            if (professorId && professorEmail) {
+                enviarEmailSenha(professorEmail, professorNome, senha, 'professor');
+                alert(`Senha gerada e enviada para o e-mail: ${professorEmail}`);
+            } else {
+                alert(`Senha gerada: ${senha}\n\nApós salvar o professor, a senha será enviada por e-mail.`);
+            }
+        }
+        
         async function salvarProfessor() {
             const id = document.getElementById('professor-id').value;
             let imagem_url = null;
+            const email = document.getElementById('professor-email').value;
+            const nome = document.getElementById('professor-nome').value;
+            const senha = document.getElementById('professor-senha').value;
+            
             const imagemFile = document.getElementById('professor-imagem').files[0];
             if (imagemFile) { imagem_url = await uploadImagem('professor', imagemFile); if (!imagem_url) return; }
-            const data = { nome: document.getElementById('professor-nome').value, especialidade: document.getElementById('professor-especialidade').value, usuario: document.getElementById('professor-usuario').value, email: document.getElementById('professor-email').value, telefone: document.getElementById('professor-telefone').value, horario_trabalho: document.getElementById('professor-horario').value, ordem: parseInt(document.getElementById('professor-ordem').value) || 0 };
-            const senha = document.getElementById('professor-senha').value;
+            
+            const data = {
+                nome: nome,
+                especialidade: document.getElementById('professor-especialidade').value,
+                usuario: document.getElementById('professor-usuario').value,
+                email: email,
+                telefone: document.getElementById('professor-telefone').value,
+                horario_trabalho: document.getElementById('professor-horario').value,
+                ordem: parseInt(document.getElementById('professor-ordem').value) || 0
+            };
             if (senha) data.senha = senha;
             if (imagem_url) data.imagem_url = imagem_url;
+            
             const url = id ? `${API_URL}/api/professores/${id}` : `${API_URL}/api/professores`;
             const method = id ? 'PUT' : 'POST';
             const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-            if (response.ok) { fecharModal('modal-professor'); carregarProfessores(); carregarDashboard(); mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!'); }
-            else { alert('Erro ao salvar'); }
+            
+            if (response.ok) {
+                if (senha && email) {
+                    await enviarEmailSenha(email, nome, senha, 'professor');
+                }
+                fecharModal('modal-professor');
+                carregarProfessores();
+                carregarDashboard();
+                mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
+            } else {
+                alert('Erro ao salvar');
+            }
         }
         
         async function excluirProfessor(id) {
@@ -591,22 +696,6 @@
             msgDiv.style.cssText = `position:fixed;bottom:20px;right:20px;background:#4CAF50;color:white;padding:12px 20px;border-radius:8px;z-index:2000;animation:fadeOut 3s forwards;`;
             document.body.appendChild(msgDiv);
             setTimeout(() => msgDiv.remove(), 3000);
-        }
-        
-        function gerarSenhaAleatoria() {
-            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let senha = '';
-            for (let i = 0; i < 8; i++) senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-            document.getElementById('aluno-senha').value = senha;
-            alert(`Senha gerada: ${senha}`);
-        }
-        
-        function gerarSenhaProfessor() {
-            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let senha = '';
-            for (let i = 0; i < 8; i++) senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-            document.getElementById('professor-senha').value = senha;
-            alert(`Senha gerada: ${senha}\n\nLembre-se de salvar o professor.`);
         }
         
         verificarToken();
