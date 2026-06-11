@@ -297,6 +297,13 @@
             color: #666;
             margin-bottom: 10px;
         }
+        
+        /* Animações */
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
     </style>
 </head>
 <body>
@@ -386,27 +393,27 @@
             </div>
             
             <!-- Professores -->
-<div id="professores" class="section">
-    <div class="content-header">
-        <h2>Gerenciar Professores</h2>
-    </div>
-    <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
-    <div class="tabela-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Foto</th>
-                    <th>Nome</th>
-                    <th>Especialidade</th>
-                    <th>Ordem</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="professores-tbody"></tbody>
-        </table>
-    </div>
-</div>
+            <div id="professores" class="section">
+                <div class="content-header">
+                    <h2>Gerenciar Professores</h2>
+                </div>
+                <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
+                <div class="tabela-container">
+                    </td>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Foto</th>
+                                <th>Nome</th>
+                                <th>Especialidade</th>
+                                <th>Ordem</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="professores-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
             
             <!-- Horários -->
             <div id="horarios" class="section">
@@ -489,38 +496,38 @@
     </div>
     
     <!-- Modal Aluno -->
-<div id="modal-aluno" class="modal">
-    <div class="modal-content">
-        <h3 id="modal-aluno-titulo">Novo Aluno</h3>
-        <input type="hidden" id="aluno-id">
-        <input type="text" id="aluno-nome" placeholder="Nome completo">
-        <input type="email" id="aluno-email" placeholder="E-mail">
-        <input type="tel" id="aluno-telefone" placeholder="Telefone">
-        <input type="text" id="aluno-usuario" placeholder="Usuário (login para o app)">
-        
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <input type="password" id="aluno-senha" placeholder="Senha" style="flex: 1;">
-            <button type="button" onclick="gerarSenhaAleatoria()" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; white-space: nowrap;">
-                <i class="fas fa-sync-alt"></i> Gerar
-            </button>
-        </div>
-        
-        <select id="aluno-plano">
-            <option value="Mensal">Mensal</option>
-            <option value="Trimestral">Trimestral</option>
-            <option value="Semestral">Semestral</option>
-            <option value="Anual">Anual</option>
-        </select>
-        <select id="aluno-categoria">
-            <option value="adulto">Adulto</option>
-            <option value="crianca">Criança</option>
-        </select>
-        <div class="modal-buttons">
-            <button class="btn-salvar" onclick="salvarAluno()">Salvar</button>
-            <button class="btn-cancelar" onclick="fecharModal('modal-aluno')">Cancelar</button>
+    <div id="modal-aluno" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-aluno-titulo">Novo Aluno</h3>
+            <input type="hidden" id="aluno-id">
+            <input type="text" id="aluno-nome" placeholder="Nome completo">
+            <input type="email" id="aluno-email" placeholder="E-mail">
+            <input type="tel" id="aluno-telefone" placeholder="Telefone">
+            <input type="text" id="aluno-usuario" placeholder="Usuário (login para o app)">
+            
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="password" id="aluno-senha" placeholder="Senha" style="flex: 1;">
+                <button type="button" onclick="gerarSenhaAleatoria()" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; white-space: nowrap;">
+                    <i class="fas fa-sync-alt"></i> Gerar
+                </button>
+            </div>
+            
+            <select id="aluno-plano">
+                <option value="Mensal">Mensal</option>
+                <option value="Trimestral">Trimestral</option>
+                <option value="Semestral">Semestral</option>
+                <option value="Anual">Anual</option>
+            </select>
+            <select id="aluno-categoria">
+                <option value="adulto">Adulto</option>
+                <option value="crianca">Criança</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="btn-salvar" onclick="salvarAluno()">Salvar</button>
+                <button class="btn-cancelar" onclick="fecharModal('modal-aluno')">Cancelar</button>
+            </div>
         </div>
     </div>
-</div>
     
     <!-- Modal Professor -->
     <div id="modal-professor" class="modal">
@@ -528,11 +535,14 @@
             <h3 id="modal-professor-titulo">Novo Professor</h3>
             <input type="hidden" id="professor-id">
             <input type="text" id="professor-nome" placeholder="Nome do professor">
-            <input type="text" id="professor-especialidade" placeholder="Especialidade">
+            <input type="text" id="professor-especialidade" placeholder="Especialidade (ex: Jiu-Jitsu / Faixa Preta)">
+            <input type="number" id="professor-ordem" placeholder="Ordem de exibição (1, 2, 3...)" value="0">
+            
             <div class="imagem-atual" id="professor-imagem-atual"></div>
             <input type="file" id="professor-imagem" accept="image/*">
             <div id="professor-imagem-preview" class="imagem-preview"></div>
             <div id="professor-upload-loading" class="loading-upload">Enviando imagem...</div>
+            
             <div class="modal-buttons">
                 <button class="btn-salvar" onclick="salvarProfessor()">Salvar</button>
                 <button class="btn-cancelar" onclick="fecharModal('modal-professor')">Cancelar</button>
@@ -668,22 +678,28 @@
                 const professores = await response.json();
                 const tbody = document.getElementById('professores-tbody');
                 tbody.innerHTML = '';
+                if (professores.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum professor cadastrado.</td></tr>';
+                    return;
+                }
                 professores.forEach(prof => {
                     tbody.innerHTML += `
                         <tr>
-                            <td>${prof.id}</td>
-                            <td>${prof.imagem_url ? `<img src="${prof.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">` : '-'}</td>
-                            <td>${prof.nome}</td>
-                            <td>${prof.especialidade || '-'}</td>
+                            <td>${prof.id}解决了
+                            <td>${prof.imagem_url ? `<img src="${prof.imagem_url}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">` : '<span style="color:#999;">Sem foto</span>'}</td>
+                            <td>${prof.nome}解决了
+                            <td>${prof.especialidade || '-'}解决了
+                            <td>${prof.ordem || 0}解决了
                             <td>
                                 <button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button>
                                 <button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>
-                            </td>
+                            解决了
                         </tr>
                     `;
                 });
             } catch (error) {
                 console.error('Erro ao carregar professores:', error);
+                document.getElementById('professores-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center">Erro ao carregar professores.</td></tr>';
             }
         }
         
@@ -871,12 +887,13 @@
             }
         }
         
-        // Professores CRUD com upload
+        // Professores CRUD
         function abrirModalProfessor() {
             document.getElementById('modal-professor-titulo').textContent = 'Novo Professor';
             document.getElementById('professor-id').value = '';
             document.getElementById('professor-nome').value = '';
             document.getElementById('professor-especialidade').value = '';
+            document.getElementById('professor-ordem').value = '0';
             document.getElementById('professor-imagem-atual').innerHTML = '';
             document.getElementById('professor-imagem-preview').innerHTML = '';
             document.getElementById('professor-imagem').value = '';
@@ -891,14 +908,19 @@
                     document.getElementById('professor-id').value = prof.id;
                     document.getElementById('professor-nome').value = prof.nome;
                     document.getElementById('professor-especialidade').value = prof.especialidade || '';
+                    document.getElementById('professor-ordem').value = prof.ordem || 0;
                     if (prof.imagem_url) {
-                        document.getElementById('professor-imagem-atual').innerHTML = `Imagem atual: <img src="${prof.imagem_url}" style="height: 50px;">`;
+                        document.getElementById('professor-imagem-atual').innerHTML = `Imagem atual: <img src="${prof.imagem_url}" style="height: 50px; border-radius: 50%;">`;
                     } else {
                         document.getElementById('professor-imagem-atual').innerHTML = '';
                     }
                     document.getElementById('professor-imagem-preview').innerHTML = '';
                     document.getElementById('professor-imagem').value = '';
                     document.getElementById('modal-professor').style.display = 'flex';
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar professor:', error);
+                    alert('Erro ao carregar dados do professor');
                 });
         }
         
@@ -915,28 +937,53 @@
             const data = {
                 nome: document.getElementById('professor-nome').value,
                 especialidade: document.getElementById('professor-especialidade').value,
-                imagem_url: imagem_url
+                ordem: parseInt(document.getElementById('professor-ordem').value) || 0
             };
+            
+            if (imagem_url) {
+                data.imagem_url = imagem_url;
+            }
             
             const url = id ? `${API_URL}/api/professores/${id}` : `${API_URL}/api/professores`;
             const method = id ? 'PUT' : 'POST';
             
-            await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            
-            fecharModal('modal-professor');
-            carregarProfessores();
-            carregarDashboard();
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    fecharModal('modal-professor');
+                    carregarProfessores();
+                    carregarDashboard();
+                    mostrarMensagem(id ? 'Professor atualizado com sucesso!' : 'Professor adicionado com sucesso!');
+                } else {
+                    const error = await response.json();
+                    alert('Erro: ' + (error.erro || 'Não foi possível salvar'));
+                }
+            } catch (error) {
+                console.error('Erro ao salvar professor:', error);
+                alert('Erro ao salvar professor');
+            }
         }
         
         async function excluirProfessor(id) {
             if (confirm('Tem certeza que deseja excluir este professor?')) {
-                await fetch(`${API_URL}/api/professores/${id}`, { method: 'DELETE' });
-                carregarProfessores();
-                carregarDashboard();
+                try {
+                    const response = await fetch(`${API_URL}/api/professores/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        carregarProfessores();
+                        carregarDashboard();
+                        mostrarMensagem('Professor removido com sucesso!');
+                    } else {
+                        alert('Erro ao remover professor');
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir professor:', error);
+                    alert('Erro ao remover professor');
+                }
             }
         }
         
@@ -1005,7 +1052,7 @@
             }
         }
         
-        // Produtos CRUD com upload
+        // Produtos CRUD
         function abrirModalProduto() {
             document.getElementById('modal-produto-titulo').textContent = 'Novo Produto';
             document.getElementById('produto-id').value = '';
@@ -1101,28 +1148,35 @@
         function fecharModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
+        
+        function mostrarMensagem(texto) {
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = texto;
+            msgDiv.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 2000;
+                animation: fadeOut 3s forwards;
+            `;
+            document.body.appendChild(msgDiv);
+            setTimeout(() => msgDiv.remove(), 3000);
+        }
+        
         // Gerar senha aleatória
-function gerarSenhaAleatoria() {
-    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let senha = '';
-    for (let i = 0; i < 8; i++) {
-        senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-    }
-    document.getElementById('aluno-senha').value = senha;
-    
-    // Opcional: mostrar uma mensagem
-    alert(`Senha gerada: ${senha}\n\nLembre-se de salvar o aluno para aplicar a alteração.`);
-}
-        // Gerar senha aleatória
-function gerarSenhaAleatoria() {
-    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let senha = '';
-    for (let i = 0; i < 8; i++) {
-        senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-    }
-    document.getElementById('aluno-senha').value = senha;
-    alert(`Senha gerada: ${senha}\n\nLembre-se de salvar o aluno para aplicar a alteração.`);
-}
+        function gerarSenhaAleatoria() {
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let senha = '';
+            for (let i = 0; i < 8; i++) {
+                senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+            document.getElementById('aluno-senha').value = senha;
+            alert(`Senha gerada: ${senha}\n\nLembre-se de salvar o aluno para aplicar a alteração.`);
+        }
         
         // Inicializar
         verificarToken();
