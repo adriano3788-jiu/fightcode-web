@@ -1,0 +1,21 @@
+{
+    "name": "FightCode Check-in",
+    "short_name": "FightCode",
+    "description": "Sistema de check-in para academias",
+    "start_url": "/checkin.html",
+    "display": "standalone",
+    "theme_color": "#E53935",
+    "background_color": "#ffffff",
+    "icons": [
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "assets/img/banner/icon.jpeg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ]
+}
