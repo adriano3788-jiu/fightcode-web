@@ -311,17 +311,31 @@
                 document.getElementById('categoria-detalhe').textContent = aluno.categoria === 'crianca' ? 'Infantil' : 'Adulto';
                 document.getElementById('data-atual').textContent = new Date().toLocaleDateString('pt-BR');
 
-                // Check-in
-                const btnCheckin = document.getElementById('btn-checkin');
-                if (checkinHoje.feito) {
-                    btnCheckin.textContent = '✅ Presença registrada hoje';
-                    btnCheckin.disabled = true;
-                    btnCheckin.classList.add('checked');
-                } else {
-                    btnCheckin.textContent = '✅ Registrar Presença';
-                    btnCheckin.disabled = false;
-                    btnCheckin.classList.remove('checked');
-                }
+                // Check-in - verificar status
+const statusCheckin = await fetch(`${API_URL}/api/checkin/status/${alunoId}`).then(r => r.json());
+const btnCheckin = document.getElementById('btn-checkin');
+const statusMsg = document.getElementById('checkin-status');
+
+if (statusCheckin.status === 'aprovado') {
+    btnCheckin.textContent = '✅ Presença confirmada!';
+    btnCheckin.disabled = true;
+    btnCheckin.classList.add('checked');
+    if (statusMsg) statusMsg.innerHTML = '<span style="color: green;">Sua presença foi confirmada!</span>';
+} else if (statusCheckin.status === 'pendente') {
+    btnCheckin.textContent = '⏳ Aguardando aprovação...';
+    btnCheckin.disabled = true;
+    btnCheckin.classList.add('pending');
+    if (statusMsg) statusMsg.innerHTML = '<span style="color: orange;">Solicitação enviada. Aguarde o professor.</span>';
+} else if (statusCheckin.status === 'rejeitado') {
+    btnCheckin.textContent = '❌ Solicitação rejeitada';
+    btnCheckin.disabled = false;
+    if (statusMsg) statusMsg.innerHTML = '<span style="color: red;">Solicitação rejeitada. Tente novamente mais tarde.</span>';
+} else {
+    btnCheckin.textContent = '✅ Solicitar Presença';
+    btnCheckin.disabled = false;
+    btnCheckin.classList.remove('checked', 'pending');
+    if (statusMsg) statusMsg.innerHTML = '';
+}
 
                 // Graduação
                 document.getElementById('faixa-atual').innerHTML = `<strong>Faixa Atual:</strong> ${graduacao.faixa} (${graduacao.grau_atual}º grau)`;
