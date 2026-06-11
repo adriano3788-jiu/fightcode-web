@@ -369,7 +369,16 @@
                 <div class="tabela-container">
                     <table>
                         <thead>
-                            <tr><th>ID</th><th>Nome</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Ações</th></tr>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Usuário</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Plano</th>
+                                <th>Categoria</th>
+                                <th>Ações</th>
+                            </tr>
                         </thead>
                         <tbody id="alunos-tbody"></tbody>
                     </table>
@@ -385,7 +394,13 @@
                 <div class="tabela-container">
                     <table>
                         <thead>
-                            <tr><th>ID</th><th>Foto</th><th>Nome</th><th>Especialidade</th><th>Ações</th></tr>
+                            <tr>
+                                <th>ID</th>
+                                <th>Foto</th>
+                                <th>Nome</th>
+                                <th>Especialidade</th>
+                                <th>Ações</th>
+                            </tr>
                         </thead>
                         <tbody id="professores-tbody"></tbody>
                     </table>
@@ -401,7 +416,16 @@
                 <div class="tabela-container">
                     <table>
                         <thead>
-                            <tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Ações</th></tr>
+                            <tr>
+                                <th>Horário</th>
+                                <th>Segunda</th>
+                                <th>Terça</th>
+                                <th>Quarta</th>
+                                <th>Quinta</th>
+                                <th>Sexta</th>
+                                <th>Sábado</th>
+                                <th>Ações</th>
+                            </tr>
                         </thead>
                         <tbody id="horarios-tbody"></tbody>
                     </table>
@@ -417,7 +441,14 @@
                 <div class="tabela-container">
                     <table>
                         <thead>
-                            <tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr>
+                            <tr>
+                                <th>ID</th>
+                                <th>Imagem</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>
                         </thead>
                         <tbody id="produtos-tbody"></tbody>
                     </table>
@@ -457,38 +488,31 @@
     </div>
     
     <!-- Modal Aluno -->
-<div id="modal-aluno" class="modal">
-    <div class="modal-content">
-        <h3 id="modal-aluno-titulo">Novo Aluno</h3>
-        <input type="hidden" id="aluno-id">
-        <input type="text" id="aluno-nome" placeholder="Nome completo">
-        <input type="email" id="aluno-email" placeholder="E-mail">
-        <input type="tel" id="aluno-telefone" placeholder="Telefone">
-        
-        <!-- NOVOS CAMPOS - USUÁRIO E SENHA -->
-        <input type="text" id="aluno-usuario" placeholder="Usuário (login para o app)" style="margin-top: 10px;">
-        <input type="password" id="aluno-senha" placeholder="Senha (deixe em branco para manter a atual)">
-        <!-- FIM DOS NOVOS CAMPOS -->
-        
-        <select id="aluno-plano">
-            <option value="Mensal">Mensal</option>
-            <option value="Trimestral">Trimestral</option>
-            <option value="Semestral">Semestral</option>
-            <option value="Anual">Anual</option>
-        </select>
-        
-        <!-- Campo de categoria (adicionar também) -->
-        <select id="aluno-categoria">
-            <option value="adulto">Adulto</option>
-            <option value="crianca">Criança</option>
-        </select>
-        
-        <div class="modal-buttons">
-            <button class="btn-salvar" onclick="salvarAluno()">Salvar</button>
-            <button class="btn-cancelar" onclick="fecharModal('modal-aluno')">Cancelar</button>
+    <div id="modal-aluno" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-aluno-titulo">Novo Aluno</h3>
+            <input type="hidden" id="aluno-id">
+            <input type="text" id="aluno-nome" placeholder="Nome completo">
+            <input type="email" id="aluno-email" placeholder="E-mail">
+            <input type="tel" id="aluno-telefone" placeholder="Telefone">
+            <input type="text" id="aluno-usuario" placeholder="Usuário (login para o app)">
+            <input type="password" id="aluno-senha" placeholder="Senha (deixe em branco para manter a atual)">
+            <select id="aluno-plano">
+                <option value="Mensal">Mensal</option>
+                <option value="Trimestral">Trimestral</option>
+                <option value="Semestral">Semestral</option>
+                <option value="Anual">Anual</option>
+            </select>
+            <select id="aluno-categoria">
+                <option value="adulto">Adulto</option>
+                <option value="crianca">Criança</option>
+            </select>
+            <div class="modal-buttons">
+                <button class="btn-salvar" onclick="salvarAluno()">Salvar</button>
+                <button class="btn-cancelar" onclick="fecharModal('modal-aluno')">Cancelar</button>
+            </div>
         </div>
     </div>
-</div>
     
     <!-- Modal Professor -->
     <div id="modal-professor" class="modal">
@@ -613,9 +637,11 @@
                         <tr>
                             <td>${aluno.id}</td>
                             <td>${aluno.nome}</td>
+                            <td>${aluno.usuario || '-'}</td>
                             <td>${aluno.email || '-'}</td>
                             <td>${aluno.telefone || '-'}</td>
                             <td>${aluno.plano || 'Mensal'}</td>
+                            <td>${aluno.categoria || 'adulto'}</td>
                             <td>
                                 <button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button>
                                 <button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button>
@@ -776,6 +802,9 @@
             document.getElementById('aluno-email').value = '';
             document.getElementById('aluno-telefone').value = '';
             document.getElementById('aluno-plano').value = 'Mensal';
+            document.getElementById('aluno-categoria').value = 'adulto';
+            document.getElementById('aluno-usuario').value = '';
+            document.getElementById('aluno-senha').value = '';
             document.getElementById('modal-aluno').style.display = 'flex';
         }
         
@@ -789,6 +818,9 @@
                     document.getElementById('aluno-email').value = aluno.email || '';
                     document.getElementById('aluno-telefone').value = aluno.telefone || '';
                     document.getElementById('aluno-plano').value = aluno.plano || 'Mensal';
+                    document.getElementById('aluno-categoria').value = aluno.categoria || 'adulto';
+                    document.getElementById('aluno-usuario').value = aluno.usuario || '';
+                    document.getElementById('aluno-senha').value = '';
                     document.getElementById('modal-aluno').style.display = 'flex';
                 });
         }
@@ -799,8 +831,15 @@
                 nome: document.getElementById('aluno-nome').value,
                 email: document.getElementById('aluno-email').value,
                 telefone: document.getElementById('aluno-telefone').value,
-                plano: document.getElementById('aluno-plano').value
+                plano: document.getElementById('aluno-plano').value,
+                categoria: document.getElementById('aluno-categoria').value,
+                usuario: document.getElementById('aluno-usuario').value
             };
+            
+            const senha = document.getElementById('aluno-senha').value;
+            if (senha) {
+                data.senha = senha;
+            }
             
             const url = id ? `${API_URL}/api/alunos/${id}` : `${API_URL}/api/alunos`;
             const method = id ? 'PUT' : 'POST';
