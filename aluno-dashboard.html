@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#E53935">
+    <title>Painel do Aluno - FightCode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding-bottom: 70px;
+        }
+        .header {
+            background: linear-gradient(135deg, #E53935, #c62828);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 { font-size: 24px; }
+        .header p { opacity: 0.9; margin-top: 5px; }
+        .container { padding: 20px; max-width: 800px; margin: 0 auto; }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .card h3 {
+            color: #E53935;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-checkin {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+        }
+        .btn-checkin:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-checkin.checked {
+            background: #999;
+        }
+        .grad-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .grad-progress {
+            background: #E53935;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .proxima-faixa {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+        }
+        .presenca-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .presenca-nome { font-weight: 500; }
+        .presenca-hora { color: #4CAF50; font-size: 12px; }
+        .ocorrencia-item {
+            background: #fff3e0;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .ocorrencia-titulo { font-weight: bold; color: #E53935; }
+        .ocorrencia-data { font-size: 11px; color: #999; }
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .tab-item {
+            text-align: center;
+            padding: 8px;
+            color: #999;
+            cursor: pointer;
+            flex: 1;
+        }
+        .tab-item.active { color: #E53935; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .senha-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .btn-salvar {
+            background: #E53935;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .logout {
+            background: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-user"></i> <span id="aluno-nome">Carregando...</span></h1>
+        <p id="aluno-categoria"></p>
+    </div>
+
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tab-bar">
+            <div class="tab-item active" data-tab="checkin"><i class="fas fa-check-circle"></i> Check-in</div>
+            <div class="tab-item" data-tab="graduacao"><i class="fas fa-chart-line"></i> Graduação</div>
+            <div class="tab-item" data-tab="presencas"><i class="fas fa-users"></i> Presenças</div>
+            <div class="tab-item" data-tab="ocorrencias"><i class="fas fa-exclamation-triangle"></i> Ocorrências</div>
+            <div class="tab-item" data-tab="perfil"><i class="fas fa-user-cog"></i> Perfil</div>
+        </div>
+
+        <!-- Tab Check-in -->
+        <div id="tab-checkin" class="tab-content active">
+            <div class="card">
+                <h3><i class="fas fa-calendar-check"></i> Check-in do Dia</h3>
+                <p id="data-atual"></p>
+                <button id="btn-checkin" class="btn-checkin" onclick="realizarCheckin()">✅ Registrar Presença</button>
+                <div id="checkin-mensagem" style="margin-top: 10px; font-size: 14px;"></div>
+            </div>
+        </div>
+
+        <!-- Tab Graduação -->
+        <div id="tab-graduacao" class="tab-content">
+            <div class="card">
+                <h3><i class="fas fa-medal"></i> Minha Graduação</h3>
+                <div id="faixa-atual"></div>
+                <div class="grad-bar">
+                    <div id="grad-progress" class="grad-progress"></div>
+                </div>
+                <div class="proxima-faixa" id="proxima-faixa"></div>
+                <div id="detalhes-graduacao" style="margin-top: 15px; font-size: 14px; color: #666;"></div>
+            </div>
+        </div>
+
+        <!-- Tab Presenças do Dia -->
+        <div id="tab-presencas" class="tab-content">
+            <div class="card">
+                <h3><i class="fas fa-users"></i> Quem já fez check-in hoje</h3>
+                <div id="presencas-lista"></div>
+            </div>
+        </div>
+
+        <!-- Tab Ocorrências -->
+        <div id="tab-ocorrencias" class="tab-content">
+            <div class="card">
+                <h3><i class="fas fa-bell"></i> Minhas Ocorrências</h3>
+                <div id="ocorrencias-lista"></div>
+            </div>
+        </div>
+
+        <!-- Tab Perfil -->
+        <div id="tab-perfil" class="tab-content">
+            <div class="card">
+                <h3><i class="fas fa-key"></i> Alterar Senha</h3>
+                <input type="password" id="nova-senha" placeholder="Nova senha">
+                <input type="password" id="confirmar-senha" placeholder="Confirmar senha">
+                <button class="btn-salvar" onclick="alterarSenha()">Salvar Senha</button>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-info-circle"></i> Meus Dados</h3>
+                <p><strong>Total de aulas:</strong> <span id="total-aulas">0</span></p>
+                <p><strong>Categoria:</strong> <span id="categoria-detalhe"></span></p>
+            </div>
+            <button class="btn-salvar logout" onclick="logout()">Sair</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://fightcode-api.onrender.com';
+        let alunoId = localStorage.getItem('aluno_id');
+        let token = localStorage.getItem('aluno_token');
+
+        function verificarToken() {
+            if (!token || !alunoId) {
+                window.location.href = 'aluno-login.html';
+            }
+        }
+
+        async function carregarDados() {
+            if (!alunoId) return;
+            try {
+                const [aluno, checkinHoje, presencasHoje, ocorrencias, graduacao] = await Promise.all([
+                    fetch(`${API_URL}/api/aluno/${alunoId}`).then(r => r.json()),
+                    fetch(`${API_URL}/api/checkin/hoje/${alunoId}`).then(r => r.json()),
+                    fetch(`${API_URL}/api/presencas/hoje`).then(r => r.json()),
+                    fetch(`${API_URL}/api/ocorrencias/${alunoId}`).then(r => r.json()),
+                    fetch(`${API_URL}/api/graduacao/${alunoId}`).then(r => r.json())
+                ]);
+
+                // Header
+                document.getElementById('aluno-nome').textContent = aluno.nome;
+                document.getElementById('aluno-categoria').textContent = aluno.categoria === 'crianca' ? '👶 Categoria Infantil' : '👨 Categoria Adulto';
+                document.getElementById('total-aulas').textContent = aluno.total_aulas || 0;
+                document.getElementById('categoria-detalhe').textContent = aluno.categoria === 'crianca' ? 'Infantil' : 'Adulto';
+                document.getElementById('data-atual').textContent = new Date().toLocaleDateString('pt-BR');
+
+                // Check-in
+                const btnCheckin = document.getElementById('btn-checkin');
+                if (checkinHoje.feito) {
+                    btnCheckin.textContent = '✅ Presença registrada hoje';
+                    btnCheckin.disabled = true;
+                    btnCheckin.classList.add('checked');
+                } else {
+                    btnCheckin.textContent = '✅ Registrar Presença';
+                    btnCheckin.disabled = false;
+                    btnCheckin.classList.remove('checked');
+                }
+
+                // Graduação
+                document.getElementById('faixa-atual').innerHTML = `<strong>Faixa Atual:</strong> ${graduacao.faixa} (${graduacao.grau_atual}º grau)`;
+                const percentual = (graduacao.aulas_feitas / graduacao.aulas_necessarias) * 100;
+                document.getElementById('grad-progress').style.width = `${Math.min(percentual, 100)}%`;
+                document.getElementById('proxima-faixa').innerHTML = `Próxima graduação: ${graduacao.proxima_faixa} após mais ${graduacao.aulas_restantes} aulas`;
+                document.getElementById('detalhes-graduacao').innerHTML = graduacao.detalhes;
+
+                // Presenças do dia
+                const presencasDiv = document.getElementById('presencas-lista');
+                if (presencasHoje.length === 0) {
+                    presencasDiv.innerHTML = '<p>Nenhum aluno fez check-in hoje ainda.</p>';
+                } else {
+                    presencasDiv.innerHTML = presencasHoje.map(p => `
+                        <div class="presenca-item">
+                            <span class="presenca-nome">${p.nome}</span>
+                            <span class="presenca-hora">${p.hora}</span>
+                        </div>
+                    `).join('');
+                }
+
+                // Ocorrências
+                const ocorrenciasDiv = document.getElementById('ocorrencias-lista');
+                if (ocorrencias.length === 0) {
+                    ocorrenciasDiv.innerHTML = '<p>Nenhuma ocorrência registrada.</p>';
+                } else {
+                    ocorrenciasDiv.innerHTML = ocorrencias.map(o => `
+                        <div class="ocorrencia-item">
+                            <div class="ocorrencia-titulo">${o.titulo}</div>
+                            <div class="ocorrencia-data">${new Date(o.data).toLocaleDateString('pt-BR')}</div>
+                            <p>${o.descricao}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        async function realizarCheckin() {
+            try {
+                const response = await fetch(`${API_URL}/api/checkin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ aluno_id: alunoId })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('checkin-mensagem').innerHTML = '<span style="color: green;">✅ Check-in realizado com sucesso!</span>';
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    document.getElementById('checkin-mensagem').innerHTML = `<span style="color: red;">${data.erro}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('checkin-mensagem').innerHTML = '<span style="color: red;">Erro ao realizar check-in</span>';
+            }
+        }
+
+        async function alterarSenha() {
+            const novaSenha = document.getElementById('nova-senha').value;
+            const confirmar = document.getElementById('confirmar-senha').value;
+            if (!novaSenha) { alert('Digite uma nova senha'); return; }
+            if (novaSenha !== confirmar) { alert('As senhas não coincidem'); return; }
+            try {
+                const response = await fetch(`${API_URL}/api/aluno/alterar-senha`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ aluno_id: alunoId, nova_senha: novaSenha })
+                });
+                if (response.ok) {
+                    alert('Senha alterada com sucesso!');
+                    document.getElementById('nova-senha').value = '';
+                    document.getElementById('confirmar-senha').value = '';
+                } else {
+                    alert('Erro ao alterar senha');
+                }
+            } catch (error) {
+                alert('Erro de conexão');
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'aluno-login.html';
+        }
+
+        // Tabs
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(`tab-${tabName}`).classList.add('active');
+            });
+        });
+
+        verificarToken();
+        carregarDados();
+    </script>
+</body>
+</html>
