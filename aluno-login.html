@@ -78,18 +78,16 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .btn-instalar {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
+        .voltar {
+            margin-top: 20px;
+        }
+        .voltar a {
+            color: #999;
+            text-decoration: none;
             font-size: 14px;
-            display: none;
-            cursor: pointer;
+        }
+        .voltar a:hover {
+            color: #E53935;
         }
     </style>
 </head>
@@ -99,7 +97,7 @@
         <h1>Área do Aluno</h1>
         <p>Acesse seu painel pessoal</p>
 
-        <input type="text" id="usuario" placeholder="Usuário (seu nome ou e-mail)">
+        <input type="text" id="usuario" placeholder="Usuário">
         <input type="password" id="senha" placeholder="Senha">
         <button onclick="fazerLogin()">Entrar</button>
 
@@ -107,9 +105,11 @@
             <div class="spinner"></div>
         </div>
         <div id="mensagem" class="mensagem"></div>
+        
+        <div class="voltar">
+            <a href="index.html">← Voltar para o site</a>
+        </div>
     </div>
-
-    <div id="btn-instalar" class="btn-instalar">📱 Instalar App</div>
 
     <script>
         const API_URL = 'https://fightcode-api.onrender.com';
@@ -157,23 +157,6 @@
             msgDiv.style.display = 'block';
             setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
-
-        // PWA
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('btn-instalar').style.display = 'block';
-        });
-        document.getElementById('btn-instalar').addEventListener('click', () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(() => {
-                    deferredPrompt = null;
-                    document.getElementById('btn-instalar').style.display = 'none';
-                });
-            }
-        });
     </script>
 </body>
 </html>
