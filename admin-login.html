@@ -159,10 +159,7 @@
             msgDiv.style.display = 'block';
             setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
-    </script>
-</body>
-</html>
-// PWA - Instalação do App
+        // PWA - Instalação do App
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -215,3 +212,7 @@ if ('serviceWorker' in navigator) {
         .then(reg => console.log('Service Worker registrado!', reg))
         .catch(err => console.log('Erro ao registrar Service Worker:', err));
 }
+    </script>
+</body>
+</html>
+
