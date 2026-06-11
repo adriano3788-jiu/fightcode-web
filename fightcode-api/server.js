@@ -616,7 +616,7 @@ app.get('/api/checkin/hoje/:aluno_id', async (req, res) => {
     }
 });
 
-// Realizar check-in
+// Realizar check-in (agora fica pendente)
 app.post('/api/checkin', async (req, res) => {
     const { aluno_id } = req.body;
     try {
@@ -626,25 +626,52 @@ app.post('/api/checkin', async (req, res) => {
             [aluno_id]
         );
         if (existente.rows.length > 0) {
-            return res.status(400).json({ erro: 'Você já fez check-in hoje' });
+            return res.status(400).json({ erro: 'Você já solicitou check-in hoje' });
         }
+        
         // Buscar categoria do aluno
         const aluno = await pool.query('SELECT categoria FROM alunos WHERE id = $1', [aluno_id]);
         const categoria = aluno.rows[0]?.categoria || 'adulto';
-        // Registrar presença
+        
+        // Registrar presença como PENDENTE
         const result = await pool.query(
-            'INSERT INTO presencas (aluno_id, confirmado_por, categoria_registro) VALUES ($1, $2, $3) RETURNING *',
+            `INSERT INTO presencas (aluno_id, confirmado_por, categoria_registro, status) 
+             VALUES ($1, $2, $3, 'pendente') RETURNING *`,
             [aluno_id, 'aluno_app', categoria]
         );
-        // Atualizar total de aulas do aluno
-        await pool.query(
-            'UPDATE alunos SET total_aulas = total_aulas + 1 WHERE id = $1',
-            [aluno_id]
-        );
-        res.status(201).json({ sucesso: true, presenca: result.rows[0] });
+        
+        res.status(201).json({ 
+            sucesso: true, 
+            mensagem: 'Solicitação enviada! Aguarde a confirmação do professor.',
+            presenca: result.rows[0] 
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao registrar presença' });
+        res.status(500).json({ erro: 'Erro ao registrar solicitação' });
+    }
+});
+
+// Verificar status do check-in de hoje
+app.get('/api/checkin/status/:aluno_id', async (req, res) => {
+    const { aluno_id } = req.params;
+    try {
+        const result = await pool.query(
+            `SELECT status, id FROM presencas 
+             WHERE aluno_id = $1 AND data_presenca = CURRENT_DATE`,
+            [aluno_id]
+        );
+        if (result.rows.length === 0) {
+            return res.json({ status: 'nenhum', mensagem: 'Nenhuma solicitação hoje' });
+        }
+        const status = result.rows[0].status;
+        let mensagem = '';
+        if (status === 'pendente') mensagem = '⏳ Solicitação enviada. Aguardando aprovação do professor.';
+        else if (status === 'aprovado') mensagem = '✅ Presença confirmada!';
+        else if (status === 'rejeitado') mensagem = '❌ Solicitação rejeitada.';
+        res.json({ status, mensagem, id: result.rows[0].id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao verificar status' });
     }
 });
 
