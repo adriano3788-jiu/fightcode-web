@@ -69,10 +69,16 @@
             100% { transform: rotate(360deg); }
         }
         .voltar {
-            margin-top: 15px;
-            font-size: 12px;
+            margin-top: 20px;
         }
-        .voltar a { color: #666; text-decoration: none; }
+        .voltar a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .voltar a:hover {
+            color: #E53935;
+        }
     </style>
 </head>
 <body>
@@ -80,24 +86,27 @@
         <h1>👨‍🏫 Área do Professor</h1>
         <p>Acesse para aprovar check-ins dos alunos</p>
 
-        <input type="email" id="email" placeholder="E-mail">
+        <input type="text" id="usuario" placeholder="Usuário ou E-mail">
         <input type="password" id="senha" placeholder="Senha">
         <button onclick="fazerLogin()">Entrar</button>
 
         <div id="loading" class="loading"><div class="spinner"></div></div>
         <div id="mensagem" class="mensagem"></div>
-        <div class="voltar"><a href="index.html">← Voltar para o site</a></div>
+        
+        <div class="voltar">
+            <a href="index.html">← Voltar para o site</a>
+        </div>
     </div>
 
     <script>
         const API_URL = 'https://fightcode-api.onrender.com';
 
         async function fazerLogin() {
-            const email = document.getElementById('email').value.trim();
+            const usuario = document.getElementById('usuario').value.trim();
             const senha = document.getElementById('senha').value;
 
-            if (!email || !senha) {
-                mostrarMensagem('Preencha email e senha', 'erro');
+            if (!usuario || !senha) {
+                mostrarMensagem('Preencha usuário/email e senha', 'erro');
                 return;
             }
 
@@ -107,7 +116,7 @@
                 const response = await fetch(`${API_URL}/api/professor/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, senha })
+                    body: JSON.stringify({ email: usuario, senha })
                 });
 
                 const data = await response.json();
@@ -118,7 +127,7 @@
                     localStorage.setItem('professor_nome', data.professor.nome);
                     window.location.href = 'professor-dashboard.html';
                 } else {
-                    mostrarMensagem(data.erro || 'Email ou senha incorretos', 'erro');
+                    mostrarMensagem(data.erro || 'Usuário/email ou senha incorretos', 'erro');
                 }
             } catch (error) {
                 mostrarMensagem('Erro de conexão. Tente novamente.', 'erro');
