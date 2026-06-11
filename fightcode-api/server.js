@@ -357,13 +357,14 @@ app.get('/api/alunos/:id', async (req, res) => {
     }
 });
 
-// Adicionar novo aluno
+// Adicionar novo aluno (COM usuário, senha e categoria)
 app.post('/api/alunos', async (req, res) => {
-    const { nome, email, telefone, plano } = req.body;
+    const { nome, email, telefone, plano, categoria, usuario, senha } = req.body;
     try {
         const result = await pool.query(
-            'INSERT INTO alunos (nome, email, telefone, plano) VALUES ($1, $2, $3, $4) RETURNING *',
-            [nome, email, telefone, plano || 'Mensal']
+            `INSERT INTO alunos (nome, email, telefone, plano, categoria, usuario, senha, total_aulas) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+            [nome, email, telefone, plano || 'Mensal', categoria || 'adulto', usuario, senha || '123456', 0]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -372,19 +373,47 @@ app.post('/api/alunos', async (req, res) => {
     }
 });
 
-// Atualizar aluno
+// Atualizar aluno (COM usuário e senha)
 app.put('/api/alunos/:id', async (req, res) => {
     const { id } = req.params;
-    const { nome, email, telefone, plano, status } = req.body;
+    const { nome, email, telefone, plano, status, categoria, usuario, senha } = req.body;
+    
     try {
-        const result = await pool.query(
-            'UPDATE alunos SET nome = $1, email = $2, telefone = $3, plano = $4, status = $5 WHERE id = $6 RETURNING *',
-            [nome, email, telefone, plano, status, id]
-        );
-        if (result.rows.length === 0) {
+        const checkAluno = await pool.query('SELECT * FROM alunos WHERE id = $1', [id]);
+        if (checkAluno.rows.length === 0) {
             return res.status(404).json({ erro: 'Aluno não encontrado' });
         }
-        res.json(result.rows[0]);
+        
+        if (senha) {
+            const result = await pool.query(
+                `UPDATE alunos SET 
+                    nome = $1, 
+                    email = $2, 
+                    telefone = $3, 
+                    plano = $4, 
+                    status = $5, 
+                    categoria = $6, 
+                    usuario = $7, 
+                    senha = $8 
+                WHERE id = $9 RETURNING *`,
+                [nome, email, telefone, plano, status, categoria, usuario, senha, id]
+            );
+            return res.json(result.rows[0]);
+        } else {
+            const result = await pool.query(
+                `UPDATE alunos SET 
+                    nome = $1, 
+                    email = $2, 
+                    telefone = $3, 
+                    plano = $4, 
+                    status = $5, 
+                    categoria = $6, 
+                    usuario = $7 
+                WHERE id = $8 RETURNING *`,
+                [nome, email, telefone, plano, status, categoria, usuario, id]
+            );
+            return res.json(result.rows[0]);
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ erro: 'Erro ao atualizar aluno' });
@@ -528,15 +557,6 @@ app.get('/api/redes-sociais', async (req, res) => {
     }
 });
 
-// Rota de teste
-app.get('/', (req, res) => {
-    res.json({ mensagem: 'API FightCode funcionando!' });
-});
-
-// Iniciar servidor
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
 // ==================== ROTAS PARA ALUNOS (APP) ====================
 
 // Login do aluno
@@ -720,4 +740,16 @@ app.put('/api/aluno/alterar-senha', async (req, res) => {
         console.error(error);
         res.status(500).json({ erro: 'Erro ao alterar senha' });
     }
+});
+
+// ==================== ROTA DE TESTE ====================
+
+app.get('/', (req, res) => {
+    res.json({ mensagem: 'API FightCode funcionando!' });
+});
+
+// ==================== INICIAR SERVIDOR ====================
+
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
 });
