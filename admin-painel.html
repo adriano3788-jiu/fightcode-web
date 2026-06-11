@@ -154,13 +154,14 @@
         .tabela-container {
             background: white;
             border-radius: 15px;
-            overflow: hidden;
+            overflow-x: auto;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px;
         }
         
         th, td {
@@ -206,6 +207,8 @@
             width: 90%;
             max-width: 500px;
             padding: 30px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .modal-content h3 {
@@ -219,6 +222,21 @@
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .modal-content input[type="file"] {
+            padding: 5px;
+        }
+        
+        .imagem-preview {
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .imagem-preview img {
+            max-width: 100%;
+            max-height: 150px;
             border-radius: 8px;
         }
         
@@ -266,6 +284,19 @@
         .btn-adicionar:hover {
             background: #c62828;
         }
+        
+        .loading-upload {
+            display: none;
+            font-size: 12px;
+            color: #E53935;
+            margin-top: 5px;
+        }
+        
+        .imagem-atual {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -287,6 +318,9 @@
             </div>
             <div class="sidebar-item" data-section="professores">
                 <i class="fas fa-chalkboard-user"></i> Professores
+            </div>
+            <div class="sidebar-item" data-section="horarios">
+                <i class="fas fa-calendar-alt"></i> Horários
             </div>
             <div class="sidebar-item" data-section="produtos">
                 <i class="fas fa-box"></i> Produtos
@@ -312,6 +346,11 @@
                         <i class="fas fa-chalkboard-user"></i>
                         <h3 id="total-professores">0</h3>
                         <p>Professores</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3 id="total-horarios">0</h3>
+                        <p>Horários</p>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-box"></i>
@@ -345,8 +384,26 @@
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
                     <table>
-                        <thead><tr><th>ID</th><th>Nome</th><th>Especialidade</th><th>Ações</th></tr></thead>
+                        <thead>
+                            <tr><th>ID</th><th>Foto</th><th>Nome</th><th>Especialidade</th><th>Ações</th></tr>
+                        </thead>
                         <tbody id="professores-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Horários -->
+            <div id="horarios" class="section">
+                <div class="content-header">
+                    <h2>Gerenciar Horários</h2>
+                </div>
+                <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horário</button>
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="horarios-tbody"></tbody>
                     </table>
                 </div>
             </div>
@@ -359,7 +416,9 @@
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
                     <table>
-                        <thead><tr><th>ID</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr></thead>
+                        <thead>
+                            <tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr>
+                        </thead>
                         <tbody id="produtos-tbody"></tbody>
                     </table>
                 </div>
@@ -424,10 +483,33 @@
             <h3 id="modal-professor-titulo">Novo Professor</h3>
             <input type="hidden" id="professor-id">
             <input type="text" id="professor-nome" placeholder="Nome do professor">
-            <input type="text" id="professor-especialidade" placeholder="Especialidade (ex: Jiu-Jitsu / Faixa Preta)">
+            <input type="text" id="professor-especialidade" placeholder="Especialidade">
+            <div class="imagem-atual" id="professor-imagem-atual"></div>
+            <input type="file" id="professor-imagem" accept="image/*">
+            <div id="professor-imagem-preview" class="imagem-preview"></div>
+            <div id="professor-upload-loading" class="loading-upload">Enviando imagem...</div>
             <div class="modal-buttons">
                 <button class="btn-salvar" onclick="salvarProfessor()">Salvar</button>
                 <button class="btn-cancelar" onclick="fecharModal('modal-professor')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Horário -->
+    <div id="modal-horario" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-horario-titulo">Novo Horário</h3>
+            <input type="hidden" id="horario-id">
+            <input type="text" id="horario-horario" placeholder="Horário (ex: 06:00 - 07:00)">
+            <input type="text" id="horario-segunda" placeholder="Segunda-feira">
+            <input type="text" id="horario-terca" placeholder="Terça-feira">
+            <input type="text" id="horario-quarta" placeholder="Quarta-feira">
+            <input type="text" id="horario-quinta" placeholder="Quinta-feira">
+            <input type="text" id="horario-sexta" placeholder="Sexta-feira">
+            <input type="text" id="horario-sabado" placeholder="Sábado">
+            <div class="modal-buttons">
+                <button class="btn-salvar" onclick="salvarHorario()">Salvar</button>
+                <button class="btn-cancelar" onclick="fecharModal('modal-horario')">Cancelar</button>
             </div>
         </div>
     </div>
@@ -440,6 +522,10 @@
             <input type="text" id="produto-nome" placeholder="Nome do produto">
             <textarea id="produto-descricao" placeholder="Descrição do produto" rows="3"></textarea>
             <input type="number" id="produto-preco" placeholder="Preço (R$)" step="0.01">
+            <div class="imagem-atual" id="produto-imagem-atual"></div>
+            <input type="file" id="produto-imagem" accept="image/*">
+            <div id="produto-imagem-preview" class="imagem-preview"></div>
+            <div id="produto-upload-loading" class="loading-upload">Enviando imagem...</div>
             <div class="modal-buttons">
                 <button class="btn-salvar" onclick="salvarProduto()">Salvar</button>
                 <button class="btn-cancelar" onclick="fecharModal('modal-produto')">Cancelar</button>
@@ -481,19 +567,22 @@
             if (section === 'dashboard') await carregarDashboard();
             if (section === 'alunos') await carregarAlunos();
             if (section === 'professores') await carregarProfessores();
+            if (section === 'horarios') await carregarHorarios();
             if (section === 'produtos') await carregarProdutos();
             if (section === 'config') await carregarConfiguracoes();
         }
         
         async function carregarDashboard() {
             try {
-                const [alunos, professores, produtos] = await Promise.all([
+                const [alunos, professores, horarios, produtos] = await Promise.all([
                     fetch(`${API_URL}/api/alunos`).then(r => r.json()),
                     fetch(`${API_URL}/api/professores`).then(r => r.json()),
+                    fetch(`${API_URL}/api/horarios`).then(r => r.json()),
                     fetch(`${API_URL}/api/produtos`).then(r => r.json())
                 ]);
                 document.getElementById('total-alunos').textContent = alunos.length;
                 document.getElementById('total-professores').textContent = professores.length;
+                document.getElementById('total-horarios').textContent = horarios.length;
                 document.getElementById('total-produtos').textContent = produtos.length;
             } catch (error) {
                 console.error('Erro ao carregar dashboard:', error);
@@ -509,7 +598,11 @@
                 alunos.forEach(aluno => {
                     tbody.innerHTML += `
                         <tr>
-                            <td>${aluno.id}</td><td>${aluno.nome}</td><td>${aluno.email || '-'}</td><td>${aluno.telefone || '-'}</td><td>${aluno.plano || 'Mensal'}</td>
+                            <td>${aluno.id}</td>
+                            <td>${aluno.nome}</td>
+                            <td>${aluno.email || '-'}</td>
+                            <td>${aluno.telefone || '-'}</td>
+                            <td>${aluno.plano || 'Mensal'}</td>
                             <td>
                                 <button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button>
                                 <button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button>
@@ -530,16 +623,48 @@
                 tbody.innerHTML = '';
                 professores.forEach(prof => {
                     tbody.innerHTML += `
-                        <tr><td>${prof.id}</td><td>${prof.nome}</td><td>${prof.especialidade || '-'}</td>
-                        <td>
-                            <button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button>
-                            <button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>${prof.id}</td>
+                            <td>${prof.imagem_url ? `<img src="${prof.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">` : '-'}</td>
+                            <td>${prof.nome}</td>
+                            <td>${prof.especialidade || '-'}</td>
+                            <td>
+                                <button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button>
+                                <button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
                     `;
                 });
             } catch (error) {
                 console.error('Erro ao carregar professores:', error);
+            }
+        }
+        
+        async function carregarHorarios() {
+            try {
+                const response = await fetch(`${API_URL}/api/horarios`);
+                const horarios = await response.json();
+                const tbody = document.getElementById('horarios-tbody');
+                tbody.innerHTML = '';
+                horarios.forEach(horario => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${horario.horario}</td>
+                            <td>${horario.segunda || '-'}</td>
+                            <td>${horario.terca || '-'}</td>
+                            <td>${horario.quarta || '-'}</td>
+                            <td>${horario.quinta || '-'}</td>
+                            <td>${horario.sexta || '-'}</td>
+                            <td>${horario.sabado || '-'}</td>
+                            <td>
+                                <button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button>
+                                <button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Erro ao carregar horários:', error);
             }
         }
         
@@ -551,12 +676,17 @@
                 tbody.innerHTML = '';
                 produtos.forEach(prod => {
                     tbody.innerHTML += `
-                        <tr><td>${prod.id}</td><td>${prod.nome}</td><td>${prod.descricao || '-'}</td><td>R$ ${parseFloat(prod.preco).toFixed(2)}</td>
-                        <td>
-                            <button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button>
-                            <button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>${prod.id}</td>
+                            <td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td>
+                            <td>${prod.nome}</td>
+                            <td>${prod.descricao || '-'}</td>
+                            <td>R$ ${parseFloat(prod.preco).toFixed(2)}</td>
+                            <td>
+                                <button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button>
+                                <button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
                     `;
                 });
             } catch (error) {
@@ -578,6 +708,53 @@
             }
         }
         
+        // Upload de imagem
+        async function uploadImagem(tipo, file) {
+            const formData = new FormData();
+            formData.append('imagem', file);
+            
+            const loadingDiv = document.getElementById(`${tipo}-upload-loading`);
+            loadingDiv.style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/upload/${tipo}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                loadingDiv.style.display = 'none';
+                if (data.sucesso) {
+                    return data.url;
+                } else {
+                    alert('Erro ao fazer upload da imagem');
+                    return null;
+                }
+            } catch (error) {
+                loadingDiv.style.display = 'none';
+                alert('Erro ao fazer upload');
+                return null;
+            }
+        }
+        
+        // Preview de imagem
+        function previewImagem(input, previewId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(previewId).innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 150px; border-radius: 8px;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        document.getElementById('professor-imagem').addEventListener('change', function() {
+            previewImagem(this, 'professor-imagem-preview');
+        });
+        
+        document.getElementById('produto-imagem').addEventListener('change', function() {
+            previewImagem(this, 'produto-imagem-preview');
+        });
+        
         // Alunos CRUD
         function abrirModalAluno() {
             document.getElementById('modal-aluno-titulo').textContent = 'Novo Aluno';
@@ -590,7 +767,6 @@
         }
         
         function editarAluno(id) {
-            // Buscar aluno e preencher modal
             fetch(`${API_URL}/api/alunos/${id}`)
                 .then(r => r.json())
                 .then(aluno => {
@@ -635,12 +811,15 @@
             }
         }
         
-        // Professores CRUD
+        // Professores CRUD com upload
         function abrirModalProfessor() {
             document.getElementById('modal-professor-titulo').textContent = 'Novo Professor';
             document.getElementById('professor-id').value = '';
             document.getElementById('professor-nome').value = '';
             document.getElementById('professor-especialidade').value = '';
+            document.getElementById('professor-imagem-atual').innerHTML = '';
+            document.getElementById('professor-imagem-preview').innerHTML = '';
+            document.getElementById('professor-imagem').value = '';
             document.getElementById('modal-professor').style.display = 'flex';
         }
         
@@ -652,15 +831,31 @@
                     document.getElementById('professor-id').value = prof.id;
                     document.getElementById('professor-nome').value = prof.nome;
                     document.getElementById('professor-especialidade').value = prof.especialidade || '';
+                    if (prof.imagem_url) {
+                        document.getElementById('professor-imagem-atual').innerHTML = `Imagem atual: <img src="${prof.imagem_url}" style="height: 50px;">`;
+                    } else {
+                        document.getElementById('professor-imagem-atual').innerHTML = '';
+                    }
+                    document.getElementById('professor-imagem-preview').innerHTML = '';
+                    document.getElementById('professor-imagem').value = '';
                     document.getElementById('modal-professor').style.display = 'flex';
                 });
         }
         
         async function salvarProfessor() {
             const id = document.getElementById('professor-id').value;
+            let imagem_url = null;
+            
+            const imagemFile = document.getElementById('professor-imagem').files[0];
+            if (imagemFile) {
+                imagem_url = await uploadImagem('professor', imagemFile);
+                if (!imagem_url) return;
+            }
+            
             const data = {
                 nome: document.getElementById('professor-nome').value,
-                especialidade: document.getElementById('professor-especialidade').value
+                especialidade: document.getElementById('professor-especialidade').value,
+                imagem_url: imagem_url
             };
             
             const url = id ? `${API_URL}/api/professores/${id}` : `${API_URL}/api/professores`;
@@ -685,13 +880,81 @@
             }
         }
         
-        // Produtos CRUD
+        // Horários CRUD
+        function abrirModalHorario() {
+            document.getElementById('modal-horario-titulo').textContent = 'Novo Horário';
+            document.getElementById('horario-id').value = '';
+            document.getElementById('horario-horario').value = '';
+            document.getElementById('horario-segunda').value = '';
+            document.getElementById('horario-terca').value = '';
+            document.getElementById('horario-quarta').value = '';
+            document.getElementById('horario-quinta').value = '';
+            document.getElementById('horario-sexta').value = '';
+            document.getElementById('horario-sabado').value = '';
+            document.getElementById('modal-horario').style.display = 'flex';
+        }
+        
+        function editarHorario(id) {
+            fetch(`${API_URL}/api/horarios/${id}`)
+                .then(r => r.json())
+                .then(horario => {
+                    document.getElementById('modal-horario-titulo').textContent = 'Editar Horário';
+                    document.getElementById('horario-id').value = horario.id;
+                    document.getElementById('horario-horario').value = horario.horario;
+                    document.getElementById('horario-segunda').value = horario.segunda || '';
+                    document.getElementById('horario-terca').value = horario.terca || '';
+                    document.getElementById('horario-quarta').value = horario.quarta || '';
+                    document.getElementById('horario-quinta').value = horario.quinta || '';
+                    document.getElementById('horario-sexta').value = horario.sexta || '';
+                    document.getElementById('horario-sabado').value = horario.sabado || '';
+                    document.getElementById('modal-horario').style.display = 'flex';
+                });
+        }
+        
+        async function salvarHorario() {
+            const id = document.getElementById('horario-id').value;
+            const data = {
+                horario: document.getElementById('horario-horario').value,
+                segunda: document.getElementById('horario-segunda').value,
+                terca: document.getElementById('horario-terca').value,
+                quarta: document.getElementById('horario-quarta').value,
+                quinta: document.getElementById('horario-quinta').value,
+                sexta: document.getElementById('horario-sexta').value,
+                sabado: document.getElementById('horario-sabado').value
+            };
+            
+            const url = id ? `${API_URL}/api/horarios/${id}` : `${API_URL}/api/horarios`;
+            const method = id ? 'PUT' : 'POST';
+            
+            await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            fecharModal('modal-horario');
+            carregarHorarios();
+            carregarDashboard();
+        }
+        
+        async function excluirHorario(id) {
+            if (confirm('Tem certeza que deseja excluir este horário?')) {
+                await fetch(`${API_URL}/api/horarios/${id}`, { method: 'DELETE' });
+                carregarHorarios();
+                carregarDashboard();
+            }
+        }
+        
+        // Produtos CRUD com upload
         function abrirModalProduto() {
             document.getElementById('modal-produto-titulo').textContent = 'Novo Produto';
             document.getElementById('produto-id').value = '';
             document.getElementById('produto-nome').value = '';
             document.getElementById('produto-descricao').value = '';
             document.getElementById('produto-preco').value = '';
+            document.getElementById('produto-imagem-atual').innerHTML = '';
+            document.getElementById('produto-imagem-preview').innerHTML = '';
+            document.getElementById('produto-imagem').value = '';
             document.getElementById('modal-produto').style.display = 'flex';
         }
         
@@ -704,16 +967,32 @@
                     document.getElementById('produto-nome').value = prod.nome;
                     document.getElementById('produto-descricao').value = prod.descricao || '';
                     document.getElementById('produto-preco').value = prod.preco;
+                    if (prod.imagem_url) {
+                        document.getElementById('produto-imagem-atual').innerHTML = `Imagem atual: <img src="${prod.imagem_url}" style="height: 50px;">`;
+                    } else {
+                        document.getElementById('produto-imagem-atual').innerHTML = '';
+                    }
+                    document.getElementById('produto-imagem-preview').innerHTML = '';
+                    document.getElementById('produto-imagem').value = '';
                     document.getElementById('modal-produto').style.display = 'flex';
                 });
         }
         
         async function salvarProduto() {
             const id = document.getElementById('produto-id').value;
+            let imagem_url = null;
+            
+            const imagemFile = document.getElementById('produto-imagem').files[0];
+            if (imagemFile) {
+                imagem_url = await uploadImagem('produto', imagemFile);
+                if (!imagem_url) return;
+            }
+            
             const data = {
                 nome: document.getElementById('produto-nome').value,
                 descricao: document.getElementById('produto-descricao').value,
-                preco: parseFloat(document.getElementById('produto-preco').value)
+                preco: parseFloat(document.getElementById('produto-preco').value),
+                imagem_url: imagem_url
             };
             
             const url = id ? `${API_URL}/api/produtos/${id}` : `${API_URL}/api/produtos`;
@@ -738,6 +1017,7 @@
             }
         }
         
+        // Configurações
         async function salvarConfiguracoes() {
             const configuracoes = [
                 { chave: 'academia_nome', valor: document.getElementById('config-academia-nome').value },
@@ -762,8 +1042,7 @@
             document.getElementById(modalId).style.display = 'none';
         }
         
-        // Adicionar rota GET para professores/:id no server.js primeiro
-        // Por enquanto, vamos inicializar
+        // Inicializar
         verificarToken();
         carregarDashboard();
     </script>
