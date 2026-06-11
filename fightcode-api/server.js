@@ -94,7 +94,7 @@ app.post('/api/login', async (req, res) => {
 
 // ==================== ROTAS DE UPLOAD DE IMAGENS ====================
 
-// Upload de imagem para professor
+// Upload de imagem para professor (site)
 app.post('/api/upload/professor', upload.single('imagem'), async (req, res) => {
     try {
         if (!req.file) {
@@ -175,9 +175,9 @@ app.put('/api/configuracoes/:chave', async (req, res) => {
     }
 });
 
-// ==================== ROTAS DE PROFESSORES ====================
+// ==================== ROTAS DE PROFESSORES (SITE) ====================
 
-// Listar todos os professores
+// Listar todos os professores (para o site)
 app.get('/api/professores', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM professores WHERE ativo = true ORDER BY ordem');
@@ -357,7 +357,7 @@ app.get('/api/alunos/:id', async (req, res) => {
     }
 });
 
-// Adicionar novo aluno (COM usuário, senha e categoria)
+// Adicionar novo aluno
 app.post('/api/alunos', async (req, res) => {
     const { nome, email, telefone, plano, categoria, usuario, senha } = req.body;
     try {
@@ -373,7 +373,7 @@ app.post('/api/alunos', async (req, res) => {
     }
 });
 
-// Atualizar aluno (COM usuário e senha)
+// Atualizar aluno
 app.put('/api/alunos/:id', async (req, res) => {
     const { id } = req.params;
     const { nome, email, telefone, plano, status, categoria, usuario, senha } = req.body;
@@ -769,20 +769,9 @@ app.put('/api/aluno/alterar-senha', async (req, res) => {
     }
 });
 
-// ==================== ROTA DE TESTE ====================
+// ==================== ROTAS PARA PROFESSORES (SISTEMA) ====================
 
-app.get('/', (req, res) => {
-    res.json({ mensagem: 'API FightCode funcionando!' });
-});
-
-// ==================== INICIAR SERVIDOR ====================
-
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
-// ==================== ROTAS PARA PROFESSORES ====================
-
-// Login do professor
+// Login do professor (sistema)
 app.post('/api/professor/login', async (req, res) => {
     const { email, senha } = req.body;
     try {
@@ -806,7 +795,48 @@ app.post('/api/professor/login', async (req, res) => {
     }
 });
 
-// Buscar solicitações de check-in pendentes (para o professor)
+// Buscar perfil do professor
+app.get('/api/professor/perfil/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(
+            'SELECT id, nome, email, horario_trabalho, foto_url FROM professores_sistema WHERE id = $1',
+            [id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ erro: 'Professor não encontrado' });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao buscar perfil' });
+    }
+});
+
+// Atualizar perfil do professor
+app.put('/api/professor/perfil/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nome, email, horario, senha } = req.body;
+    try {
+        if (senha) {
+            await pool.query(
+                'UPDATE professores_sistema SET nome = $1, email = $2, horario_trabalho = $3, senha = $4 WHERE id = $5',
+                [nome, email, horario, senha, id]
+            );
+        } else {
+            await pool.query(
+                'UPDATE professores_sistema SET nome = $1, email = $2, horario_trabalho = $3 WHERE id = $4',
+                [nome, email, horario, id]
+            );
+        }
+        res.json({ sucesso: true });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao atualizar perfil' });
+    }
+});
+
+// Buscar solicitações de check-in pendentes
 app.get('/api/presencas/pendentes', async (req, res) => {
     try {
         const result = await pool.query(
@@ -847,7 +877,6 @@ app.put('/api/presencas/aprovar/:id', async (req, res) => {
 // Rejeitar check-in
 app.put('/api/presencas/rejeitar/:id', async (req, res) => {
     const { id } = req.params;
-    const { motivo } = req.body;
     try {
         const result = await pool.query(
             `UPDATE presencas 
@@ -862,26 +891,6 @@ app.put('/api/presencas/rejeitar/:id', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ erro: 'Erro ao rejeitar check-in' });
-    }
-});
-
-// Buscar alunos por horário
-app.get('/api/alunos/por-horario/:horario', async (req, res) => {
-    const { horario } = req.params;
-    try {
-        // Buscar alunos que solicitaram check-in neste horário
-        const result = await pool.query(
-            `SELECT a.id, a.nome, a.categoria, p.hora_presenca, p.status 
-             FROM alunos a 
-             JOIN presencas p ON a.id = p.aluno_id 
-             WHERE p.data_presenca = CURRENT_DATE AND p.hora_presenca::time BETWEEN $1::time - interval '1 hour' AND $1::time + interval '1 hour'
-             ORDER BY p.hora_presenca`,
-            [horario]
-        );
-        res.json(result.rows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar alunos' });
     }
 });
 
@@ -901,4 +910,16 @@ app.get('/api/aluno/total-aulas/:id', async (req, res) => {
         console.error(error);
         res.status(500).json({ erro: 'Erro ao buscar total de aulas' });
     }
+});
+
+// ==================== ROTA DE TESTE ====================
+
+app.get('/', (req, res) => {
+    res.json({ mensagem: 'API FightCode funcionando!' });
+});
+
+// ==================== INICIAR SERVIDOR ====================
+
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
 });
