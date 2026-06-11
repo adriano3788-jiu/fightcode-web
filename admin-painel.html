@@ -457,25 +457,38 @@
     </div>
     
     <!-- Modal Aluno -->
-    <div id="modal-aluno" class="modal">
-        <div class="modal-content">
-            <h3 id="modal-aluno-titulo">Novo Aluno</h3>
-            <input type="hidden" id="aluno-id">
-            <input type="text" id="aluno-nome" placeholder="Nome completo">
-            <input type="email" id="aluno-email" placeholder="E-mail">
-            <input type="tel" id="aluno-telefone" placeholder="Telefone">
-            <select id="aluno-plano">
-                <option value="Mensal">Mensal</option>
-                <option value="Trimestral">Trimestral</option>
-                <option value="Semestral">Semestral</option>
-                <option value="Anual">Anual</option>
-            </select>
-            <div class="modal-buttons">
-                <button class="btn-salvar" onclick="salvarAluno()">Salvar</button>
-                <button class="btn-cancelar" onclick="fecharModal('modal-aluno')">Cancelar</button>
-            </div>
+<div id="modal-aluno" class="modal">
+    <div class="modal-content">
+        <h3 id="modal-aluno-titulo">Novo Aluno</h3>
+        <input type="hidden" id="aluno-id">
+        <input type="text" id="aluno-nome" placeholder="Nome completo">
+        <input type="email" id="aluno-email" placeholder="E-mail">
+        <input type="tel" id="aluno-telefone" placeholder="Telefone">
+        
+        <!-- NOVOS CAMPOS - USUÁRIO E SENHA -->
+        <input type="text" id="aluno-usuario" placeholder="Usuário (login para o app)" style="margin-top: 10px;">
+        <input type="password" id="aluno-senha" placeholder="Senha (deixe em branco para manter a atual)">
+        <!-- FIM DOS NOVOS CAMPOS -->
+        
+        <select id="aluno-plano">
+            <option value="Mensal">Mensal</option>
+            <option value="Trimestral">Trimestral</option>
+            <option value="Semestral">Semestral</option>
+            <option value="Anual">Anual</option>
+        </select>
+        
+        <!-- Campo de categoria (adicionar também) -->
+        <select id="aluno-categoria">
+            <option value="adulto">Adulto</option>
+            <option value="crianca">Criança</option>
+        </select>
+        
+        <div class="modal-buttons">
+            <button class="btn-salvar" onclick="salvarAluno()">Salvar</button>
+            <button class="btn-cancelar" onclick="fecharModal('modal-aluno')">Cancelar</button>
         </div>
     </div>
+</div>
     
     <!-- Modal Professor -->
     <div id="modal-professor" class="modal">
