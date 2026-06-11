@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Professor - FightCode</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .login-card img { height: 80px; margin-bottom: 20px; }
+        .login-card h1 { color: #333; margin-bottom: 10px; }
+        .login-card p { color: #666; margin-bottom: 30px; }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #E53935;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover { background: #c62828; }
+        .mensagem {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+        }
+        .erro { background: #f8d7da; color: #721c24; }
+        .loading { display: none; margin-top: 20px; }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #E53935;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .voltar {
+            margin-top: 15px;
+            font-size: 12px;
+        }
+        .voltar a { color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h1>👨‍🏫 Área do Professor</h1>
+        <p>Acesse para aprovar check-ins dos alunos</p>
+
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="senha" placeholder="Senha">
+        <button onclick="fazerLogin()">Entrar</button>
+
+        <div id="loading" class="loading"><div class="spinner"></div></div>
+        <div id="mensagem" class="mensagem"></div>
+        <div class="voltar"><a href="index.html">← Voltar para o site</a></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://fightcode-api.onrender.com';
+
+        async function fazerLogin() {
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value;
+
+            if (!email || !senha) {
+                mostrarMensagem('Preencha email e senha', 'erro');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_URL}/api/professor/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.sucesso) {
+                    localStorage.setItem('professor_token', data.token);
+                    localStorage.setItem('professor_id', data.professor.id);
+                    localStorage.setItem('professor_nome', data.professor.nome);
+                    window.location.href = 'professor-dashboard.html';
+                } else {
+                    mostrarMensagem(data.erro || 'Email ou senha incorretos', 'erro');
+                }
+            } catch (error) {
+                mostrarMensagem('Erro de conexão. Tente novamente.', 'erro');
+            }
+
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function mostrarMensagem(texto, tipo) {
+            const msgDiv = document.getElementById('mensagem');
+            msgDiv.textContent = texto;
+            msgDiv.className = `mensagem ${tipo}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+        }
+    </script>
+</body>
+</html>
