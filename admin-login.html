@@ -94,7 +94,7 @@
             color: #E53935;
         }
         
-        /* Botões PWA */
+        /* Botão PWA flutuante */
         #btn-instalar-pwa {
             position: fixed;
             bottom: 20px;
@@ -114,13 +114,6 @@
             width: auto;
         }
         #btn-instalar-pwa:hover { background: #c62828; }
-        
-        #btn-instalar-manual {
-            background: #4CAF50;
-            margin-top: 10px;
-            width: 100%;
-        }
-        #btn-instalar-manual:hover { background: #45a049; }
     </style>
 </head>
 <body>
@@ -132,8 +125,6 @@
         <input type="email" id="email" placeholder="E-mail">
         <input type="password" id="senha" placeholder="Senha">
         <button onclick="fazerLogin()">Entrar</button>
-
-        <button id="btn-instalar-manual">📱 Instalar App</button>
 
         <div id="loading" class="loading">
             <div class="spinner"></div>
@@ -202,12 +193,6 @@
             
             const btnFlutuante = document.getElementById('btn-instalar-pwa');
             if (btnFlutuante) btnFlutuante.style.display = 'block';
-            
-            const btnManual = document.getElementById('btn-instalar-manual');
-            if (btnManual) {
-                btnManual.textContent = '📱 Instalar App';
-                btnManual.style.background = '#4CAF50';
-            }
         });
 
         if ('serviceWorker' in navigator) {
@@ -225,27 +210,6 @@
                     if (outcome === 'accepted') {
                         console.log('App instalado com sucesso!');
                         btnFlutuante.style.display = 'none';
-                        const btnManual = document.getElementById('btn-instalar-manual');
-                        if (btnManual) btnManual.style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                } else {
-                    alert('Aguardando permissão do navegador. Tente novamente em alguns segundos.');
-                }
-            };
-        }
-
-        const btnManual = document.getElementById('btn-instalar-manual');
-        if (btnManual) {
-            btnManual.onclick = async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        console.log('App instalado com sucesso!');
-                        btnManual.style.display = 'none';
-                        const btnFlutuante = document.getElementById('btn-instalar-pwa');
-                        if (btnFlutuante) btnFlutuante.style.display = 'none';
                     }
                     deferredPrompt = null;
                 } else {
