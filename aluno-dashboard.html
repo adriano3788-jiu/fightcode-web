@@ -11,7 +11,6 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
-            padding-bottom: 70px;
         }
         .header {
             background: linear-gradient(135deg, #E53935, #c62828);
@@ -21,7 +20,15 @@
         }
         .header h1 { font-size: 24px; }
         .header p { opacity: 0.9; margin-top: 5px; }
-        .container { padding: 20px; max-width: 800px; margin: 0 auto; }
+        
+        /* Container com espaço para o menu lateral */
+        .container { 
+            padding: 20px; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            margin-left: 110px;
+        }
+        
         .card {
             background: white;
             border-radius: 20px;
@@ -89,26 +96,54 @@
         }
         .ocorrencia-titulo { font-weight: bold; color: #E53935; }
         .ocorrencia-data { font-size: 11px; color: #999; }
+        
+        /* MENU LATERAL VERTICAL */
         .tab-bar {
             position: fixed;
-            bottom: 0;
-            width: 100%;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
             background: white;
+            border-radius: 0 15px 15px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 15px 10px;
             display: flex;
-            justify-content: space-around;
-            padding: 10px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
         }
         .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            padding: 8px;
+            padding: 12px 15px;
             color: #999;
             cursor: pointer;
-            flex: 1;
+            border-radius: 12px;
+            transition: all 0.3s;
+            min-width: 80px;
         }
-        .tab-item.active { color: #E53935; }
+        .tab-item i {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        .tab-item span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .tab-item.active {
+            background: #E53935;
+            color: white;
+        }
+        .tab-item:hover:not(.active) {
+            background: #f0f0f0;
+            color: #E53935;
+        }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
         .senha-form input {
             width: 100%;
             padding: 10px;
@@ -129,6 +164,35 @@
             background: #999;
             margin-top: 20px;
         }
+        
+        /* Responsivo para mobile - volta para menu inferior */
+        @media (max-width: 768px) {
+            .tab-bar {
+                position: fixed;
+                flex-direction: row;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                transform: none;
+                border-radius: 15px 15px 0 0;
+                padding: 10px;
+                gap: 5px;
+                background: white;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            }
+            .tab-item {
+                flex: 1;
+                padding: 10px 5px;
+                min-width: auto;
+            }
+            .tab-item span { font-size: 10px; }
+            .tab-item i { font-size: 18px; }
+            .container { 
+                margin-left: auto; 
+                margin-bottom: 80px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -138,13 +202,28 @@
     </div>
 
     <div class="container">
-        <!-- Tabs -->
+        <!-- Menu Lateral Vertical -->
         <div class="tab-bar">
-            <div class="tab-item active" data-tab="checkin"><i class="fas fa-check-circle"></i> Check-in</div>
-            <div class="tab-item" data-tab="graduacao"><i class="fas fa-chart-line"></i> Graduação</div>
-            <div class="tab-item" data-tab="presencas"><i class="fas fa-users"></i> Presenças</div>
-            <div class="tab-item" data-tab="ocorrencias"><i class="fas fa-exclamation-triangle"></i> Ocorrências</div>
-            <div class="tab-item" data-tab="perfil"><i class="fas fa-user-cog"></i> Perfil</div>
+            <div class="tab-item active" data-tab="checkin">
+                <i class="fas fa-check-circle"></i>
+                <span>Check-in</span>
+            </div>
+            <div class="tab-item" data-tab="graduacao">
+                <i class="fas fa-chart-line"></i>
+                <span>Graduação</span>
+            </div>
+            <div class="tab-item" data-tab="presencas">
+                <i class="fas fa-users"></i>
+                <span>Presenças</span>
+            </div>
+            <div class="tab-item" data-tab="ocorrencias">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Ocorrências</span>
+            </div>
+            <div class="tab-item" data-tab="perfil">
+                <i class="fas fa-user-cog"></i>
+                <span>Perfil</span>
+            </div>
         </div>
 
         <!-- Tab Check-in -->
