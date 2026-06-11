@@ -162,5 +162,58 @@
             setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
     </script>
+    // PWA - Instalação do App
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Criar botão de instalação flutuante
+    const btnInstalar = document.createElement('div');
+    btnInstalar.id = 'btn-instalar-pwa';
+    btnInstalar.innerHTML = '📱 Instalar App';
+    btnInstalar.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #E53935;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        display: none;
+    `;
+    btnInstalar.onclick = async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                console.log('App instalado!');
+            }
+            deferredPrompt = null;
+            btnInstalar.style.display = 'none';
+        }
+    };
+    document.body.appendChild(btnInstalar);
+    
+    // Mostrar botão após um tempo
+    setTimeout(() => {
+        if (deferredPrompt) {
+            btnInstalar.style.display = 'block';
+        }
+    }, 3000);
+});
+
+// Registrar Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registrado!', reg))
+        .catch(err => console.log('Erro ao registrar Service Worker:', err));
+}
 </body>
 </html>
