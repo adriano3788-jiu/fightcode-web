@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Professor - FightCode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+        }
+        .header {
+            background: #1a1a2e;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .header h1 { font-size: 24px; }
+        .header h1 i { margin-right: 10px; }
+        .header-info { display: flex; align-items: center; gap: 20px; }
+        .btn-sair {
+            background: #E53935;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .card h2 {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            border-left: 4px solid #E53935;
+            padding-left: 15px;
+        }
+        .solicitacao-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .solicitacao-info { flex: 1; }
+        .solicitacao-nome { font-weight: bold; font-size: 18px; color: #333; }
+        .solicitacao-detalhes { font-size: 13px; color: #666; margin-top: 5px; }
+        .solicitacao-detalhes i { margin-right: 5px; }
+        .solicitacao-actions { display: flex; gap: 10px; }
+        .btn-aprovar {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-rejeitar {
+            background: #E53935;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .sem-solicitacoes {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+        .tabela-alunos {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tabela-alunos th, .tabela-alunos td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .tabela-alunos th { background: #f8f9fa; color: #333; }
+        .status-pendente { color: orange; font-weight: bold; }
+        .status-aprovado { color: green; font-weight: bold; }
+        .status-rejeitado { color: red; font-weight: bold; }
+        .refresh-btn {
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 768px) {
+            .solicitacao-item { flex-direction: column; gap: 15px; }
+            .solicitacao-actions { width: 100%; justify-content: flex-end; }
+            .header { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-chalkboard-user"></i> Painel do Professor</h1>
+        <div class="header-info">
+            <span id="professor-nome">Carregando...</span>
+            <button class="btn-sair" onclick="logout()">Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Solicitações Pendentes -->
+        <div class="card">
+            <h2><i class="fas fa-clock"></i> Solicitações de Check-in Pendentes</h2>
+            <button class="refresh-btn" onclick="carregarSolicitacoes()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+            <div id="solicitacoes-lista"></div>
+        </div>
+
+        <!-- Alunos Confirmados Hoje -->
+        <div class="card">
+            <h2><i class="fas fa-check-circle"></i> Alunos Confirmados Hoje</h2>
+            <div id="confirmados-lista"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://fightcode-api.onrender.com';
+        let professorId = localStorage.getItem('professor_id');
+        let token = localStorage.getItem('professor_token');
+
+        function verificarToken() {
+            if (!token || !professorId) {
+                window.location.href = 'professor-login.html';
+            }
+            document.getElementById('professor-nome').textContent = localStorage.getItem('professor_nome') || 'Professor';
+        }
+
+        async function carregarSolicitacoes() {
+            try {
+                const response = await fetch(`${API_URL}/api/presencas/pendentes`);
+                const solicitacoes = await response.json();
+                const container = document.getElementById('solicitacoes-lista');
+                
+                if (solicitacoes.length === 0) {
+                    container.innerHTML = '<div class="sem-solicitacoes">📭 Nenhuma solicitação pendente no momento.</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                solicitacoes.forEach(sol => {
+                    container.innerHTML += `
+                        <div class="solicitacao-item" id="sol-${sol.id}">
+                            <div class="solicitacao-info">
+                                <div class="solicitacao-nome">${sol.aluno_nome}</div>
+                                <div class="solicitacao-detalhes">
+                                    <i class="fas fa-clock"></i> ${sol.hora_presenca} | 
+                                    <i class="fas fa-tag"></i> ${sol.categoria === 'crianca' ? '👶 Infantil' : '👨 Adulto'}
+                                </div>
+                            </div>
+                            <div class="solicitacao-actions">
+                                <button class="btn-aprovar" onclick="aprovarCheckin(${sol.id})"><i class="fas fa-check"></i> Aprovar</button>
+                                <button class="btn-rejeitar" onclick="rejeitarCheckin(${sol.id})"><i class="fas fa-times"></i> Rejeitar</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Erro ao carregar solicitações:', error);
+                document.getElementById('solicitacoes-lista').innerHTML = '<div class="sem-solicitacoes">❌ Erro ao carregar solicitações</div>';
+            }
+        }
+
+        async function carregarConfirmados() {
+            try {
+                const response = await fetch(`${API_URL}/api/presencas/hoje`);
+                const confirmados = await response.json();
+                const container = document.getElementById('confirmados-lista');
+                
+                if (confirmados.length === 0) {
+                    container.innerHTML = '<div class="sem-solicitacoes">📋 Nenhum aluno confirmado hoje ainda.</div>';
+                    return;
+                }
+                
+                let html = '<table class="tabela-alunos"><thead><tr><th>Aluno</th><th>Horário</th><th>Status</th></tr></thead><tbody>';
+                confirmados.forEach(conf => {
+                    let statusClass = '';
+                    let statusText = '';
+                    if (conf.status === 'aprovado') { statusClass = 'status-aprovado'; statusText = 'Aprovado'; }
+                    else if (conf.status === 'pendente') { statusClass = 'status-pendente'; statusText = 'Pendente'; }
+                    else if (conf.status === 'rejeitado') { statusClass = 'status-rejeitado'; statusText = 'Rejeitado'; }
+                    
+                    html += `
+                        <tr>
+                            <td>${conf.aluno_nome || conf.nome}</td>
+                            <td>${conf.hora_presenca}</td>
+                            <td class="${statusClass}">${statusText}</td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Erro ao carregar confirmados:', error);
+            }
+        }
+
+        async function aprovarCheckin(id) {
+            try {
+                const response = await fetch(`${API_URL}/api/presencas/aprovar/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ professor_id: professorId })
+                });
+                if (response.ok) {
+                    document.getElementById(`sol-${id}`).remove();
+                    mostrarMensagem('✅ Check-in aprovado com sucesso!', 'sucesso');
+                    carregarConfirmados();
+                }
+            } catch (error) {
+                console.error('Erro ao aprovar:', error);
+            }
+        }
+
+        async function rejeitarCheckin(id) {
+            try {
+                const response = await fetch(`${API_URL}/api/presencas/rejeitar/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ motivo: 'Não compareceu' })
+                });
+                if (response.ok) {
+                    document.getElementById(`sol-${id}`).remove();
+                    mostrarMensagem('❌ Check-in rejeitado.', 'erro');
+                    carregarConfirmados();
+                }
+            } catch (error) {
+                console.error('Erro ao rejeitar:', error);
+            }
+        }
+
+        function mostrarMensagem(texto, tipo) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `mensagem-flutuante ${tipo}`;
+            msgDiv.textContent = texto;
+            msgDiv.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${tipo === 'sucesso' ? '#4CAF50' : '#E53935'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                animation: fadeOut 3s forwards;
+            `;
+            document.body.appendChild(msgDiv);
+            setTimeout(() => msgDiv.remove(), 3000);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'professor-login.html';
+        }
+
+        // Atualizar a cada 30 segundos
+        setInterval(() => {
+            carregarSolicitacoes();
+            carregarConfirmados();
+        }, 30000);
+
+        verificarToken();
+        carregarSolicitacoes();
+        carregarConfirmados();
+    </script>
+</body>
+</html>
