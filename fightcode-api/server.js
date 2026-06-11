@@ -537,3 +537,187 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+// ==================== ROTAS PARA ALUNOS (APP) ====================
+
+// Login do aluno
+app.post('/api/aluno/login', async (req, res) => {
+    const { usuario, senha } = req.body;
+    try {
+        const result = await pool.query(
+            'SELECT * FROM alunos WHERE usuario = $1 AND senha = $2',
+            [usuario, senha]
+        );
+        if (result.rows.length === 0) {
+            return res.status(401).json({ erro: 'Usuário ou senha inválidos' });
+        }
+        const aluno = result.rows[0];
+        const token = jwt.sign(
+            { id: aluno.id, nome: aluno.nome },
+            process.env.JWT_SECRET || 'fightcode_secret_key',
+            { expiresIn: '24h' }
+        );
+        res.json({ sucesso: true, token, aluno: { id: aluno.id, nome: aluno.nome, categoria: aluno.categoria } });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro no servidor' });
+    }
+});
+
+// Buscar dados do aluno
+app.get('/api/aluno/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(
+            'SELECT id, nome, usuario, categoria, total_aulas, faixa_atual, grau_atual, data_nascimento FROM alunos WHERE id = $1',
+            [id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ erro: 'Aluno não encontrado' });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao buscar aluno' });
+    }
+});
+
+// Verificar se aluno já fez check-in hoje
+app.get('/api/checkin/hoje/:aluno_id', async (req, res) => {
+    const { aluno_id } = req.params;
+    try {
+        const result = await pool.query(
+            'SELECT * FROM presencas WHERE aluno_id = $1 AND data_presenca = CURRENT_DATE',
+            [aluno_id]
+        );
+        res.json({ feito: result.rows.length > 0, checkin: result.rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao verificar check-in' });
+    }
+});
+
+// Realizar check-in
+app.post('/api/checkin', async (req, res) => {
+    const { aluno_id } = req.body;
+    try {
+        // Verificar se já fez hoje
+        const existente = await pool.query(
+            'SELECT * FROM presencas WHERE aluno_id = $1 AND data_presenca = CURRENT_DATE',
+            [aluno_id]
+        );
+        if (existente.rows.length > 0) {
+            return res.status(400).json({ erro: 'Você já fez check-in hoje' });
+        }
+        // Buscar categoria do aluno
+        const aluno = await pool.query('SELECT categoria FROM alunos WHERE id = $1', [aluno_id]);
+        const categoria = aluno.rows[0]?.categoria || 'adulto';
+        // Registrar presença
+        const result = await pool.query(
+            'INSERT INTO presencas (aluno_id, confirmado_por, categoria_registro) VALUES ($1, $2, $3) RETURNING *',
+            [aluno_id, 'aluno_app', categoria]
+        );
+        // Atualizar total de aulas do aluno
+        await pool.query(
+            'UPDATE alunos SET total_aulas = total_aulas + 1 WHERE id = $1',
+            [aluno_id]
+        );
+        res.status(201).json({ sucesso: true, presenca: result.rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao registrar presença' });
+    }
+});
+
+// Listar presenças do dia (todos os alunos)
+app.get('/api/presencas/hoje', async (req, res) => {
+    try {
+        const result = await pool.query(
+            'SELECT p.*, a.nome FROM presencas p JOIN alunos a ON p.aluno_id = a.id WHERE p.data_presenca = CURRENT_DATE ORDER BY p.hora_presenca'
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao buscar presenças' });
+    }
+});
+
+// Calcular graduação do aluno
+app.get('/api/graduacao/:aluno_id', async (req, res) => {
+    const { aluno_id } = req.params;
+    try {
+        const aluno = await pool.query('SELECT total_aulas, faixa_atual, grau_atual, categoria FROM alunos WHERE id = $1', [aluno_id]);
+        const totalAulas = aluno.rows[0]?.total_aulas || 0;
+        const categoria = aluno.rows[0]?.categoria || 'adulto';
+        // Buscar configurações de graduação
+        const configs = await pool.query(
+            'SELECT * FROM graduacoes_config WHERE categoria = $1 ORDER BY graus_needed',
+            [categoria]
+        );
+        let faixaAtual = 'Branca';
+        let grauAtual = 0;
+        let aulasNecessarias = 0;
+        let proximaFaixa = '---';
+        for (let i = 0; i < configs.rows.length; i++) {
+            if (totalAulas >= configs.rows[i].graus_needed) {
+                faixaAtual = configs.rows[i].faixa;
+                grauAtual = Math.floor(totalAulas / configs.rows[i].graus_needed) % 4;
+                aulasNecessarias = configs.rows[i + 1]?.graus_needed || configs.rows[i].graus_needed;
+                proximaFaixa = configs.rows[i + 1]?.faixa || 'Preta';
+            }
+        }
+        res.json({
+            faixa: faixaAtual,
+            grau_atual: grauAtual,
+            aulas_feitas: totalAulas,
+            aulas_necessarias: aulasNecessarias,
+            aulas_restantes: Math.max(0, aulasNecessarias - (totalAulas % aulasNecessarias)),
+            proxima_faixa: proximaFaixa,
+            detalhes: `Você tem ${totalAulas} aulas. Continue treinando para evoluir!`
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao calcular graduação' });
+    }
+});
+
+// Listar ocorrências do aluno
+app.get('/api/ocorrencias/:aluno_id', async (req, res) => {
+    const { aluno_id } = req.params;
+    try {
+        const result = await pool.query(
+            'SELECT * FROM ocorrencias WHERE aluno_id = $1 ORDER BY data DESC',
+            [aluno_id]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao buscar ocorrências' });
+    }
+});
+
+// Adicionar ocorrência (pelo professor)
+app.post('/api/ocorrencias', async (req, res) => {
+    const { aluno_id, titulo, descricao, criado_por } = req.body;
+    try {
+        const result = await pool.query(
+            'INSERT INTO ocorrencias (aluno_id, titulo, descricao, criado_por) VALUES ($1, $2, $3, $4) RETURNING *',
+            [aluno_id, titulo, descricao, criado_por || 'professor']
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao adicionar ocorrência' });
+    }
+});
+
+// Alterar senha do aluno
+app.put('/api/aluno/alterar-senha', async (req, res) => {
+    const { aluno_id, nova_senha } = req.body;
+    try {
+        await pool.query('UPDATE alunos SET senha = $1 WHERE id = $2', [nova_senha, aluno_id]);
+        res.json({ sucesso: true });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao alterar senha' });
+    }
+});
