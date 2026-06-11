@@ -175,15 +175,15 @@ app.put('/api/configuracoes/:chave', async (req, res) => {
     }
 });
 
-// ==================== ROTAS DE PROFESSORES (SITE) ====================
+// ==================== ROTAS DE PROFESSORES ====================
 
-// Listar todos os professores (para o site)
+// Listar todos os professores
 app.get('/api/professores', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM professores WHERE ativo = true ORDER BY ordem');
+        const result = await pool.query('SELECT id, nome, especialidade, imagem_url, ordem, ativo, email, telefone, horario_trabalho, usuario FROM professores WHERE ativo = true ORDER BY ordem ASC, id ASC');
         res.json(result.rows);
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao buscar professores:', error);
         res.status(500).json({ erro: 'Erro ao buscar professores' });
     }
 });
@@ -192,28 +192,29 @@ app.get('/api/professores', async (req, res) => {
 app.get('/api/professores/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await pool.query('SELECT * FROM professores WHERE id = $1', [id]);
+        const result = await pool.query('SELECT id, nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario FROM professores WHERE id = $1', [id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ erro: 'Professor não encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao buscar professor:', error);
         res.status(500).json({ erro: 'Erro ao buscar professor' });
     }
 });
 
 // Adicionar novo professor
 app.post('/api/professores', async (req, res) => {
-    const { nome, especialidade, imagem_url } = req.body;
+    const { nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, senha } = req.body;
     try {
         const result = await pool.query(
-            'INSERT INTO professores (nome, especialidade, imagem_url) VALUES ($1, $2, $3) RETURNING *',
-            [nome, especialidade, imagem_url || null]
+            `INSERT INTO professores (nome, especialidade, imagem_url, ordem, ativo, email, telefone, horario_trabalho, usuario, senha) 
+             VALUES ($1, $2, $3, $4, true, $5, $6, $7, $8, $9) RETURNING *`,
+            [nome, especialidade, imagem_url || null, ordem || 999, email || null, telefone || null, horario_trabalho || null, usuario || nome.toLowerCase().replace(/\s/g, ''), senha || '123456']
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao adicionar professor:', error);
         res.status(500).json({ erro: 'Erro ao adicionar professor' });
     }
 });
@@ -221,33 +222,38 @@ app.post('/api/professores', async (req, res) => {
 // Atualizar professor
 app.put('/api/professores/:id', async (req, res) => {
     const { id } = req.params;
-    const { nome, especialidade, imagem_url } = req.body;
+    const { nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, senha } = req.body;
     try {
-        const result = await pool.query(
-            'UPDATE professores SET nome = $1, especialidade = $2, imagem_url = COALESCE($3, imagem_url) WHERE id = $4 RETURNING *',
-            [nome, especialidade, imagem_url, id]
-        );
+        let query, params;
+        if (senha) {
+            query = `UPDATE professores SET nome = $1, especialidade = $2, imagem_url = COALESCE($3, imagem_url), ordem = $4, email = $5, telefone = $6, horario_trabalho = $7, usuario = $8, senha = $9 WHERE id = $10 RETURNING *`;
+            params = [nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, senha, id];
+        } else {
+            query = `UPDATE professores SET nome = $1, especialidade = $2, imagem_url = COALESCE($3, imagem_url), ordem = $4, email = $5, telefone = $6, horario_trabalho = $7, usuario = $8 WHERE id = $9 RETURNING *`;
+            params = [nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, id];
+        }
+        const result = await pool.query(query, params);
         if (result.rows.length === 0) {
             return res.status(404).json({ erro: 'Professor não encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao atualizar professor:', error);
         res.status(500).json({ erro: 'Erro ao atualizar professor' });
     }
 });
 
-// Remover professor
+// Remover professor (soft delete)
 app.delete('/api/professores/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await pool.query('DELETE FROM professores WHERE id = $1 RETURNING *', [id]);
+        const result = await pool.query('UPDATE professores SET ativo = false WHERE id = $1 RETURNING *', [id]);
         if (result.rows.length === 0) {
             return res.status(404).json({ erro: 'Professor não encontrado' });
         }
         res.json({ mensagem: 'Professor removido com sucesso' });
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao remover professor:', error);
         res.status(500).json({ erro: 'Erro ao remover professor' });
     }
 });
