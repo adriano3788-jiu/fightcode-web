@@ -102,7 +102,11 @@
                 <button class="btn-adicionar" onclick="abrirModalAluno()">+ Novo Aluno</button>
                 <div class="tabela-container">
                     <table>
-                        <thead><tr><th>ID</th><th>Nome</th><th>Usuário</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Categoria</th><th>Ações</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>Nome</th><th>Usuario</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Categoria</th><th>Acoes</th>
+                            </tr>
+                        </thead>
                         <tbody id="alunos-tbody"></tbody>
                     </table>
                 </div>
@@ -113,20 +117,28 @@
                 <div class="content-header"><h2>Gerenciar Professores</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
-                    <td>
-                        <thead><tr><th>ID</th><th>Foto</th><th>Nome</th><th>Usuário</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horário</th><th>Ordem</th><th>Ações</th></tr></thead>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>Foto</th><th>Nome</th><th>Usuario</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horario</th><th>Ordem</th><th>Acoes</th>
+                            </tr>
+                        </thead>
                         <tbody id="professores-tbody"></tbody>
                     </table>
                 </div>
             </div>
             
-            <!-- Horários -->
+            <!-- Horarios -->
             <div id="horarios" class="section">
-                <div class="content-header"><h2>Gerenciar Horários</h2></div>
-                <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horário</button>
+                <div class="content-header"><h2>Gerenciar Horarios</h2></div>
+                <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horario</button>
                 <div class="tabela-container">
-                    </table>
-                        <thead><tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Ações</th></td></thead>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Horario</th><th>Segunda</th><th>Terca</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sabado</th><th>Acoes</th>
+                            </tr>
+                        </thead>
                         <tbody id="horarios-tbody"></tbody>
                     </table>
                 </div>
@@ -138,22 +150,26 @@
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
                     <table>
-                        <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></td></thead>
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>Imagem</th><th>Nome</th><th>Descricao</th><th>Preco</th><th>Acoes</th>
+                            </tr>
+                        </thead>
                         <tbody id="produtos-tbody"></tbody>
                     </table>
                 </div>
             </div>
             
-            <!-- Configurações -->
+            <!-- Configuracoes -->
             <div id="config" class="section">
-                <div class="content-header"><h2>Configurações do Site</h2></div>
+                <div class="content-header"><h2>Configuracoes do Site</h2></div>
                 <div class="tabela-container" style="padding: 20px;">
                     <div style="margin-bottom: 15px;"><label>Nome da Academia:</label><input type="text" id="config-academia-nome" style="width: 100%; padding: 10px; margin-top: 5px;"></div>
-                    <div style="margin-bottom: 15px;"><label>Cor Primária:</label><input type="color" id="config-tema-primaria" style="width: 100%; padding: 5px; margin-top: 5px;"></div>
-                    <div style="margin-bottom: 15px;"><label>Cor Secundária:</label><input type="color" id="config-tema-secundaria" style="width: 100%; padding: 5px; margin-top: 5px;"></div>
+                    <div style="margin-bottom: 15px;"><label>Cor Primaria:</label><input type="color" id="config-tema-primaria" style="width: 100%; padding: 5px; margin-top: 5px;"></div>
+                    <div style="margin-bottom: 15px;"><label>Cor Secundaria:</label><input type="color" id="config-tema-secundaria" style="width: 100%; padding: 5px; margin-top: 5px;"></div>
                     <div style="margin-bottom: 15px;"><label>Texto do Hero:</label><textarea id="config-hero-subtitulo" rows="2" style="width: 100%; padding: 10px;"></textarea></div>
-                    <div style="margin-bottom: 15px;"><label>Descrição Sobre:</label><textarea id="config-sobre-descricao" rows="4" style="width: 100%; padding: 10px;"></textarea></div>
-                    <button onclick="salvarConfiguracoes()" style="background: #E53935; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer;">Salvar Configurações</button>
+                    <div style="margin-bottom: 15px;"><label>Descricao Sobre:</label><textarea id="config-sobre-descricao" rows="4" style="width: 100%; padding: 10px;"></textarea></div>
+                    <button onclick="salvarConfiguracoes()" style="background: #E53935; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer;">Salvar Configuracoes</button>
                 </div>
             </div>
         </div>
@@ -167,13 +183,13 @@
             <input type="text" id="aluno-nome" placeholder="Nome completo">
             <input type="email" id="aluno-email" placeholder="E-mail">
             <input type="tel" id="aluno-telefone" placeholder="Telefone">
-            <input type="text" id="aluno-usuario" placeholder="Usuário (login para o app)">
+            <input type="text" id="aluno-usuario" placeholder="Usuario (login para o app)">
             <div style="display: flex; gap: 10px; align-items: center;">
                 <input type="password" id="aluno-senha" placeholder="Senha" style="flex: 1;">
                 <button type="button" onclick="gerarSenhaAleatoria()" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;"><i class="fas fa-sync-alt"></i> Gerar</button>
             </div>
             <select id="aluno-plano"><option value="Mensal">Mensal</option><option value="Trimestral">Trimestral</option><option value="Semestral">Semestral</option><option value="Anual">Anual</option></select>
-            <select id="aluno-categoria"><option value="adulto">Adulto</option><option value="crianca">Criança</option></select>
+            <select id="aluno-categoria"><option value="adulto">Adulto</option><option value="crianca">Crianca</option></select>
             <div class="modal-buttons"><button class="btn-salvar" onclick="salvarAluno()">Salvar</button><button class="btn-cancelar" onclick="fecharModal('modal-aluno')">Cancelar</button></div>
         </div>
     </div>
@@ -185,14 +201,14 @@
             <input type="hidden" id="professor-id">
             <input type="text" id="professor-nome" placeholder="Nome do professor">
             <input type="text" id="professor-especialidade" placeholder="Especialidade">
-            <input type="text" id="professor-usuario" placeholder="Usuário (login para área do professor)">
+            <input type="text" id="professor-usuario" placeholder="Usuario (login para area do professor)">
             <div style="display: flex; gap: 10px; align-items: center;">
                 <input type="password" id="professor-senha" placeholder="Senha" style="flex: 1;">
                 <button type="button" onclick="gerarSenhaProfessor()" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;"><i class="fas fa-sync-alt"></i> Gerar</button>
             </div>
             <input type="email" id="professor-email" placeholder="E-mail">
             <input type="tel" id="professor-telefone" placeholder="Telefone">
-            <input type="text" id="professor-horario" placeholder="Horário de trabalho">
+            <input type="text" id="professor-horario" placeholder="Horario de trabalho">
             <input type="number" id="professor-ordem" placeholder="Ordem" value="0">
             <div class="imagem-atual" id="professor-imagem-atual"></div>
             <input type="file" id="professor-imagem" accept="image/*">
@@ -202,18 +218,18 @@
         </div>
     </div>
     
-    <!-- Modal Horário -->
+    <!-- Modal Horario -->
     <div id="modal-horario" class="modal">
         <div class="modal-content">
-            <h3 id="modal-horario-titulo">Novo Horário</h3>
+            <h3 id="modal-horario-titulo">Novo Horario</h3>
             <input type="hidden" id="horario-id">
-            <input type="text" id="horario-horario" placeholder="Horário">
+            <input type="text" id="horario-horario" placeholder="Horario">
             <input type="text" id="horario-segunda" placeholder="Segunda">
-            <input type="text" id="horario-terca" placeholder="Terça">
+            <input type="text" id="horario-terca" placeholder="Terca">
             <input type="text" id="horario-quarta" placeholder="Quarta">
             <input type="text" id="horario-quinta" placeholder="Quinta">
             <input type="text" id="horario-sexta" placeholder="Sexta">
-            <input type="text" id="horario-sabado" placeholder="Sábado">
+            <input type="text" id="horario-sabado" placeholder="Sabado">
             <div class="modal-buttons"><button class="btn-salvar" onclick="salvarHorario()">Salvar</button><button class="btn-cancelar" onclick="fecharModal('modal-horario')">Cancelar</button></div>
         </div>
     </div>
@@ -224,8 +240,8 @@
             <h3 id="modal-produto-titulo">Novo Produto</h3>
             <input type="hidden" id="produto-id">
             <input type="text" id="produto-nome" placeholder="Nome">
-            <textarea id="produto-descricao" placeholder="Descrição" rows="3"></textarea>
-            <input type="number" id="produto-preco" placeholder="Preço" step="0.01">
+            <textarea id="produto-descricao" placeholder="Descricao" rows="3"></textarea>
+            <input type="number" id="produto-preco" placeholder="Preco" step="0.01">
             <div class="imagem-atual" id="produto-imagem-atual"></div>
             <input type="file" id="produto-imagem" accept="image/*">
             <div id="produto-imagem-preview" class="imagem-preview"></div>
@@ -288,20 +304,25 @@
                 if (!tbody) return;
                 tbody.innerHTML = '';
                 if (alunos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.</td></tr>';
                     return;
                 }
                 alunos.forEach(aluno => {
-                    tbody.innerHTML += `<tr>
-                        <td>${aluno.id}</td>
-                        <td>${aluno.nome}</td>
-                        <td>${aluno.usuario || '-'}</td>
-                        <td>${aluno.email || '-'}</td>
-                        <td>${aluno.telefone || '-'}</td>
-                        <td>${aluno.plano || 'Mensal'}</td>
-                        <td>${aluno.categoria || 'adulto'}</td>
-                        <td><button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button>解决了
-                    </tr>`;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${aluno.id}</td>
+                            <td>${aluno.nome}</td>
+                            <td>${aluno.usuario || '-'}</td>
+                            <td>${aluno.email || '-'}</td>
+                            <td>${aluno.telefone || '-'}</td>
+                            <td>${aluno.plano || 'Mensal'}</td>
+                            <td>${aluno.categoria || 'adulto'}</td>
+                            <td>
+                                <button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button>
+                                <button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
                 });
             } catch (error) { console.error(error); }
         }
@@ -310,30 +331,35 @@
             try {
                 const tbody = document.getElementById('professores-tbody');
                 if (!tbody) {
-                    console.error('Elemento professores-tbody não encontrado');
+                    console.error('Elemento professores-tbody nao encontrado');
                     return;
                 }
                 const response = await fetch(`${API_URL}/api/professores`);
                 const professores = await response.json();
                 tbody.innerHTML = '';
                 if (professores.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.</td></tr>';
                     return; 
                 }
                 professores.forEach(prof => {
                     const fotoUrl = prof.imagem_url ? prof.imagem_url : `https://via.placeholder.com/50x50/E53935/white?text=${prof.nome.charAt(0)}`;
-                    tbody.innerHTML += `<tr>
-                        <td>${prof.id}解决了
-                        <td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'">解决了
-                        <td>${prof.nome}解决了
-                        <td>${prof.usuario || '-'}解决了
-                        <td>${prof.especialidade || '-'}解决了
-                        <td>${prof.email || '-'}解决了
-                        <td>${prof.telefone || '-'}解决了
-                        <td>${prof.horario_trabalho || '-'}解决了
-                        <td>${prof.ordem || 0}解决了
-                        <td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>解决了
-                    </tr>`;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${prof.id}</td>
+                            <td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'"></td>
+                            <td>${prof.nome}</td>
+                            <td>${prof.usuario || '-'}</td>
+                            <td>${prof.especialidade || '-'}</td>
+                            <td>${prof.email || '-'}</td>
+                            <td>${prof.telefone || '-'}</td>
+                            <td>${prof.horario_trabalho || '-'}</td>
+                            <td>${prof.ordem || 0}</td>
+                            <td>
+                                <button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button>
+                                <button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
                 });
             } catch (error) { 
                 console.error('Erro ao carregar professores:', error); 
@@ -348,20 +374,25 @@
                 const horarios = await response.json();
                 tbody.innerHTML = '';
                 if (horarios.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.</td></tr>';
                     return;
                 }
                 horarios.forEach(horario => {
-                    tbody.innerHTML += `<tr>
-                        <td>${horario.horario}</td>
-                        <td>${horario.segunda || '-'}解决了
-                        <td>${horario.terca || '-'}解决了
-                        <td>${horario.quarta || '-'}解决了
-                        <td>${horario.quinta || '-'}解决了
-                        <td>${horario.sexta || '-'}解决了
-                        <td>${horario.sabado || '-'}解决了
-                        <td><button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button>解决了
-                    </tr>`;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${horario.horario}</td>
+                            <td>${horario.segunda || '-'}</td>
+                            <td>${horario.terca || '-'}</td>
+                            <td>${horario.quarta || '-'}</td>
+                            <td>${horario.quinta || '-'}</td>
+                            <td>${horario.sexta || '-'}</td>
+                            <td>${horario.sabado || '-'}</td>
+                            <td>
+                                <button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button>
+                                <button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
                 });
             } catch (error) { console.error(error); }
         }
@@ -374,18 +405,23 @@
                 const produtos = await response.json();
                 tbody.innerHTML = '';
                 if (produtos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.</td></tr>';
                     return;
                 }
                 produtos.forEach(prod => {
-                    tbody.innerHTML += `<td>
-                        <td>${prod.id}解决了
-                        <td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}解决了
-                        <td>${prod.nome}解决了
-                        <td>${prod.descricao || '-'}解决了
-                        <td>R$ ${parseFloat(prod.preco).toFixed(2)}解决了
-                        <td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button>解决了
-                    </tr>`;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${prod.id}</td>
+                            <td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td>
+                            <td>${prod.nome}</td>
+                            <td>${prod.descricao || '-'}</td>
+                            <td>R$ ${parseFloat(prod.preco).toFixed(2)}</td>
+                            <td>
+                                <button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button>
+                                <button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
                 });
             } catch (error) { console.error(error); }
         }
@@ -431,39 +467,6 @@
         
         document.getElementById('professor-imagem')?.addEventListener('change', function() { previewImagem(this, 'professor-imagem-preview'); });
         document.getElementById('produto-imagem')?.addEventListener('change', function() { previewImagem(this, 'produto-imagem-preview'); });
-        
-        // ==================== FUNÇÃO DE ENVIO DE E-MAIL ====================
-        async function enviarEmailSenha(email, nome, novaSenha, tipo) {
-            if (!email) {
-                console.log('E-mail não informado');
-                return false;
-            }
-            
-            console.log('Enviando e-mail para:', email);
-            console.log('Senha:', novaSenha);
-            
-            try {
-                const response = await fetch(`${API_URL}/api/enviar-senha`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, nome, novaSenha, tipo })
-                });
-                
-                const data = await response.json();
-                console.log('Resposta:', data);
-                
-                if (response.ok) {
-                    console.log('E-mail enviado com sucesso!');
-                    return true;
-                } else {
-                    console.error('Erro ao enviar e-mail:', data.erro);
-                    return false;
-                }
-            } catch (error) {
-                console.error('Erro ao enviar e-mail:', error);
-                return false;
-            }
-        }
         
         // Alunos CRUD
         function abrirModalAluno() {
@@ -520,21 +523,14 @@
                     fecharModal('modal-aluno');
                     await carregarAlunos();
                     await carregarDashboard();
-                    
-                    if (senha && email) {
-                        mostrarMensagem('Enviando e-mail...');
-                        await enviarEmailSenha(email, nome, senha, 'aluno');
-                        mostrarMensagem('Aluno salvo!');
-                    } else {
-                        mostrarMensagem(id ? 'Aluno atualizado!' : 'Aluno adicionado!');
-                    }
+                    mostrarMensagem(id ? 'Aluno atualizado!' : 'Aluno adicionado!');
                 } else {
                     const error = await response.json();
-                    alert('Erro: ' + (error.erro || 'Não foi possível salvar'));
+                    alert('Erro: ' + (error.erro || 'Nao foi possivel salvar'));
                 }
             } catch (error) {
                 console.error('Erro ao salvar aluno:', error);
-                alert('Erro de conexão. Tente novamente.');
+                alert('Erro de conexao. Tente novamente.');
             }
         }
         
@@ -631,20 +627,13 @@
                     fecharModal('modal-professor');
                     await carregarProfessores();
                     await carregarDashboard();
-                    
-                    if (senha && email) {
-                        mostrarMensagem('Enviando e-mail...');
-                        await enviarEmailSenha(email, nome, senha, 'professor');
-                        mostrarMensagem('Professor salvo!');
-                    } else {
-                        mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
-                    }
+                    mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
                 } else {
                     alert('Erro ao salvar');
                 }
             } catch (error) {
                 console.error('Erro ao salvar professor:', error);
-                alert('Erro de conexão. Tente novamente.');
+                alert('Erro de conexao. Tente novamente.');
             }
         }
         
@@ -656,9 +645,9 @@
             }
         }
         
-        // Horários CRUD
+        // Horarios CRUD
         function abrirModalHorario() {
-            document.getElementById('modal-horario-titulo').textContent = 'Novo Horário';
+            document.getElementById('modal-horario-titulo').textContent = 'Novo Horario';
             document.getElementById('horario-id').value = '';
             document.getElementById('horario-horario').value = '';
             document.getElementById('horario-segunda').value = '';
@@ -672,7 +661,7 @@
         
         function editarHorario(id) {
             fetch(`${API_URL}/api/horarios/${id}`).then(r => r.json()).then(horario => {
-                document.getElementById('modal-horario-titulo').textContent = 'Editar Horário';
+                document.getElementById('modal-horario-titulo').textContent = 'Editar Horario';
                 document.getElementById('horario-id').value = horario.id;
                 document.getElementById('horario-horario').value = horario.horario;
                 document.getElementById('horario-segunda').value = horario.segunda || '';
@@ -687,7 +676,15 @@
         
         async function salvarHorario() {
             const id = document.getElementById('horario-id').value;
-            const data = { horario: document.getElementById('horario-horario').value, segunda: document.getElementById('horario-segunda').value, terca: document.getElementById('horario-terca').value, quarta: document.getElementById('horario-quarta').value, quinta: document.getElementById('horario-quinta').value, sexta: document.getElementById('horario-sexta').value, sabado: document.getElementById('horario-sabado').value };
+            const data = { 
+                horario: document.getElementById('horario-horario').value, 
+                segunda: document.getElementById('horario-segunda').value, 
+                terca: document.getElementById('horario-terca').value, 
+                quarta: document.getElementById('horario-quarta').value, 
+                quinta: document.getElementById('horario-quinta').value, 
+                sexta: document.getElementById('horario-sexta').value, 
+                sabado: document.getElementById('horario-sabado').value 
+            };
             const url = id ? `${API_URL}/api/horarios/${id}` : `${API_URL}/api/horarios`;
             const method = id ? 'PUT' : 'POST';
             await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
@@ -732,7 +729,12 @@
             let imagem_url = null;
             const imagemFile = document.getElementById('produto-imagem').files[0];
             if (imagemFile) { imagem_url = await uploadImagem('produto', imagemFile); if (!imagem_url) return; }
-            const data = { nome: document.getElementById('produto-nome').value, descricao: document.getElementById('produto-descricao').value, preco: parseFloat(document.getElementById('produto-preco').value), imagem_url: imagem_url };
+            const data = { 
+                nome: document.getElementById('produto-nome').value, 
+                descricao: document.getElementById('produto-descricao').value, 
+                preco: parseFloat(document.getElementById('produto-preco').value), 
+                imagem_url: imagem_url 
+            };
             const url = id ? `${API_URL}/api/produtos/${id}` : `${API_URL}/api/produtos`;
             const method = id ? 'PUT' : 'POST';
             await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
@@ -756,7 +758,7 @@
             for (const config of configuracoes) {
                 await fetch(`${API_URL}/api/configuracoes/${config.chave}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ valor: config.valor }) });
             }
-            alert('Configurações salvas!');
+            alert('Configuracoes salvas!');
         }
         
         function fecharModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
@@ -772,7 +774,7 @@
         // Inicializar
         verificarToken();
         carregarDashboard();
-        carregarProfessores(); // Chamada explícita
+        carregarProfessores();
     </script>
 </body>
 </html>
