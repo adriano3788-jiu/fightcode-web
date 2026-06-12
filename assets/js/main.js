@@ -1,4 +1,4 @@
-// MAIN.JS - Carrega todas as configurações dinamicamente via API
+// MAIN.JS - Carrega todas as configuracoes dinamicamente via API
 
 // URL da API
 const API_URL = 'https://fightcode-api.onrender.com';
@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Main.js carregado!');
     
-    // 1. CARREGAR CONFIGURAÇÕES DO SITE (via API)
+    // 1. CARREGAR CONFIGURACOES DO SITE (via API)
     async function carregarConfiguracoes() {
         try {
             const response = await fetch(`${API_URL}/api/configuracoes`);
@@ -28,22 +28,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const sobreDescricao = document.getElementById('sobre-descricao');
             if (sobreDescricao && config.sobre_descricao) sobreDescricao.textContent = config.sobre_descricao;
             
-            console.log('Configurações carregadas da API');
+            console.log('Configuracoes carregadas da API');
         } catch (error) {
-            console.error('Erro ao carregar configurações:', error);
+            console.error('Erro ao carregar configuracoes:', error);
         }
     }
     
-    // 2. CARREGAR PILARES (fixos - não vêm da API)
+    // 2. CARREGAR PILARES (fixos - nao vem da API)
     function carregarPilares() {
         const container = document.getElementById('pilares-container');
         if (!container) return;
         
         const pilares = [
-            { icone: "fas fa-chart-line", titulo: "Tecnologia", descricao: "Soluções modernas e eficientes" },
-            { icone: "fas fa-shield-alt", titulo: "Confiança", descricao: "Segurança e dados protegidos" },
-            { icone: "fas fa-fist-raised", titulo: "Disciplina", descricao: "Foco, consistência e evolução" },
-            { icone: "fas fa-trophy", titulo: "Resultados", descricao: "Estratégia que gera vitória" }
+            { icone: "fas fa-chart-line", titulo: "Tecnologia", descricao: "Solucoes modernas e eficientes" },
+            { icone: "fas fa-shield-alt", titulo: "Confianca", descricao: "Seguranca e dados protegidos" },
+            { icone: "fas fa-fist-raised", titulo: "Disciplina", descricao: "Foco, consistencia e evolucao" },
+            { icone: "fas fa-trophy", titulo: "Resultados", descricao: "Estrategia que gera vitoria" }
         ];
         
         container.innerHTML = '';
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 4. CARREGAR HORÁRIOS (via API)
+    // 4. CARREGAR HORARIOS (via API)
     async function carregarHorarios() {
         const tabela = document.getElementById('tabela-horarios');
         if (!tabela) return;
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             tbody.innerHTML = '';
             if (horarios.length === 0) {
-                tbody.innerHTML = ' hilab<td colspan="7">Nenhum horário cadastrado.堰</tr>';
+                tbody.innerHTML = '<tr><td colspan="7">Nenhum horario cadastrado.</td></tr>';
                 return;
             }
             
@@ -123,10 +123,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </tr>
                 `;
             });
-            console.log('Horários carregados da API:', horarios.length);
+            console.log('Horarios carregados da API:', horarios.length);
         } catch (error) {
-            console.error('Erro ao carregar horários:', error);
-            tbody.innerHTML = '<tr><td colspan="7">Erro ao carregar horários.堰</tr>';
+            console.error('Erro ao carregar horarios:', error);
+            tbody.innerHTML = '<tr><td colspan="7">Erro ao carregar horarios.</td></tr>';
         }
     }
     
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Produtos carregados da API:', produtos.length);
         } catch (error) {
             console.error('Erro ao carregar produtos:', error);
-            container.innerHTML = '<p style="text-align:center">Erro ao carregar produtos.堰</p>';
+            container.innerHTML = '<p style="text-align:center">Erro ao carregar produtos.</p>';
         }
     }
     
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!carrinhoItens) return;
         
         if (carrinho.length === 0) {
-            carrinhoItens.innerHTML = '<p class="carrinho-vazio">Seu carrinho está vazio</p>';
+            carrinhoItens.innerHTML = '<p class="carrinho-vazio">Seu carrinho esta vazio</p>';
             if (carrinhoContador) carrinhoContador.textContent = '0';
             if (carrinhoTotal) carrinhoTotal.textContent = 'R$ 0,00';
             return;
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnFinalizar) {
         btnFinalizar.addEventListener('click', () => {
             if (carrinho.length === 0) {
-                mostrarMensagem('Seu carrinho está vazio!');
+                mostrarMensagem('Seu carrinho esta vazio!');
                 return;
             }
             
@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // FORMULÁRIO CONTATO
+    // FORMULARIO CONTATO
     function initFormContato() {
         const form = document.getElementById('form-contato');
         if (form) {
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initFormContato();
         atualizarCarrinho();
         
-        console.log('Inicialização concluída!');
+        console.log('Inicializacao concluida!');
     }
     
     init();
