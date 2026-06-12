@@ -113,10 +113,10 @@
                 <div class="content-header"><h2>Gerenciar Professores</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
-                    <table>
+                    </table>
                         <thead><tr><th>ID</th><th>Foto</th><th>Nome</th><th>Usuário</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horário</th><th>Ordem</th><th>Ações</th></tr></thead>
                         <tbody id="professores-tbody"></tbody>
-                    </table>
+                    <table>
                 </div>
             </div>
             
@@ -128,7 +128,7 @@
                     <table>
                         <thead><tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Ações</th></tr></thead>
                         <tbody id="horarios-tbody"></tbody>
-                    </table>
+                    <tr>
                 </div>
             </div>
             
@@ -137,7 +137,7 @@
                 <div class="content-header"><h2>Gerenciar Produtos</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
-                    <table>
+                    <tr>
                         <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr></thead>
                         <tbody id="produtos-tbody"></tbody>
                     </table>
@@ -312,7 +312,7 @@
                 const tbody = document.getElementById('professores-tbody');
                 tbody.innerHTML = '';
                 if (professores.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.</td></tr>';
+                    tbody.innerHTML = '<td><td colspan="10" style="text-align:center">Nenhum professor cadastrado.堰</tr>';
                     return; 
                 }
                 professores.forEach(prof => {
@@ -334,7 +334,7 @@
                 console.error('Erro ao carregar professores:', error); 
                 const tbody = document.getElementById('professores-tbody');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.堰</tr>';
                 }
             }
         }
@@ -346,7 +346,7 @@
                 const tbody = document.getElementById('horarios-tbody');
                 tbody.innerHTML = '';
                 if (horarios.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.堰</tr>';
                     return;
                 }
                 horarios.forEach(horario => {
@@ -371,7 +371,7 @@
                 const tbody = document.getElementById('produtos-tbody');
                 tbody.innerHTML = '';
                 if (produtos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.堰</tr>';
                     return;
                 }
                 produtos.forEach(prod => {
@@ -432,20 +432,28 @@
         // ==================== FUNÇÃO DE ENVIO DE E-MAIL ====================
         async function enviarEmailSenha(email, nome, novaSenha, tipo) {
             if (!email) {
-                console.log('E-mail não informado, não é possível enviar');
+                console.log('E-mail não informado');
                 return false;
             }
+            
+            console.log('Enviando e-mail para:', email);
+            console.log('Senha:', novaSenha);
+            
             try {
                 const response = await fetch(`${API_URL}/api/enviar-senha`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, nome, novaSenha, tipo })
                 });
+                
+                const data = await response.json();
+                console.log('Resposta:', data);
+                
                 if (response.ok) {
                     console.log('E-mail enviado com sucesso!');
                     return true;
                 } else {
-                    console.error('Erro ao enviar e-mail');
+                    console.error('Erro ao enviar e-mail:', data.erro);
                     return false;
                 }
             } catch (error) {
@@ -488,7 +496,11 @@
             const email = document.getElementById('aluno-email').value;
             const nome = document.getElementById('aluno-nome').value;
             const senha = document.getElementById('aluno-senha').value;
-            const senhaGerada = senha;
+            
+            if (!email) {
+                alert('E-mail é obrigatório!');
+                return;
+            }
             
             const data = {
                 nome: nome,
@@ -511,15 +523,16 @@
                     await carregarAlunos();
                     await carregarDashboard();
                     
-                    if (senhaGerada && email) {
-                        const emailEnviado = await enviarEmailSenha(email, nome, senhaGerada, 'aluno');
-                        if (emailEnviado) {
-                            mostrarMensagem('Aluno salvo! Senha enviada por e-mail.');
+                    if (senha && email) {
+                        mostrarMensagem('Enviando e-mail...');
+                        const enviado = await enviarEmailSenha(email, nome, senha, 'aluno');
+                        if (enviado) {
+                            mostrarMensagem('Aluno salvo! Senha enviada para: ' + email);
                         } else {
-                            mostrarMensagem('Aluno salvo, mas erro ao enviar e-mail. Senha: ' + senhaGerada);
+                            mostrarMensagem('Aluno salvo! Erro ao enviar e-mail. Senha: ' + senha);
                         }
                     } else {
-                        mostrarMensagem(id ? 'Aluno atualizado com sucesso!' : 'Aluno adicionado com sucesso!');
+                        mostrarMensagem(id ? 'Aluno atualizado!' : 'Aluno adicionado!');
                     }
                 } else {
                     const error = await response.json();
@@ -595,7 +608,11 @@
             const email = document.getElementById('professor-email').value;
             const nome = document.getElementById('professor-nome').value;
             const senha = document.getElementById('professor-senha').value;
-            const senhaGerada = senha;
+            
+            if (!email) {
+                alert('E-mail é obrigatório!');
+                return;
+            }
             
             const imagemFile = document.getElementById('professor-imagem').files[0];
             if (imagemFile) { 
@@ -626,12 +643,13 @@
                     await carregarProfessores();
                     await carregarDashboard();
                     
-                    if (senhaGerada && email) {
-                        const emailEnviado = await enviarEmailSenha(email, nome, senhaGerada, 'professor');
-                        if (emailEnviado) {
-                            mostrarMensagem('Professor salvo! Senha enviada por e-mail.');
+                    if (senha && email) {
+                        mostrarMensagem('Enviando e-mail...');
+                        const enviado = await enviarEmailSenha(email, nome, senha, 'professor');
+                        if (enviado) {
+                            mostrarMensagem('Professor salvo! Senha enviada para: ' + email);
                         } else {
-                            mostrarMensagem('Professor salvo, mas erro ao enviar e-mail. Senha: ' + senhaGerada);
+                            mostrarMensagem('Professor salvo! Erro ao enviar e-mail. Senha: ' + senha);
                         }
                     } else {
                         mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
