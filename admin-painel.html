@@ -113,7 +113,7 @@
                 <div class="content-header"><h2>Gerenciar Professores</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
-                    <tr>
+                    <table>
                         <thead><tr><th>ID</th><th>Foto</th><th>Nome</th><th>Usuário</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horário</th><th>Ordem</th><th>Ações</th></tr></thead>
                         <tbody id="professores-tbody"></tbody>
                     </table>
@@ -125,7 +125,7 @@
                 <div class="content-header"><h2>Gerenciar Horários</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horário</button>
                 <div class="tabela-container">
-                    <tr>
+                    <table>
                         <thead><tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Ações</th></tr></thead>
                         <tbody id="horarios-tbody"></tbody>
                     </table>
@@ -137,7 +137,7 @@
                 <div class="content-header"><h2>Gerenciar Produtos</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
-                    </table>
+                    <table>
                         <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr></thead>
                         <tbody id="produtos-tbody"></tbody>
                     </table>
@@ -286,6 +286,10 @@
                 const alunos = await response.json();
                 const tbody = document.getElementById('alunos-tbody');
                 tbody.innerHTML = '';
+                if (alunos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.</td></tr>';
+                    return;
+                }
                 alunos.forEach(aluno => {
                     tbody.innerHTML += `<tr><td>${aluno.id}</td><td>${aluno.nome}</td><td>${aluno.usuario || '-'}</td><td>${aluno.email || '-'}</td><td>${aluno.telefone || '-'}</td><td>${aluno.plano || 'Mensal'}</td><td>${aluno.categoria || 'adulto'}</td><td><button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
@@ -294,16 +298,46 @@
         
         async function carregarProfessores() {
             try {
+                console.log('Carregando professores...');
                 const response = await fetch(`${API_URL}/api/professores`);
                 const professores = await response.json();
+                console.log('Professores recebidos:', professores);
+                
                 const tbody = document.getElementById('professores-tbody');
+                if (!tbody) {
+                    console.error('tbody professores nao encontrado');
+                    return;
+                }
+                
                 tbody.innerHTML = '';
-                if (professores.length === 0) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.堰</tr>'; return; }
+                if (professores.length === 0) { 
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.</td></tr>';
+                    return; 
+                }
+                
                 professores.forEach(prof => {
                     const fotoUrl = prof.imagem_url ? prof.imagem_url : `https://via.placeholder.com/50x50/E53935/white?text=${prof.nome.charAt(0)}`;
-                    tbody.innerHTML += `<tr><td>${prof.id}</td><td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'"></td><td>${prof.nome}</td><td>${prof.usuario || '-'}</td><td>${prof.especialidade || '-'}</td><td>${prof.email || '-'}</td><td>${prof.telefone || '-'}</td><td>${prof.horario_trabalho || '-'}</td><td>${prof.ordem || 0}</td><td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                    tbody.innerHTML += `<tr>
+                        <td>${prof.id}</td>
+                        <td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'"></td>
+                        <td>${prof.nome}</td>
+                        <td>${prof.usuario || '-'}</td>
+                        <td>${prof.especialidade || '-'}</td>
+                        <td>${prof.email || '-'}</td>
+                        <td>${prof.telefone || '-'}</td>
+                        <td>${prof.horario_trabalho || '-'}</td>
+                        <td>${prof.ordem || 0}</td>
+                        <td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button></td>
+                    </tr>`;
                 });
-            } catch (error) { console.error('Erro ao carregar professores:', error); document.getElementById('professores-tbody').innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.堰</tr>'; }
+                console.log('Professores carregados com sucesso!');
+            } catch (error) { 
+                console.error('Erro ao carregar professores:', error); 
+                const tbody = document.getElementById('professores-tbody');
+                if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.</td></tr>';
+                }
+            }
         }
         
         async function carregarHorarios() {
@@ -312,6 +346,10 @@
                 const horarios = await response.json();
                 const tbody = document.getElementById('horarios-tbody');
                 tbody.innerHTML = '';
+                if (horarios.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.</td></tr>';
+                    return;
+                }
                 horarios.forEach(horario => {
                     tbody.innerHTML += `<tr><td>${horario.horario}</td><td>${horario.segunda || '-'}</td><td>${horario.terca || '-'}</td><td>${horario.quarta || '-'}</td><td>${horario.quinta || '-'}</td><td>${horario.sexta || '-'}</td><td>${horario.sabado || '-'}</td><td><button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
@@ -324,8 +362,12 @@
                 const produtos = await response.json();
                 const tbody = document.getElementById('produtos-tbody');
                 tbody.innerHTML = '';
+                if (produtos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.</td></tr>';
+                    return;
+                }
                 produtos.forEach(prod => {
-                    tbody.innerHTML += `<td>${prod.id}</td><td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td><td>${prod.nome}</td><td>${prod.descricao || '-'}</td><td>R$ ${parseFloat(prod.preco).toFixed(2)}</td><td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                    tbody.innerHTML += `<tr><td>${prod.id}</td><td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td><td>${prod.nome}</td><td>${prod.descricao || '-'}</td><td>R$ ${parseFloat(prod.preco).toFixed(2)}</td><td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
             } catch (error) { console.error(error); }
         }
@@ -698,9 +740,10 @@
             setTimeout(() => msgDiv.remove(), 3000);
         }
         
+        // Inicializar
         verificarToken();
         carregarDashboard();
-        carregarProfessores();
+        carregarProfessores(); // Chamada explícita para carregar professores
     </script>
 </body>
 </html>
