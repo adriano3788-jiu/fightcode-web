@@ -37,7 +37,9 @@ cloudinary.config({
 
 // Configurar Nodemailer (envio de e-mail)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -59,7 +61,7 @@ pool.connect((err) => {
     }
 });
 
-// ==================== ROTAS DE AUTENTICAÇÃO ====================
+// ==================== ROTAS DE AUTENTICACAO ====================
 
 // Login do administrador
 app.post('/api/login', async (req, res) => {
@@ -72,7 +74,7 @@ app.post('/api/login', async (req, res) => {
         );
         
         if (result.rows.length === 0) {
-            return res.status(401).json({ erro: 'Usuário não encontrado' });
+            return res.status(401).json({ erro: 'Usuario nao encontrado' });
         }
         
         const usuario = result.rows[0];
@@ -155,32 +157,34 @@ app.post('/api/enviar-senha', async (req, res) => {
     const { email, nome, novaSenha, tipo } = req.body;
     
     if (!email) {
-        return res.status(400).json({ erro: 'E-mail não informado' });
+        return res.status(400).json({ erro: 'E-mail nao informado' });
     }
     
     try {
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: `"FightCode" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: `FightCode - Sua nova senha de acesso (${tipo === 'aluno' ? 'Aluno' : 'Professor'})`,
+            subject: `FightCode - Sua nova senha de acesso`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <img src="https://fightcode-web.onrender.com/assets/img/banner/logo.jpeg" alt="FightCode" style="height: 80px;">
+                        <h2 style="color: #E53935;">FightCode</h2>
+                        <p>Tecnologia para evoluir lutadores</p>
                     </div>
-                    <h2 style="color: #E53935; text-align: center;">Olá, ${nome}!</h2>
+                    <h2 style="color: #E53935;">Ola, ${nome}!</h2>
                     <p>Sua senha foi redefinida com sucesso.</p>
                     <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
                         <strong style="font-size: 18px;">Nova senha: ${novaSenha}</strong>
                     </div>
-                    <p style="color: #666; font-size: 12px;">Recomendamos que você altere sua senha após o primeiro acesso.</p>
+                    <p style="color: #666; font-size: 12px;">Recomendamos que voce altere sua senha apos o primeiro acesso.</p>
                     <hr style="margin: 20px 0;">
                     <p style="color: #999; font-size: 12px; text-align: center;">FightCode - Tecnologia para evoluir lutadores</p>
                 </div>
             `
         };
         
-        await transporter.sendMail(mailOptions);
+        const info = await transporter.sendMail(mailOptions);
+        console.log('E-mail enviado:', info.messageId);
         res.json({ sucesso: true, mensagem: 'E-mail enviado com sucesso!' });
     } catch (error) {
         console.error('Erro ao enviar e-mail:', error);
@@ -188,9 +192,9 @@ app.post('/api/enviar-senha', async (req, res) => {
     }
 });
 
-// ==================== ROTAS DE CONFIGURAÇÕES ====================
+// ==================== ROTAS DE CONFIGURACOES ====================
 
-// Buscar configurações do site
+// Buscar configuracoes do site
 app.get('/api/configuracoes', async (req, res) => {
     try {
         const result = await pool.query('SELECT chave, valor FROM configuracoes');
@@ -201,11 +205,11 @@ app.get('/api/configuracoes', async (req, res) => {
         res.json(configuracoes);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar configurações' });
+        res.status(500).json({ erro: 'Erro ao buscar configuracoes' });
     }
 });
 
-// Atualizar configuração
+// Atualizar configuracao
 app.put('/api/configuracoes/:chave', async (req, res) => {
     const { chave } = req.params;
     const { valor } = req.body;
@@ -216,12 +220,12 @@ app.put('/api/configuracoes/:chave', async (req, res) => {
             [valor, chave]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Configuração não encontrada' });
+            return res.status(404).json({ erro: 'Configuracao nao encontrada' });
         }
         res.json(result.rows[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao atualizar configuração' });
+        res.status(500).json({ erro: 'Erro ao atualizar configuracao' });
     }
 });
 
@@ -244,7 +248,7 @@ app.get('/api/professores/:id', async (req, res) => {
     try {
         const result = await pool.query('SELECT id, nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario FROM professores WHERE id = $1', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Professor não encontrado' });
+            return res.status(404).json({ erro: 'Professor nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
@@ -305,7 +309,7 @@ app.put('/api/professores/:id', async (req, res) => {
         
         const result = await pool.query(query, params);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Professor não encontrado' });
+            return res.status(404).json({ erro: 'Professor nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
@@ -320,7 +324,7 @@ app.delete('/api/professores/:id', async (req, res) => {
     try {
         const result = await pool.query('UPDATE professores SET ativo = false WHERE id = $1 RETURNING *', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Professor não encontrado' });
+            return res.status(404).json({ erro: 'Professor nao encontrado' });
         }
         res.json({ mensagem: 'Professor removido com sucesso' });
     } catch (error) {
@@ -348,7 +352,7 @@ app.get('/api/produtos/:id', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM produtos WHERE id = $1', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Produto não encontrado' });
+            return res.status(404).json({ erro: 'Produto nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
@@ -382,7 +386,7 @@ app.put('/api/produtos/:id', async (req, res) => {
             [nome, descricao, preco, imagem_url, id]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Produto não encontrado' });
+            return res.status(404).json({ erro: 'Produto nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
@@ -397,7 +401,7 @@ app.delete('/api/produtos/:id', async (req, res) => {
     try {
         const result = await pool.query('DELETE FROM produtos WHERE id = $1 RETURNING *', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Produto não encontrado' });
+            return res.status(404).json({ erro: 'Produto nao encontrado' });
         }
         res.json({ mensagem: 'Produto removido com sucesso' });
     } catch (error) {
@@ -425,7 +429,7 @@ app.get('/api/alunos/:id', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM alunos WHERE id = $1', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Aluno não encontrado' });
+            return res.status(404).json({ erro: 'Aluno nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
@@ -458,7 +462,7 @@ app.put('/api/alunos/:id', async (req, res) => {
     try {
         const checkAluno = await pool.query('SELECT * FROM alunos WHERE id = $1', [id]);
         if (checkAluno.rows.length === 0) {
-            return res.status(404).json({ erro: 'Aluno não encontrado' });
+            return res.status(404).json({ erro: 'Aluno nao encontrado' });
         }
         
         if (senha) {
@@ -503,7 +507,7 @@ app.delete('/api/alunos/:id', async (req, res) => {
     try {
         const result = await pool.query('DELETE FROM alunos WHERE id = $1 RETURNING *', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Aluno não encontrado' });
+            return res.status(404).json({ erro: 'Aluno nao encontrado' });
         }
         res.json({ mensagem: 'Aluno removido com sucesso' });
     } catch (error) {
@@ -512,35 +516,35 @@ app.delete('/api/alunos/:id', async (req, res) => {
     }
 });
 
-// ==================== ROTAS DE HORÁRIOS ====================
+// ==================== ROTAS DE HORARIOS ====================
 
-// Listar todos os horários
+// Listar todos os horarios
 app.get('/api/horarios', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM horarios ORDER BY ordem');
         res.json(result.rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar horários' });
+        res.status(500).json({ erro: 'Erro ao buscar horarios' });
     }
 });
 
-// Buscar horário por ID
+// Buscar horario por ID
 app.get('/api/horarios/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const result = await pool.query('SELECT * FROM horarios WHERE id = $1', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Horário não encontrado' });
+            return res.status(404).json({ erro: 'Horario nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar horário' });
+        res.status(500).json({ erro: 'Erro ao buscar horario' });
     }
 });
 
-// Adicionar novo horário
+// Adicionar novo horario
 app.post('/api/horarios', async (req, res) => {
     const { horario, segunda, terca, quarta, quinta, sexta, sabado, ordem } = req.body;
     try {
@@ -551,11 +555,11 @@ app.post('/api/horarios', async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao adicionar horário' });
+        res.status(500).json({ erro: 'Erro ao adicionar horario' });
     }
 });
 
-// Atualizar horário
+// Atualizar horario
 app.put('/api/horarios/:id', async (req, res) => {
     const { id } = req.params;
     const { horario, segunda, terca, quarta, quinta, sexta, sabado, ordem } = req.body;
@@ -565,33 +569,33 @@ app.put('/api/horarios/:id', async (req, res) => {
             [horario, segunda || '', terca || '', quarta || '', quinta || '', sexta || '', sabado || '', ordem || 999, id]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Horário não encontrado' });
+            return res.status(404).json({ erro: 'Horario nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao atualizar horário' });
+        res.status(500).json({ erro: 'Erro ao atualizar horario' });
     }
 });
 
-// Remover horário
+// Remover horario
 app.delete('/api/horarios/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const result = await pool.query('DELETE FROM horarios WHERE id = $1 RETURNING *', [id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Horário não encontrado' });
+            return res.status(404).json({ erro: 'Horario nao encontrado' });
         }
-        res.json({ mensagem: 'Horário removido com sucesso' });
+        res.json({ mensagem: 'Horario removido com sucesso' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao remover horário' });
+        res.status(500).json({ erro: 'Erro ao remover horario' });
     }
 });
 
-// ==================== ROTAS DE PRESENÇAS (CHECK-IN) ====================
+// ==================== ROTAS DE PRESENCAS (CHECK-IN) ====================
 
-// Registrar presença
+// Registrar presenca
 app.post('/api/presencas', async (req, res) => {
     const { aluno_id, confirmado_por } = req.body;
     try {
@@ -602,11 +606,11 @@ app.post('/api/presencas', async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao registrar presença' });
+        res.status(500).json({ erro: 'Erro ao registrar presenca' });
     }
 });
 
-// Listar presenças de um aluno
+// Listar presencas de um aluno
 app.get('/api/presencas/aluno/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
@@ -617,7 +621,7 @@ app.get('/api/presencas/aluno/:aluno_id', async (req, res) => {
         res.json(result.rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar presenças' });
+        res.status(500).json({ erro: 'Erro ao buscar presencas' });
     }
 });
 
@@ -645,7 +649,7 @@ app.post('/api/aluno/login', async (req, res) => {
             [usuario, senha]
         );
         if (result.rows.length === 0) {
-            return res.status(401).json({ erro: 'Usuário ou senha inválidos' });
+            return res.status(401).json({ erro: 'Usuario ou senha invalidos' });
         }
         const aluno = result.rows[0];
         const token = jwt.sign(
@@ -669,7 +673,7 @@ app.get('/api/aluno/:id', async (req, res) => {
             [id]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Aluno não encontrado' });
+            return res.status(404).json({ erro: 'Aluno nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
@@ -678,7 +682,7 @@ app.get('/api/aluno/:id', async (req, res) => {
     }
 });
 
-// Verificar se aluno já fez check-in hoje
+// Verificar se aluno ja fez check-in hoje
 app.get('/api/checkin/hoje/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
@@ -697,20 +701,20 @@ app.get('/api/checkin/hoje/:aluno_id', async (req, res) => {
 app.post('/api/checkin', async (req, res) => {
     const { aluno_id } = req.body;
     try {
-        // Verificar se já fez hoje
+        // Verificar se ja fez hoje
         const existente = await pool.query(
             'SELECT * FROM presencas WHERE aluno_id = $1 AND data_presenca = CURRENT_DATE',
             [aluno_id]
         );
         if (existente.rows.length > 0) {
-            return res.status(400).json({ erro: 'Você já solicitou check-in hoje' });
+            return res.status(400).json({ erro: 'Voce ja solicitou check-in hoje' });
         }
         
         // Buscar categoria do aluno
         const aluno = await pool.query('SELECT categoria FROM alunos WHERE id = $1', [aluno_id]);
         const categoria = aluno.rows[0]?.categoria || 'adulto';
         
-        // Registrar presença como PENDENTE
+        // Registrar presenca como PENDENTE
         const result = await pool.query(
             `INSERT INTO presencas (aluno_id, confirmado_por, categoria_registro, status) 
              VALUES ($1, $2, $3, 'pendente') RETURNING *`,
@@ -719,12 +723,12 @@ app.post('/api/checkin', async (req, res) => {
         
         res.status(201).json({ 
             sucesso: true, 
-            mensagem: 'Solicitação enviada! Aguarde a confirmação do professor.',
+            mensagem: 'Solicitacao enviada! Aguarde a confirmacao do professor.',
             presenca: result.rows[0] 
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao registrar solicitação' });
+        res.status(500).json({ erro: 'Erro ao registrar solicitacao' });
     }
 });
 
@@ -738,13 +742,13 @@ app.get('/api/checkin/status/:aluno_id', async (req, res) => {
             [aluno_id]
         );
         if (result.rows.length === 0) {
-            return res.json({ status: 'nenhum', mensagem: 'Nenhuma solicitação hoje' });
+            return res.json({ status: 'nenhum', mensagem: 'Nenhuma solicitacao hoje' });
         }
         const status = result.rows[0].status;
         let mensagem = '';
-        if (status === 'pendente') mensagem = '⏳ Solicitação enviada. Aguardando aprovação do professor.';
-        else if (status === 'aprovado') mensagem = '✅ Presença confirmada!';
-        else if (status === 'rejeitado') mensagem = '❌ Solicitação rejeitada.';
+        if (status === 'pendente') mensagem = 'Solicitacao enviada. Aguardando aprovacao do professor.';
+        else if (status === 'aprovado') mensagem = 'Presenca confirmada!';
+        else if (status === 'rejeitado') mensagem = 'Solicitacao rejeitada.';
         res.json({ status, mensagem, id: result.rows[0].id });
     } catch (error) {
         console.error(error);
@@ -752,7 +756,7 @@ app.get('/api/checkin/status/:aluno_id', async (req, res) => {
     }
 });
 
-// Listar presenças do dia (todos os alunos)
+// Listar presencas do dia (todos os alunos)
 app.get('/api/presencas/hoje', async (req, res) => {
     try {
         const result = await pool.query(
@@ -761,18 +765,18 @@ app.get('/api/presencas/hoje', async (req, res) => {
         res.json(result.rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar presenças' });
+        res.status(500).json({ erro: 'Erro ao buscar presencas' });
     }
 });
 
-// Calcular graduação do aluno
+// Calcular graduacao do aluno
 app.get('/api/graduacao/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
         const aluno = await pool.query('SELECT total_aulas, faixa_atual, grau_atual, categoria FROM alunos WHERE id = $1', [aluno_id]);
         const totalAulas = aluno.rows[0]?.total_aulas || 0;
         const categoria = aluno.rows[0]?.categoria || 'adulto';
-        // Buscar configurações de graduação
+        // Buscar configuracoes de graduacao
         const configs = await pool.query(
             'SELECT * FROM graduacoes_config WHERE categoria = $1 ORDER BY graus_needed',
             [categoria]
@@ -796,15 +800,15 @@ app.get('/api/graduacao/:aluno_id', async (req, res) => {
             aulas_necessarias: aulasNecessarias,
             aulas_restantes: Math.max(0, aulasNecessarias - (totalAulas % aulasNecessarias)),
             proxima_faixa: proximaFaixa,
-            detalhes: `Você tem ${totalAulas} aulas. Continue treinando para evoluir!`
+            detalhes: `Voce tem ${totalAulas} aulas. Continue treinando para evoluir!`
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao calcular graduação' });
+        res.status(500).json({ erro: 'Erro ao calcular graduacao' });
     }
 });
 
-// Listar ocorrências do aluno
+// Listar ocorrencias do aluno
 app.get('/api/ocorrencias/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
@@ -815,11 +819,11 @@ app.get('/api/ocorrencias/:aluno_id', async (req, res) => {
         res.json(result.rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar ocorrências' });
+        res.status(500).json({ erro: 'Erro ao buscar ocorrencias' });
     }
 });
 
-// Adicionar ocorrência (pelo professor)
+// Adicionar ocorrencia (pelo professor)
 app.post('/api/ocorrencias', async (req, res) => {
     const { aluno_id, titulo, descricao, criado_por } = req.body;
     try {
@@ -830,7 +834,7 @@ app.post('/api/ocorrencias', async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao adicionar ocorrência' });
+        res.status(500).json({ erro: 'Erro ao adicionar ocorrencia' });
     }
 });
 
@@ -858,7 +862,7 @@ app.post('/api/professor/login', async (req, res) => {
         );
         
         if (result.rows.length === 0) {
-            return res.status(401).json({ erro: 'Email ou senha inválidos' });
+            return res.status(401).json({ erro: 'Email ou senha invalidos' });
         }
         
         const professor = result.rows[0];
@@ -893,7 +897,7 @@ app.get('/api/professor/perfil/:id', async (req, res) => {
             [id]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Professor não encontrado' });
+            return res.status(404).json({ erro: 'Professor nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
@@ -925,7 +929,7 @@ app.put('/api/professor/perfil/:id', async (req, res) => {
     }
 });
 
-// Buscar solicitações de check-in pendentes
+// Buscar solicitacoes de check-in pendentes
 app.get('/api/presencas/pendentes', async (req, res) => {
     try {
         const result = await pool.query(
@@ -938,7 +942,7 @@ app.get('/api/presencas/pendentes', async (req, res) => {
         res.json(result.rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar solicitações' });
+        res.status(500).json({ erro: 'Erro ao buscar solicitacoes' });
     }
 });
 
@@ -954,7 +958,7 @@ app.put('/api/presencas/aprovar/:id', async (req, res) => {
             [professor_id, id]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Solicitação não encontrada' });
+            return res.status(404).json({ erro: 'Solicitacao nao encontrada' });
         }
         res.json({ sucesso: true, presenca: result.rows[0] });
     } catch (error) {
@@ -974,7 +978,7 @@ app.put('/api/presencas/rejeitar/:id', async (req, res) => {
             [id]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Solicitação não encontrada' });
+            return res.status(404).json({ erro: 'Solicitacao nao encontrada' });
         }
         res.json({ sucesso: true, presenca: result.rows[0] });
     } catch (error) {
@@ -992,7 +996,7 @@ app.get('/api/aluno/total-aulas/:id', async (req, res) => {
             [id]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Aluno não encontrado' });
+            return res.status(404).json({ erro: 'Aluno nao encontrado' });
         }
         res.json(result.rows[0]);
     } catch (error) {
