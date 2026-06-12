@@ -79,9 +79,9 @@
             <div class="sidebar-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
             <div class="sidebar-item" data-section="alunos"><i class="fas fa-users"></i> Alunos</div>
             <div class="sidebar-item" data-section="professores"><i class="fas fa-chalkboard-user"></i> Professores</div>
-            <div class="sidebar-item" data-section="horarios"><i class="fas fa-calendar-alt"></i> Horários</div>
+            <div class="sidebar-item" data-section="horarios"><i class="fas fa-calendar-alt"></i> Horarios</div>
             <div class="sidebar-item" data-section="produtos"><i class="fas fa-box"></i> Produtos</div>
-            <div class="sidebar-item" data-section="config"><i class="fas fa-cog"></i> Configurações</div>
+            <div class="sidebar-item" data-section="config"><i class="fas fa-cog"></i> Configuracoes</div>
         </div>
         
         <div class="content">
@@ -91,7 +91,7 @@
                 <div class="stats-grid">
                     <div class="stat-card"><i class="fas fa-users"></i><h3 id="total-alunos">0</h3><p>Alunos</p></div>
                     <div class="stat-card"><i class="fas fa-chalkboard-user"></i><h3 id="total-professores">0</h3><p>Professores</p></div>
-                    <div class="stat-card"><i class="fas fa-calendar-alt"></i><h3 id="total-horarios">0</h3><p>Horários</p></div>
+                    <div class="stat-card"><i class="fas fa-calendar-alt"></i><h3 id="total-horarios">0</h3><p>Horarios</p></div>
                     <div class="stat-card"><i class="fas fa-box"></i><h3 id="total-produtos">0</h3><p>Produtos</p></div>
                 </div>
             </div>
@@ -330,10 +330,7 @@
         async function carregarProfessores() {
             try {
                 const tbody = document.getElementById('professores-tbody');
-                if (!tbody) {
-                    console.error('Elemento professores-tbody nao encontrado');
-                    return;
-                }
+                if (!tbody) return;
                 const response = await fetch(`${API_URL}/api/professores`);
                 const professores = await response.json();
                 tbody.innerHTML = '';
@@ -361,9 +358,7 @@
                         </tr>
                     `;
                 });
-            } catch (error) { 
-                console.error('Erro ao carregar professores:', error); 
-            }
+            } catch (error) { console.error('Erro ao carregar professores:', error); }
         }
         
         async function carregarHorarios() {
@@ -503,6 +498,11 @@
             const nome = document.getElementById('aluno-nome').value;
             const senha = document.getElementById('aluno-senha').value;
             
+            if (!email) {
+                alert('E-mail e obrigatorio!');
+                return;
+            }
+            
             const data = {
                 nome: nome,
                 email: email,
@@ -523,7 +523,11 @@
                     fecharModal('modal-aluno');
                     await carregarAlunos();
                     await carregarDashboard();
-                    mostrarMensagem(id ? 'Aluno atualizado!' : 'Aluno adicionado!');
+                    if (senha) {
+                        mostrarMensagem(`Aluno salvo! Senha: ${senha}`);
+                    } else {
+                        mostrarMensagem(id ? 'Aluno atualizado!' : 'Aluno adicionado!');
+                    }
                 } else {
                     const error = await response.json();
                     alert('Erro: ' + (error.erro || 'Nao foi possivel salvar'));
@@ -599,6 +603,11 @@
             const nome = document.getElementById('professor-nome').value;
             const senha = document.getElementById('professor-senha').value;
             
+            if (!email) {
+                alert('E-mail e obrigatorio!');
+                return;
+            }
+            
             const imagemFile = document.getElementById('professor-imagem').files[0];
             if (imagemFile) { 
                 imagem_url = await uploadImagem('professor', imagemFile); 
@@ -627,7 +636,11 @@
                     fecharModal('modal-professor');
                     await carregarProfessores();
                     await carregarDashboard();
-                    mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
+                    if (senha) {
+                        mostrarMensagem(`Professor salvo! Senha: ${senha}`);
+                    } else {
+                        mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
+                    }
                 } else {
                     alert('Erro ao salvar');
                 }
