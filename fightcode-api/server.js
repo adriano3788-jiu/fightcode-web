@@ -30,12 +30,12 @@ const upload = multer({ storage: storage });
 
 // Configurar Cloudinary
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    cloud_name: process.env.CLOUDINARY_LOGOUT_NAME || process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Configurar Nodemailer (envio de e-mail)
+// Configurar Nodemailer (envio de e-mail) - VERSÃO CORRIGIDA
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -43,6 +43,18 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
+// Testar conexão com o Gmail
+transporter.verify(function(error, success) {
+    if (error) {
+        console.log('Erro na conexão com Gmail:', error);
+    } else {
+        console.log('Conexão com Gmail OK!');
     }
 });
 
@@ -58,6 +70,70 @@ pool.connect((err) => {
         console.log('Erro ao conectar ao banco:', err);
     } else {
         console.log('Conectado ao banco de dados Neon!');
+    }
+});
+
+// ==================== ROTA DE TESTE DE E-MAIL ====================
+app.post('/api/teste-email', async (req, res) => {
+    const { email } = req.body;
+    
+    if (!email) {
+        return res.status(400).json({ erro: 'E-mail nao informado' });
+    }
+    
+    try {
+        const mailOptions = {
+            from: `"FightCode" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Teste de E-mail - FightCode',
+            html: '<h1>Teste funcionou!</h1><p>Se voce recebeu este e-mail, a configuracao esta correta.</p>'
+        };
+        
+        await transporter.sendMail(mailOptions);
+        res.json({ sucesso: true, mensagem: 'E-mail de teste enviado!' });
+    } catch (error) {
+        console.error('Erro no teste:', error);
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// ==================== ROTA DE ENVIO DE SENHA ====================
+app.post('/api/enviar-senha', async (req, res) => {
+    const { email, nome, novaSenha, tipo } = req.body;
+    
+    if (!email) {
+        return res.status(400).json({ erro: 'E-mail nao informado' });
+    }
+    
+    try {
+        const mailOptions = {
+            from: `"FightCode" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: `FightCode - Sua nova senha de acesso`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="color: #E53935;">FightCode</h2>
+                        <p>Tecnologia para evoluir lutadores</p>
+                    </div>
+                    <h2 style="color: #E53935;">Ola, ${nome}!</h2>
+                    <p>Sua senha foi redefinida com sucesso.</p>
+                    <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                        <strong style="font-size: 18px;">Nova senha: ${novaSenha}</strong>
+                    </div>
+                    <p style="color: #666; font-size: 12px;">Recomendamos que voce altere sua senha apos o primeiro acesso.</p>
+                    <hr style="margin: 20px 0;">
+                    <p style="color: #999; font-size: 12px; text-align: center;">FightCode - Tecnologia para evoluir lutadores</p>
+                </div>
+            `
+        };
+        
+        const info = await transporter.sendMail(mailOptions);
+        console.log('E-mail enviado com sucesso:', info.messageId);
+        res.json({ sucesso: true, mensagem: 'E-mail enviado com sucesso!' });
+    } catch (error) {
+        console.error('Erro detalhado ao enviar e-mail:', error);
+        res.status(500).json({ erro: 'Erro ao enviar e-mail: ' + error.message });
     }
 });
 
@@ -150,51 +226,8 @@ app.post('/api/upload/produto', upload.single('imagem'), async (req, res) => {
     }
 });
 
-// ==================== ROTAS DE E-MAIL ====================
-
-// Enviar e-mail com nova senha
-app.post('/api/enviar-senha', async (req, res) => {
-    const { email, nome, novaSenha, tipo } = req.body;
-    
-    if (!email) {
-        return res.status(400).json({ erro: 'E-mail nao informado' });
-    }
-    
-    try {
-        const mailOptions = {
-            from: `"FightCode" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: `FightCode - Sua nova senha de acesso`,
-            html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <h2 style="color: #E53935;">FightCode</h2>
-                        <p>Tecnologia para evoluir lutadores</p>
-                    </div>
-                    <h2 style="color: #E53935;">Ola, ${nome}!</h2>
-                    <p>Sua senha foi redefinida com sucesso.</p>
-                    <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
-                        <strong style="font-size: 18px;">Nova senha: ${novaSenha}</strong>
-                    </div>
-                    <p style="color: #666; font-size: 12px;">Recomendamos que voce altere sua senha apos o primeiro acesso.</p>
-                    <hr style="margin: 20px 0;">
-                    <p style="color: #999; font-size: 12px; text-align: center;">FightCode - Tecnologia para evoluir lutadores</p>
-                </div>
-            `
-        };
-        
-        const info = await transporter.sendMail(mailOptions);
-        console.log('E-mail enviado:', info.messageId);
-        res.json({ sucesso: true, mensagem: 'E-mail enviado com sucesso!' });
-    } catch (error) {
-        console.error('Erro ao enviar e-mail:', error);
-        res.status(500).json({ erro: 'Erro ao enviar e-mail: ' + error.message });
-    }
-});
-
 // ==================== ROTAS DE CONFIGURACOES ====================
 
-// Buscar configuracoes do site
 app.get('/api/configuracoes', async (req, res) => {
     try {
         const result = await pool.query('SELECT chave, valor FROM configuracoes');
@@ -209,7 +242,6 @@ app.get('/api/configuracoes', async (req, res) => {
     }
 });
 
-// Atualizar configuracao
 app.put('/api/configuracoes/:chave', async (req, res) => {
     const { chave } = req.params;
     const { valor } = req.body;
@@ -231,7 +263,6 @@ app.put('/api/configuracoes/:chave', async (req, res) => {
 
 // ==================== ROTAS DE PROFESSORES ====================
 
-// Listar todos os professores
 app.get('/api/professores', async (req, res) => {
     try {
         const result = await pool.query('SELECT id, nome, especialidade, imagem_url, ordem, ativo, email, telefone, horario_trabalho, usuario FROM professores WHERE ativo = true ORDER BY ordem ASC, id ASC');
@@ -242,7 +273,6 @@ app.get('/api/professores', async (req, res) => {
     }
 });
 
-// Buscar professor por ID
 app.get('/api/professores/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -257,7 +287,6 @@ app.get('/api/professores/:id', async (req, res) => {
     }
 });
 
-// Adicionar novo professor
 app.post('/api/professores', async (req, res) => {
     const { nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, senha } = req.body;
     try {
@@ -273,7 +302,6 @@ app.post('/api/professores', async (req, res) => {
     }
 });
 
-// Atualizar professor
 app.put('/api/professores/:id', async (req, res) => {
     const { id } = req.params;
     const { nome, especialidade, imagem_url, ordem, email, telefone, horario_trabalho, usuario, senha } = req.body;
@@ -318,7 +346,6 @@ app.put('/api/professores/:id', async (req, res) => {
     }
 });
 
-// Remover professor
 app.delete('/api/professores/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -333,86 +360,8 @@ app.delete('/api/professores/:id', async (req, res) => {
     }
 });
 
-// ==================== ROTAS DE PRODUTOS ====================
-
-// Listar todos os produtos
-app.get('/api/produtos', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM produtos WHERE ativo = true ORDER BY ordem');
-        res.json(result.rows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar produtos' });
-    }
-});
-
-// Buscar produto por ID
-app.get('/api/produtos/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const result = await pool.query('SELECT * FROM produtos WHERE id = $1', [id]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Produto nao encontrado' });
-        }
-        res.json(result.rows[0]);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ erro: 'Erro ao buscar produto' });
-    }
-});
-
-// Adicionar novo produto
-app.post('/api/produtos', async (req, res) => {
-    const { nome, descricao, preco, imagem_url } = req.body;
-    try {
-        const result = await pool.query(
-            'INSERT INTO produtos (nome, descricao, preco, imagem_url) VALUES ($1, $2, $3, $4) RETURNING *',
-            [nome, descricao, preco, imagem_url || null]
-        );
-        res.status(201).json(result.rows[0]);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ erro: 'Erro ao adicionar produto' });
-    }
-});
-
-// Atualizar produto
-app.put('/api/produtos/:id', async (req, res) => {
-    const { id } = req.params;
-    const { nome, descricao, preco, imagem_url } = req.body;
-    try {
-        const result = await pool.query(
-            'UPDATE produtos SET nome = $1, descricao = $2, preco = $3, imagem_url = COALESCE($4, imagem_url) WHERE id = $5 RETURNING *',
-            [nome, descricao, preco, imagem_url, id]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Produto nao encontrado' });
-        }
-        res.json(result.rows[0]);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ erro: 'Erro ao atualizar produto' });
-    }
-});
-
-// Remover produto
-app.delete('/api/produtos/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const result = await pool.query('DELETE FROM produtos WHERE id = $1 RETURNING *', [id]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ erro: 'Produto nao encontrado' });
-        }
-        res.json({ mensagem: 'Produto removido com sucesso' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ erro: 'Erro ao remover produto' });
-    }
-});
-
 // ==================== ROTAS DE ALUNOS ====================
 
-// Listar todos os alunos
 app.get('/api/alunos', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM alunos ORDER BY id');
@@ -423,7 +372,6 @@ app.get('/api/alunos', async (req, res) => {
     }
 });
 
-// Buscar aluno por ID
 app.get('/api/alunos/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -438,7 +386,6 @@ app.get('/api/alunos/:id', async (req, res) => {
     }
 });
 
-// Adicionar novo aluno
 app.post('/api/alunos', async (req, res) => {
     const { nome, email, telefone, plano, categoria, usuario, senha } = req.body;
     try {
@@ -454,7 +401,6 @@ app.post('/api/alunos', async (req, res) => {
     }
 });
 
-// Atualizar aluno
 app.put('/api/alunos/:id', async (req, res) => {
     const { id } = req.params;
     const { nome, email, telefone, plano, status, categoria, usuario, senha } = req.body;
@@ -501,7 +447,6 @@ app.put('/api/alunos/:id', async (req, res) => {
     }
 });
 
-// Remover aluno
 app.delete('/api/alunos/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -518,7 +463,6 @@ app.delete('/api/alunos/:id', async (req, res) => {
 
 // ==================== ROTAS DE HORARIOS ====================
 
-// Listar todos os horarios
 app.get('/api/horarios', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM horarios ORDER BY ordem');
@@ -529,7 +473,6 @@ app.get('/api/horarios', async (req, res) => {
     }
 });
 
-// Buscar horario por ID
 app.get('/api/horarios/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -544,7 +487,6 @@ app.get('/api/horarios/:id', async (req, res) => {
     }
 });
 
-// Adicionar novo horario
 app.post('/api/horarios', async (req, res) => {
     const { horario, segunda, terca, quarta, quinta, sexta, sabado, ordem } = req.body;
     try {
@@ -559,7 +501,6 @@ app.post('/api/horarios', async (req, res) => {
     }
 });
 
-// Atualizar horario
 app.put('/api/horarios/:id', async (req, res) => {
     const { id } = req.params;
     const { horario, segunda, terca, quarta, quinta, sexta, sabado, ordem } = req.body;
@@ -578,7 +519,6 @@ app.put('/api/horarios/:id', async (req, res) => {
     }
 });
 
-// Remover horario
 app.delete('/api/horarios/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -593,9 +533,8 @@ app.delete('/api/horarios/:id', async (req, res) => {
     }
 });
 
-// ==================== ROTAS DE PRESENCAS (CHECK-IN) ====================
+// ==================== ROTAS DE PRESENCAS ====================
 
-// Registrar presenca
 app.post('/api/presencas', async (req, res) => {
     const { aluno_id, confirmado_por } = req.body;
     try {
@@ -610,7 +549,6 @@ app.post('/api/presencas', async (req, res) => {
     }
 });
 
-// Listar presencas de um aluno
 app.get('/api/presencas/aluno/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
@@ -627,7 +565,6 @@ app.get('/api/presencas/aluno/:aluno_id', async (req, res) => {
 
 // ==================== ROTAS DE REDES SOCIAIS ====================
 
-// Listar redes sociais
 app.get('/api/redes-sociais', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM redes_sociais WHERE ativo = true');
@@ -640,7 +577,6 @@ app.get('/api/redes-sociais', async (req, res) => {
 
 // ==================== ROTAS PARA ALUNOS (APP) ====================
 
-// Login do aluno
 app.post('/api/aluno/login', async (req, res) => {
     const { usuario, senha } = req.body;
     try {
@@ -664,7 +600,6 @@ app.post('/api/aluno/login', async (req, res) => {
     }
 });
 
-// Buscar dados do aluno
 app.get('/api/aluno/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -682,7 +617,6 @@ app.get('/api/aluno/:id', async (req, res) => {
     }
 });
 
-// Verificar se aluno ja fez check-in hoje
 app.get('/api/checkin/hoje/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
@@ -697,11 +631,9 @@ app.get('/api/checkin/hoje/:aluno_id', async (req, res) => {
     }
 });
 
-// Realizar check-in (agora fica pendente)
 app.post('/api/checkin', async (req, res) => {
     const { aluno_id } = req.body;
     try {
-        // Verificar se ja fez hoje
         const existente = await pool.query(
             'SELECT * FROM presencas WHERE aluno_id = $1 AND data_presenca = CURRENT_DATE',
             [aluno_id]
@@ -710,11 +642,9 @@ app.post('/api/checkin', async (req, res) => {
             return res.status(400).json({ erro: 'Voce ja solicitou check-in hoje' });
         }
         
-        // Buscar categoria do aluno
         const aluno = await pool.query('SELECT categoria FROM alunos WHERE id = $1', [aluno_id]);
         const categoria = aluno.rows[0]?.categoria || 'adulto';
         
-        // Registrar presenca como PENDENTE
         const result = await pool.query(
             `INSERT INTO presencas (aluno_id, confirmado_por, categoria_registro, status) 
              VALUES ($1, $2, $3, 'pendente') RETURNING *`,
@@ -732,7 +662,6 @@ app.post('/api/checkin', async (req, res) => {
     }
 });
 
-// Verificar status do check-in de hoje
 app.get('/api/checkin/status/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
@@ -756,7 +685,6 @@ app.get('/api/checkin/status/:aluno_id', async (req, res) => {
     }
 });
 
-// Listar presencas do dia (todos os alunos)
 app.get('/api/presencas/hoje', async (req, res) => {
     try {
         const result = await pool.query(
@@ -769,14 +697,12 @@ app.get('/api/presencas/hoje', async (req, res) => {
     }
 });
 
-// Calcular graduacao do aluno
 app.get('/api/graduacao/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
         const aluno = await pool.query('SELECT total_aulas, faixa_atual, grau_atual, categoria FROM alunos WHERE id = $1', [aluno_id]);
         const totalAulas = aluno.rows[0]?.total_aulas || 0;
         const categoria = aluno.rows[0]?.categoria || 'adulto';
-        // Buscar configuracoes de graduacao
         const configs = await pool.query(
             'SELECT * FROM graduacoes_config WHERE categoria = $1 ORDER BY graus_needed',
             [categoria]
@@ -808,7 +734,6 @@ app.get('/api/graduacao/:aluno_id', async (req, res) => {
     }
 });
 
-// Listar ocorrencias do aluno
 app.get('/api/ocorrencias/:aluno_id', async (req, res) => {
     const { aluno_id } = req.params;
     try {
@@ -823,7 +748,6 @@ app.get('/api/ocorrencias/:aluno_id', async (req, res) => {
     }
 });
 
-// Adicionar ocorrencia (pelo professor)
 app.post('/api/ocorrencias', async (req, res) => {
     const { aluno_id, titulo, descricao, criado_por } = req.body;
     try {
@@ -838,7 +762,6 @@ app.post('/api/ocorrencias', async (req, res) => {
     }
 });
 
-// Alterar senha do aluno
 app.put('/api/aluno/alterar-senha', async (req, res) => {
     const { aluno_id, nova_senha } = req.body;
     try {
@@ -852,7 +775,6 @@ app.put('/api/aluno/alterar-senha', async (req, res) => {
 
 // ==================== ROTAS PARA PROFESSORES (LOGIN) ====================
 
-// Login do professor
 app.post('/api/professor/login', async (req, res) => {
     const { email, senha } = req.body;
     try {
@@ -888,7 +810,6 @@ app.post('/api/professor/login', async (req, res) => {
     }
 });
 
-// Buscar perfil do professor
 app.get('/api/professor/perfil/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -906,7 +827,6 @@ app.get('/api/professor/perfil/:id', async (req, res) => {
     }
 });
 
-// Atualizar perfil do professor
 app.put('/api/professor/perfil/:id', async (req, res) => {
     const { id } = req.params;
     const { nome, email, horario, senha } = req.body;
@@ -929,7 +849,6 @@ app.put('/api/professor/perfil/:id', async (req, res) => {
     }
 });
 
-// Buscar solicitacoes de check-in pendentes
 app.get('/api/presencas/pendentes', async (req, res) => {
     try {
         const result = await pool.query(
@@ -946,7 +865,6 @@ app.get('/api/presencas/pendentes', async (req, res) => {
     }
 });
 
-// Aprovar check-in
 app.put('/api/presencas/aprovar/:id', async (req, res) => {
     const { id } = req.params;
     const { professor_id } = req.body;
@@ -967,7 +885,6 @@ app.put('/api/presencas/aprovar/:id', async (req, res) => {
     }
 });
 
-// Rejeitar check-in
 app.put('/api/presencas/rejeitar/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -987,7 +904,6 @@ app.put('/api/presencas/rejeitar/:id', async (req, res) => {
     }
 });
 
-// Buscar total de aulas do aluno (para o professor)
 app.get('/api/aluno/total-aulas/:id', async (req, res) => {
     const { id } = req.params;
     try {
