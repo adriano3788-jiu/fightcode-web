@@ -102,7 +102,7 @@
                 <button class="btn-adicionar" onclick="abrirModalAluno()">+ Novo Aluno</button>
                 <div class="tabela-container">
                     <table>
-                        <thead><tr><th>ID</th><th>Nome</th><th>Usuário</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Categoria</th><th>Ações</th></tr></thead>
+                        <thead><tr><th>ID</th><th>Nome</th><th>Usuário</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Categoria</th><th>Ações</th></table></thead>
                         <tbody id="alunos-tbody"></tbody>
                     </table>
                 </div>
@@ -113,7 +113,7 @@
                 <div class="content-header"><h2>Gerenciar Professores</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
-                    <table>
+                    <tr>
                         <thead><tr><th>ID</th><th>Foto</th><th>Nome</th><th>Usuário</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horário</th><th>Ordem</th><th>Ações</th></tr></thead>
                         <tbody id="professores-tbody"></tbody>
                     </table>
@@ -125,7 +125,7 @@
                 <div class="content-header"><h2>Gerenciar Horários</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horário</button>
                 <div class="tabela-container">
-                    <table>
+                    <tr>
                         <thead><tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Ações</th></tr></thead>
                         <tbody id="horarios-tbody"></tbody>
                     </table>
@@ -137,8 +137,8 @@
                 <div class="content-header"><h2>Gerenciar Produtos</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
-                    <table>
-                        <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr></thead>
+                    </table>
+                        <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th><tr></thead>
                         <tbody id="produtos-tbody"></tbody>
                     </table>
                 </div>
@@ -287,55 +287,54 @@
                 const tbody = document.getElementById('alunos-tbody');
                 tbody.innerHTML = '';
                 if (alunos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.堰</table>';
                     return;
                 }
                 alunos.forEach(aluno => {
-                    tbody.innerHTML += `<tr><td>${aluno.id}</td><td>${aluno.nome}</td><td>${aluno.usuario || '-'}</td><td>${aluno.email || '-'}</td><td>${aluno.telefone || '-'}</td><td>${aluno.plano || 'Mensal'}</td><td>${aluno.categoria || 'adulto'}</td><td><button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                    tbody.innerHTML += `<tr>
+                        <td>${aluno.id}解决了
+                        <td>${aluno.nome}解决了
+                        <td>${aluno.usuario || '-'}解决了
+                        <td>${aluno.email || '-'}解决了
+                        <td>${aluno.telefone || '-'}解决了
+                        <td>${aluno.plano || 'Mensal'}解决了
+                        <td>${aluno.categoria || 'adulto'}解决了
+                        <td><button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button>解决了
+                    </tr>`;
                 });
             } catch (error) { console.error(error); }
         }
         
         async function carregarProfessores() {
             try {
-                console.log('Carregando professores...');
                 const response = await fetch(`${API_URL}/api/professores`);
                 const professores = await response.json();
-                console.log('Professores recebidos:', professores);
-                
                 const tbody = document.getElementById('professores-tbody');
-                if (!tbody) {
-                    console.error('tbody professores nao encontrado');
-                    return;
-                }
-                
                 tbody.innerHTML = '';
                 if (professores.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.堰</tr>';
                     return; 
                 }
-                
                 professores.forEach(prof => {
                     const fotoUrl = prof.imagem_url ? prof.imagem_url : `https://via.placeholder.com/50x50/E53935/white?text=${prof.nome.charAt(0)}`;
                     tbody.innerHTML += `<tr>
-                        <td>${prof.id}</td>
-                        <td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'"></td>
-                        <td>${prof.nome}</td>
-                        <td>${prof.usuario || '-'}</td>
-                        <td>${prof.especialidade || '-'}</td>
-                        <td>${prof.email || '-'}</td>
-                        <td>${prof.telefone || '-'}</td>
-                        <td>${prof.horario_trabalho || '-'}</td>
-                        <td>${prof.ordem || 0}</td>
-                        <td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button></td>
+                        <td>${prof.id}解决了
+                        <td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'">解决了
+                        <td>${prof.nome}解决了
+                        <td>${prof.usuario || '-'}解决了
+                        <td>${prof.especialidade || '-'}解决了
+                        <td>${prof.email || '-'}解决了
+                        <td>${prof.telefone || '-'}解决了
+                        <td>${prof.horario_trabalho || '-'}解决了
+                        <td>${prof.ordem || 0}解决了
+                        <td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>解决了
                     </tr>`;
                 });
-                console.log('Professores carregados com sucesso!');
             } catch (error) { 
                 console.error('Erro ao carregar professores:', error); 
                 const tbody = document.getElementById('professores-tbody');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.堰</tr>';
                 }
             }
         }
@@ -347,11 +346,20 @@
                 const tbody = document.getElementById('horarios-tbody');
                 tbody.innerHTML = '';
                 if (horarios.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.堰</tr>';
                     return;
                 }
                 horarios.forEach(horario => {
-                    tbody.innerHTML += `<tr><td>${horario.horario}</td><td>${horario.segunda || '-'}</td><td>${horario.terca || '-'}</td><td>${horario.quarta || '-'}</td><td>${horario.quinta || '-'}</td><td>${horario.sexta || '-'}</td><td>${horario.sabado || '-'}</td><td><button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                    tbody.innerHTML += `<tr>
+                        <td>${horario.horario}解决了
+                        <td>${horario.segunda || '-'}解决了
+                        <td>${horario.terca || '-'}解决了
+                        <td>${horario.quarta || '-'}解决了
+                        <td>${horario.quinta || '-'}解决了
+                        <td>${horario.sexta || '-'}解决了
+                        <td>${horario.sabado || '-'}解决了
+                        <td><button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button>解决了
+                    </tr>`;
                 });
             } catch (error) { console.error(error); }
         }
@@ -363,11 +371,18 @@
                 const tbody = document.getElementById('produtos-tbody');
                 tbody.innerHTML = '';
                 if (produtos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.堰</tr>';
                     return;
                 }
                 produtos.forEach(prod => {
-                    tbody.innerHTML += `<tr><td>${prod.id}</td><td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td><td>${prod.nome}</td><td>${prod.descricao || '-'}</td><td>R$ ${parseFloat(prod.preco).toFixed(2)}</td><td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                    tbody.innerHTML += `<tr>
+                        <td>${prod.id}解决了
+                        <td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}解决了
+                        <td>${prod.nome}解决了
+                        <td>${prod.descricao || '-'}解决了
+                        <td>R$ ${parseFloat(prod.preco).toFixed(2)}解决了
+                        <td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button>解决了
+                    </tr>`;
                 });
             } catch (error) { console.error(error); }
         }
@@ -468,11 +483,13 @@
             });
         }
         
+        // Função para salvar aluno (corrigida)
         async function salvarAluno() {
             const id = document.getElementById('aluno-id').value;
             const email = document.getElementById('aluno-email').value;
             const nome = document.getElementById('aluno-nome').value;
             const senha = document.getElementById('aluno-senha').value;
+            const senhaGerada = senha;
             
             const data = {
                 nome: nome,
@@ -486,38 +503,42 @@
             
             const url = id ? `${API_URL}/api/alunos/${id}` : `${API_URL}/api/alunos`;
             const method = id ? 'PUT' : 'POST';
-            const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
             
-            if (response.ok) {
-                if (senha && email) {
-                    await enviarEmailSenha(email, nome, senha, 'aluno');
+            try {
+                const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                
+                if (response.ok) {
+                    fecharModal('modal-aluno');
+                    await carregarAlunos();
+                    await carregarDashboard();
+                    
+                    if (senhaGerada && email) {
+                        const emailEnviado = await enviarEmailSenha(email, nome, senhaGerada, 'aluno');
+                        if (emailEnviado) {
+                            mostrarMensagem('Aluno salvo! Senha enviada por e-mail.');
+                        } else {
+                            mostrarMensagem('Aluno salvo, mas erro ao enviar e-mail. Senha: ' + senhaGerada);
+                        }
+                    } else {
+                        mostrarMensagem(id ? 'Aluno atualizado com sucesso!' : 'Aluno adicionado com sucesso!');
+                    }
+                } else {
+                    const error = await response.json();
+                    alert('Erro: ' + (error.erro || 'Não foi possível salvar'));
                 }
-                fecharModal('modal-aluno');
-                carregarAlunos();
-                carregarDashboard();
-                mostrarMensagem(id ? 'Aluno atualizado com sucesso!' : 'Aluno adicionado com sucesso!');
-            } else {
-                const error = await response.json();
-                alert('Erro: ' + (error.erro || 'Não foi possível salvar'));
+            } catch (error) {
+                console.error('Erro ao salvar aluno:', error);
+                alert('Erro de conexão. Tente novamente.');
             }
         }
         
+        // Função para gerar senha aleatória (corrigida)
         function gerarSenhaAleatoria() {
             const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let senha = '';
             for (let i = 0; i < 8; i++) senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
             document.getElementById('aluno-senha').value = senha;
-            
-            const alunoId = document.getElementById('aluno-id').value;
-            const alunoEmail = document.getElementById('aluno-email').value;
-            const alunoNome = document.getElementById('aluno-nome').value;
-            
-            if (alunoId && alunoEmail) {
-                enviarEmailSenha(alunoEmail, alunoNome, senha, 'aluno');
-                alert(`Senha gerada e enviada para o e-mail: ${alunoEmail}`);
-            } else {
-                alert(`Senha gerada: ${senha}\n\nApós salvar o aluno, a senha será enviada por e-mail.`);
-            }
+            alert(`Senha gerada: ${senha}\n\nA senha será enviada por e-mail quando você salvar o aluno.`);
         }
         
         async function excluirAluno(id) {
@@ -562,33 +583,29 @@
             });
         }
         
+        // Função para gerar senha aleatória do professor (corrigida)
         function gerarSenhaProfessor() {
             const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let senha = '';
             for (let i = 0; i < 8; i++) senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
             document.getElementById('professor-senha').value = senha;
-            
-            const professorId = document.getElementById('professor-id').value;
-            const professorEmail = document.getElementById('professor-email').value;
-            const professorNome = document.getElementById('professor-nome').value;
-            
-            if (professorId && professorEmail) {
-                enviarEmailSenha(professorEmail, professorNome, senha, 'professor');
-                alert(`Senha gerada e enviada para o e-mail: ${professorEmail}`);
-            } else {
-                alert(`Senha gerada: ${senha}\n\nApós salvar o professor, a senha será enviada por e-mail.`);
-            }
+            alert(`Senha gerada: ${senha}\n\nA senha será enviada por e-mail quando você salvar o professor.`);
         }
         
+        // Função para salvar professor (corrigida)
         async function salvarProfessor() {
             const id = document.getElementById('professor-id').value;
             let imagem_url = null;
             const email = document.getElementById('professor-email').value;
             const nome = document.getElementById('professor-nome').value;
             const senha = document.getElementById('professor-senha').value;
+            const senhaGerada = senha;
             
             const imagemFile = document.getElementById('professor-imagem').files[0];
-            if (imagemFile) { imagem_url = await uploadImagem('professor', imagemFile); if (!imagem_url) return; }
+            if (imagemFile) { 
+                imagem_url = await uploadImagem('professor', imagemFile); 
+                if (!imagem_url) return; 
+            }
             
             const data = {
                 nome: nome,
@@ -604,18 +621,31 @@
             
             const url = id ? `${API_URL}/api/professores/${id}` : `${API_URL}/api/professores`;
             const method = id ? 'PUT' : 'POST';
-            const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
             
-            if (response.ok) {
-                if (senha && email) {
-                    await enviarEmailSenha(email, nome, senha, 'professor');
+            try {
+                const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                
+                if (response.ok) {
+                    fecharModal('modal-professor');
+                    await carregarProfessores();
+                    await carregarDashboard();
+                    
+                    if (senhaGerada && email) {
+                        const emailEnviado = await enviarEmailSenha(email, nome, senhaGerada, 'professor');
+                        if (emailEnviado) {
+                            mostrarMensagem('Professor salvo! Senha enviada por e-mail.');
+                        } else {
+                            mostrarMensagem('Professor salvo, mas erro ao enviar e-mail. Senha: ' + senhaGerada);
+                        }
+                    } else {
+                        mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
+                    }
+                } else {
+                    alert('Erro ao salvar');
                 }
-                fecharModal('modal-professor');
-                carregarProfessores();
-                carregarDashboard();
-                mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
-            } else {
-                alert('Erro ao salvar');
+            } catch (error) {
+                console.error('Erro ao salvar professor:', error);
+                alert('Erro de conexão. Tente novamente.');
             }
         }
         
@@ -743,7 +773,7 @@
         // Inicializar
         verificarToken();
         carregarDashboard();
-        carregarProfessores(); // Chamada explícita para carregar professores
+        carregarProfessores();
     </script>
 </body>
 </html>
