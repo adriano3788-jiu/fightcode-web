@@ -12,9 +12,16 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
+// ==================== MIDDLEWARE CORRIGIDO ====================
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Preflight requests
+app.options('*', cors());
 
 // Configurar multer para upload temporário
 const storage = multer.diskStorage({
@@ -35,7 +42,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Configurar Nodemailer (envio de e-mail) - VERSÃO CORRIGIDA
+// Configurar Nodemailer (envio de e-mail)
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
