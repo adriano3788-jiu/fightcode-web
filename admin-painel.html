@@ -85,7 +85,6 @@
         </div>
         
         <div class="content">
-            <!-- Dashboard -->
             <div id="dashboard" class="section active">
                 <div class="content-header"><h2>Dashboard</h2></div>
                 <div class="stats-grid">
@@ -96,28 +95,24 @@
                 </div>
             </div>
             
-            <!-- Alunos -->
             <div id="alunos" class="section">
                 <div class="content-header"><h2>Gerenciar Alunos</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalAluno()">+ Novo Aluno</button>
                 <div class="tabela-container">
                     <table>
                         <thead>
-                            <tr>
-                                <th>ID</th><th>Nome</th><th>Usuario</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Categoria</th><th>Acoes</th>
-                            </tr>
+                            <tr><th>ID</th><th>Nome</th><th>Usuario</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Categoria</th><th>Acoes</th></tr>
                         </thead>
                         <tbody id="alunos-tbody"></tbody>
                     </table>
                 </div>
             </div>
             
-            <!-- Professores -->
             <div id="professores" class="section">
                 <div class="content-header"><h2>Gerenciar Professores</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
-                    <tr>
+                    <table>
                         <thead>
                             <tr>
                                 <th>ID</th><th>Foto</th><th>Nome</th><th>Usuario</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horario</th><th>Ordem</th><th>Acoes</th>
@@ -128,39 +123,28 @@
                 </div>
             </div>
             
-            <!-- Horarios -->
             <div id="horarios" class="section">
                 <div class="content-header"><h2>Gerenciar Horarios</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horario</button>
                 <div class="tabela-container">
-                    </table>
-                        <thead>
-                            <tr>
-                                <th>Horario</th><th>Segunda</th><th>Terca</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sabado</th><th>Acoes</th>
-                            </tr>
-                        </thead>
+                    <table>
+                        <thead><tr><th>Horario</th><th>Segunda</th><th>Terca</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sabado</th><th>Acoes</th></tr></thead>
                         <tbody id="horarios-tbody"></tbody>
                     </table>
                 </div>
             </div>
             
-            <!-- Produtos -->
             <div id="produtos" class="section">
                 <div class="content-header"><h2>Gerenciar Produtos</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
-                    <tr>
-                        <thead>
-                            <tr>
-                                <th>ID</th><th>Imagem</th><th>Nome</th><th>Descricao</th><th>Preco</th><th>Acoes</th>
-                            </tr>
-                        </thead>
+                    <table>
+                        <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descricao</th><th>Preco</th><th>Acoes</th></tr></thead>
                         <tbody id="produtos-tbody"></tbody>
-                    </tr>
+                    </table>
                 </div>
             </div>
             
-            <!-- Configuracoes -->
             <div id="config" class="section">
                 <div class="content-header"><h2>Configuracoes do Site</h2></div>
                 <div class="tabela-container" style="padding: 20px;">
@@ -183,7 +167,7 @@
             <input type="text" id="aluno-nome" placeholder="Nome completo">
             <input type="email" id="aluno-email" placeholder="E-mail">
             <input type="tel" id="aluno-telefone" placeholder="Telefone">
-            <input type="text" id="aluno-usuario" placeholder="Usuario (login para o app)">
+            <input type="text" id="aluno-usuario" placeholder="Usuario">
             <div style="display: flex; gap: 10px; align-items: center;">
                 <input type="password" id="aluno-senha" placeholder="Senha" style="flex: 1;">
                 <button type="button" onclick="gerarSenhaAleatoria()" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;"><i class="fas fa-sync-alt"></i> Gerar</button>
@@ -201,7 +185,7 @@
             <input type="hidden" id="professor-id">
             <input type="text" id="professor-nome" placeholder="Nome do professor">
             <input type="text" id="professor-especialidade" placeholder="Especialidade">
-            <input type="text" id="professor-usuario" placeholder="Usuario (login para area do professor)">
+            <input type="text" id="professor-usuario" placeholder="Usuario">
             <div style="display: flex; gap: 10px; align-items: center;">
                 <input type="password" id="professor-senha" placeholder="Senha" style="flex: 1;">
                 <button type="button" onclick="gerarSenhaProfessor()" style="background: #2196F3; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;"><i class="fas fa-sync-alt"></i> Gerar</button>
@@ -218,7 +202,6 @@
         </div>
     </div>
     
-    <!-- Modal Horario -->
     <div id="modal-horario" class="modal">
         <div class="modal-content">
             <h3 id="modal-horario-titulo">Novo Horario</h3>
@@ -234,7 +217,6 @@
         </div>
     </div>
     
-    <!-- Modal Produto -->
     <div id="modal-produto" class="modal">
         <div class="modal-content">
             <h3 id="modal-produto-titulo">Novo Produto</h3>
@@ -303,26 +285,8 @@
                 const tbody = document.getElementById('alunos-tbody');
                 if (!tbody) return;
                 tbody.innerHTML = '';
-                if (alunos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.堰</tr>';
-                    return;
-                }
                 alunos.forEach(aluno => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${aluno.id}</td>
-                            <td>${aluno.nome}</td>
-                            <td>${aluno.usuario || '-'}</td>
-                            <td>${aluno.email || '-'}</td>
-                            <td>${aluno.telefone || '-'}</td>
-                            <td>${aluno.plano || 'Mensal'}</td>
-                            <td>${aluno.categoria || 'adulto'}</td>
-                            <td>
-                                <button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button>
-                                <button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr><td>${aluno.id}</td><td>${aluno.nome}</td><td>${aluno.usuario || '-'}</td><td>${aluno.email || '-'}</td><td>${aluno.telefone || '-'}</td><td>${aluno.plano || 'Mensal'}</td><td>${aluno.categoria || 'adulto'}</td><td><button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
             } catch (error) { console.error(error); }
         }
@@ -335,28 +299,23 @@
                 const professores = await response.json();
                 tbody.innerHTML = '';
                 if (professores.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.</td></tr>';
                     return; 
                 }
                 professores.forEach(prof => {
                     const fotoUrl = prof.imagem_url ? prof.imagem_url : `https://via.placeholder.com/50x50/E53935/white?text=${prof.nome.charAt(0)}`;
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${prof.id}</td>
-                            <td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'"></td>
-                            <td>${prof.nome}</td>
-                            <td>${prof.usuario || '-'}</td>
-                            <td>${prof.especialidade || '-'}</td>
-                            <td>${prof.email || '-'}</td>
-                            <td>${prof.telefone || '-'}</td>
-                            <td>${prof.horario_trabalho || '-'}</td>
-                            <td>${prof.ordem || 0}</td>
-                            <td>
-                                <button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button>
-                                <button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr>
+                        <td>${prof.id}</td>
+                        <td><img src="${fotoUrl}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;"></td>
+                        <td>${prof.nome}</td>
+                        <td>${prof.usuario || '-'}</td>
+                        <td>${prof.especialidade || '-'}</td>
+                        <td>${prof.email || '-'}</td>
+                        <td>${prof.telefone || '-'}</td>
+                        <td>${prof.horario_trabalho || '-'}</td>
+                        <td>${prof.ordem || 0}</td>
+                        <td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button></td>
+                    </tr>`;
                 });
             } catch (error) { console.error('Erro ao carregar professores:', error); }
         }
@@ -368,26 +327,8 @@
                 const response = await fetch(`${API_URL}/api/horarios`);
                 const horarios = await response.json();
                 tbody.innerHTML = '';
-                if (horarios.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.堰</table>';
-                    return;
-                }
                 horarios.forEach(horario => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${horario.horario}</td>
-                            <td>${horario.segunda || '-'}</td>
-                            <td>${horario.terca || '-'}</td>
-                            <td>${horario.quarta || '-'}</td>
-                            <td>${horario.quinta || '-'}</td>
-                            <td>${horario.sexta || '-'}</td>
-                            <td>${horario.sabado || '-'}</td>
-                            <td>
-                                <button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button>
-                                <button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr><td>${horario.horario}</td><td>${horario.segunda || '-'}</td><td>${horario.terca || '-'}</td><td>${horario.quarta || '-'}</td><td>${horario.quinta || '-'}</td><td>${horario.sexta || '-'}</td><td>${horario.sabado || '-'}</td><td><button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
             } catch (error) { console.error(error); }
         }
@@ -399,24 +340,8 @@
                 const response = await fetch(`${API_URL}/api/produtos`);
                 const produtos = await response.json();
                 tbody.innerHTML = '';
-                if (produtos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.堰</td>';
-                    return;
-                }
                 produtos.forEach(prod => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${prod.id}</td>
-                            <td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td>
-                            <td>${prod.nome}</td>
-                            <td>${prod.descricao || '-'}</td>
-                            <td>R$ ${parseFloat(prod.preco).toFixed(2)}</td>
-                            <td>
-                                <button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button>
-                                <button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
+                    tbody.innerHTML += `<tr><td>${prod.id}</td><td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td><td>${prod.nome}</td><td>${prod.descricao || '-'}</td><td>R$ ${parseFloat(prod.preco).toFixed(2)}</td><td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
             } catch (error) { console.error(error); }
         }
@@ -463,40 +388,21 @@
         document.getElementById('professor-imagem')?.addEventListener('change', function() { previewImagem(this, 'professor-imagem-preview'); });
         document.getElementById('produto-imagem')?.addEventListener('change', function() { previewImagem(this, 'produto-imagem-preview'); });
         
-        // ==================== FUNCAO DE ENVIO DE E-MAIL ====================
         async function enviarEmailSenha(email, nome, novaSenha, tipo) {
-            if (!email) {
-                console.log('E-mail nao informado');
-                return false;
-            }
-            
-            console.log('Enviando e-mail para:', email);
-            console.log('Senha:', novaSenha);
-            
+            if (!email) return false;
             try {
                 const response = await fetch(`${API_URL}/api/enviar-senha`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, nome, novaSenha, tipo })
                 });
-                
-                const data = await response.json();
-                console.log('Resposta da API:', data);
-                
-                if (response.ok) {
-                    console.log('E-mail enviado com sucesso!');
-                    return true;
-                } else {
-                    console.error('Erro ao enviar e-mail:', data.erro);
-                    return false;
-                }
+                return response.ok;
             } catch (error) {
                 console.error('Erro ao enviar e-mail:', error);
                 return false;
             }
         }
         
-        // Alunos CRUD
         function abrirModalAluno() {
             document.getElementById('modal-aluno-titulo').textContent = 'Novo Aluno';
             document.getElementById('aluno-id').value = '';
@@ -531,11 +437,6 @@
             const nome = document.getElementById('aluno-nome').value;
             const senha = document.getElementById('aluno-senha').value;
             
-            if (!email) {
-                alert('E-mail e obrigatorio!');
-                return;
-            }
-            
             const data = {
                 nome: nome,
                 email: email,
@@ -551,30 +452,21 @@
             
             try {
                 const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-                
                 if (response.ok) {
                     fecharModal('modal-aluno');
                     await carregarAlunos();
                     await carregarDashboard();
-                    
                     if (senha && email) {
-                        mostrarMensagem('Enviando e-mail com a senha...');
-                        const enviado = await enviarEmailSenha(email, nome, senha, 'aluno');
-                        if (enviado) {
-                            mostrarMensagem(`Aluno salvo! Senha enviada para: ${email}`);
-                        } else {
-                            mostrarMensagem(`Aluno salvo! Erro ao enviar e-mail. Senha: ${senha}`);
-                        }
+                        await enviarEmailSenha(email, nome, senha, 'aluno');
+                        mostrarMensagem(`Aluno salvo! Senha enviada para ${email}`);
                     } else {
                         mostrarMensagem(id ? 'Aluno atualizado!' : 'Aluno adicionado!');
                     }
                 } else {
-                    const error = await response.json();
-                    alert('Erro: ' + (error.erro || 'Nao foi possivel salvar'));
+                    alert('Erro ao salvar');
                 }
             } catch (error) {
-                console.error('Erro ao salvar aluno:', error);
-                alert('Erro de conexao. Tente novamente.');
+                alert('Erro de conexao');
             }
         }
         
@@ -590,7 +482,6 @@
             if (confirm('Tem certeza?')) { await fetch(`${API_URL}/api/alunos/${id}`, { method: 'DELETE' }); carregarAlunos(); carregarDashboard(); }
         }
         
-        // Professores CRUD
         function abrirModalProfessor() {
             document.getElementById('modal-professor-titulo').textContent = 'Novo Professor';
             document.getElementById('professor-id').value = '';
@@ -621,7 +512,6 @@
                 document.getElementById('professor-horario').value = prof.horario_trabalho || '';
                 document.getElementById('professor-ordem').value = prof.ordem || 0;
                 if (prof.imagem_url) { document.getElementById('professor-imagem-atual').innerHTML = `Imagem atual: <img src="${prof.imagem_url}" style="height: 50px; border-radius: 50%;">`; }
-                else { document.getElementById('professor-imagem-atual').innerHTML = ''; }
                 document.getElementById('professor-imagem-preview').innerHTML = '';
                 document.getElementById('professor-imagem').value = '';
                 document.getElementById('modal-professor').style.display = 'flex';
@@ -643,16 +533,8 @@
             const nome = document.getElementById('professor-nome').value;
             const senha = document.getElementById('professor-senha').value;
             
-            if (!email) {
-                alert('E-mail e obrigatorio!');
-                return;
-            }
-            
             const imagemFile = document.getElementById('professor-imagem').files[0];
-            if (imagemFile) { 
-                imagem_url = await uploadImagem('professor', imagemFile); 
-                if (!imagem_url) return; 
-            }
+            if (imagemFile) { imagem_url = await uploadImagem('professor', imagemFile); }
             
             const data = {
                 nome: nome,
@@ -671,20 +553,13 @@
             
             try {
                 const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-                
                 if (response.ok) {
                     fecharModal('modal-professor');
                     await carregarProfessores();
                     await carregarDashboard();
-                    
                     if (senha && email) {
-                        mostrarMensagem('Enviando e-mail com a senha...');
-                        const enviado = await enviarEmailSenha(email, nome, senha, 'professor');
-                        if (enviado) {
-                            mostrarMensagem(`Professor salvo! Senha enviada para: ${email}`);
-                        } else {
-                            mostrarMensagem(`Professor salvo! Erro ao enviar e-mail. Senha: ${senha}`);
-                        }
+                        await enviarEmailSenha(email, nome, senha, 'professor');
+                        mostrarMensagem(`Professor salvo! Senha enviada para ${email}`);
                     } else {
                         mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
                     }
@@ -692,20 +567,19 @@
                     alert('Erro ao salvar');
                 }
             } catch (error) {
-                console.error('Erro ao salvar professor:', error);
-                alert('Erro de conexao. Tente novamente.');
+                alert('Erro de conexao');
             }
         }
         
         async function excluirProfessor(id) {
             if (confirm('Tem certeza?')) {
-                const response = await fetch(`${API_URL}/api/professores/${id}`, { method: 'DELETE' });
-                if (response.ok) { carregarProfessores(); carregarDashboard(); mostrarMensagem('Professor removido!'); }
-                else { alert('Erro ao remover'); }
+                await fetch(`${API_URL}/api/professores/${id}`, { method: 'DELETE' });
+                carregarProfessores();
+                carregarDashboard();
+                mostrarMensagem('Professor removido!');
             }
         }
         
-        // Horarios CRUD
         function abrirModalHorario() {
             document.getElementById('modal-horario-titulo').textContent = 'Novo Horario';
             document.getElementById('horario-id').value = '';
@@ -736,15 +610,7 @@
         
         async function salvarHorario() {
             const id = document.getElementById('horario-id').value;
-            const data = { 
-                horario: document.getElementById('horario-horario').value, 
-                segunda: document.getElementById('horario-segunda').value, 
-                terca: document.getElementById('horario-terca').value, 
-                quarta: document.getElementById('horario-quarta').value, 
-                quinta: document.getElementById('horario-quinta').value, 
-                sexta: document.getElementById('horario-sexta').value, 
-                sabado: document.getElementById('horario-sabado').value 
-            };
+            const data = { horario: document.getElementById('horario-horario').value, segunda: document.getElementById('horario-segunda').value, terca: document.getElementById('horario-terca').value, quarta: document.getElementById('horario-quarta').value, quinta: document.getElementById('horario-quinta').value, sexta: document.getElementById('horario-sexta').value, sabado: document.getElementById('horario-sabado').value };
             const url = id ? `${API_URL}/api/horarios/${id}` : `${API_URL}/api/horarios`;
             const method = id ? 'PUT' : 'POST';
             await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
@@ -757,7 +623,6 @@
             if (confirm('Tem certeza?')) { await fetch(`${API_URL}/api/horarios/${id}`, { method: 'DELETE' }); carregarHorarios(); carregarDashboard(); }
         }
         
-        // Produtos CRUD
         function abrirModalProduto() {
             document.getElementById('modal-produto-titulo').textContent = 'Novo Produto';
             document.getElementById('produto-id').value = '';
@@ -788,13 +653,8 @@
             const id = document.getElementById('produto-id').value;
             let imagem_url = null;
             const imagemFile = document.getElementById('produto-imagem').files[0];
-            if (imagemFile) { imagem_url = await uploadImagem('produto', imagemFile); if (!imagem_url) return; }
-            const data = { 
-                nome: document.getElementById('produto-nome').value, 
-                descricao: document.getElementById('produto-descricao').value, 
-                preco: parseFloat(document.getElementById('produto-preco').value), 
-                imagem_url: imagem_url 
-            };
+            if (imagemFile) { imagem_url = await uploadImagem('produto', imagemFile); }
+            const data = { nome: document.getElementById('produto-nome').value, descricao: document.getElementById('produto-descricao').value, preco: parseFloat(document.getElementById('produto-preco').value), imagem_url: imagem_url };
             const url = id ? `${API_URL}/api/produtos/${id}` : `${API_URL}/api/produtos`;
             const method = id ? 'PUT' : 'POST';
             await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
@@ -831,7 +691,6 @@
             setTimeout(() => msgDiv.remove(), 3000);
         }
         
-        // Inicializar
         verificarToken();
         carregarDashboard();
         carregarProfessores();
