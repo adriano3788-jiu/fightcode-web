@@ -102,7 +102,7 @@
                 <button class="btn-adicionar" onclick="abrirModalAluno()">+ Novo Aluno</button>
                 <div class="tabela-container">
                     <table>
-                        <thead><tr><th>ID</th><th>Nome</th><th>Usuário</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Categoria</th><th>Ações</th></table></thead>
+                        <thead><tr><th>ID</th><th>Nome</th><th>Usuário</th><th>Email</th><th>Telefone</th><th>Plano</th><th>Categoria</th><th>Ações</th></tr></thead>
                         <tbody id="alunos-tbody"></tbody>
                     </table>
                 </div>
@@ -113,7 +113,7 @@
                 <div class="content-header"><h2>Gerenciar Professores</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
-                    <tr>
+                    <table>
                         <thead><tr><th>ID</th><th>Foto</th><th>Nome</th><th>Usuário</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horário</th><th>Ordem</th><th>Ações</th></tr></thead>
                         <tbody id="professores-tbody"></tbody>
                     </table>
@@ -125,7 +125,7 @@
                 <div class="content-header"><h2>Gerenciar Horários</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horário</button>
                 <div class="tabela-container">
-                    <tr>
+                    <table>
                         <thead><tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th><th>Ações</th></tr></thead>
                         <tbody id="horarios-tbody"></tbody>
                     </table>
@@ -137,8 +137,8 @@
                 <div class="content-header"><h2>Gerenciar Produtos</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
-                    </table>
-                        <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th><tr></thead>
+                    <table>
+                        <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Descrição</th><th>Preço</th><th>Ações</th></tr></thead>
                         <tbody id="produtos-tbody"></tbody>
                     </table>
                 </div>
@@ -287,19 +287,19 @@
                 const tbody = document.getElementById('alunos-tbody');
                 tbody.innerHTML = '';
                 if (alunos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.堰</table>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.堰</tr>';
                     return;
                 }
                 alunos.forEach(aluno => {
                     tbody.innerHTML += `<tr>
-                        <td>${aluno.id}解决了
-                        <td>${aluno.nome}解决了
-                        <td>${aluno.usuario || '-'}解决了
-                        <td>${aluno.email || '-'}解决了
-                        <td>${aluno.telefone || '-'}解决了
-                        <td>${aluno.plano || 'Mensal'}解决了
-                        <td>${aluno.categoria || 'adulto'}解决了
-                        <td><button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button>解决了
+                        <td>${aluno.id}</td>
+                        <td>${aluno.nome}</td>
+                        <td>${aluno.usuario || '-'}</td>
+                        <td>${aluno.email || '-'}</td>
+                        <td>${aluno.telefone || '-'}</td>
+                        <td>${aluno.plano || 'Mensal'}</td>
+                        <td>${aluno.categoria || 'adulto'}</td>
+                        <td><button class="acao-btn btn-editar" onclick="editarAluno(${aluno.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirAluno(${aluno.id})"><i class="fas fa-trash"></i></button></td>
                     </tr>`;
                 });
             } catch (error) { console.error(error); }
@@ -312,29 +312,29 @@
                 const tbody = document.getElementById('professores-tbody');
                 tbody.innerHTML = '';
                 if (professores.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.</td></tr>';
                     return; 
                 }
                 professores.forEach(prof => {
                     const fotoUrl = prof.imagem_url ? prof.imagem_url : `https://via.placeholder.com/50x50/E53935/white?text=${prof.nome.charAt(0)}`;
                     tbody.innerHTML += `<tr>
-                        <td>${prof.id}解决了
-                        <td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'">解决了
-                        <td>${prof.nome}解决了
-                        <td>${prof.usuario || '-'}解决了
-                        <td>${prof.especialidade || '-'}解决了
-                        <td>${prof.email || '-'}解决了
-                        <td>${prof.telefone || '-'}解决了
-                        <td>${prof.horario_trabalho || '-'}解决了
-                        <td>${prof.ordem || 0}解决了
-                        <td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button>解决了
+                        <td>${prof.id}</td>
+                        <td><img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/50x50/ccc/white?text=?'"></td>
+                        <td>${prof.nome}</td>
+                        <td>${prof.usuario || '-'}</td>
+                        <td>${prof.especialidade || '-'}</td>
+                        <td>${prof.email || '-'}</td>
+                        <td>${prof.telefone || '-'}</td>
+                        <td>${prof.horario_trabalho || '-'}</td>
+                        <td>${prof.ordem || 0}</td>
+                        <td><button class="acao-btn btn-editar" onclick="editarProfessor(${prof.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProfessor(${prof.id})"><i class="fas fa-trash"></i></button></td>
                     </tr>`;
                 });
             } catch (error) { 
                 console.error('Erro ao carregar professores:', error); 
                 const tbody = document.getElementById('professores-tbody');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Erro ao carregar professores.</td></tr>';
                 }
             }
         }
@@ -346,19 +346,19 @@
                 const tbody = document.getElementById('horarios-tbody');
                 tbody.innerHTML = '';
                 if (horarios.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.</td></tr>';
                     return;
                 }
                 horarios.forEach(horario => {
                     tbody.innerHTML += `<tr>
-                        <td>${horario.horario}解决了
-                        <td>${horario.segunda || '-'}解决了
-                        <td>${horario.terca || '-'}解决了
-                        <td>${horario.quarta || '-'}解决了
-                        <td>${horario.quinta || '-'}解决了
-                        <td>${horario.sexta || '-'}解决了
-                        <td>${horario.sabado || '-'}解决了
-                        <td><button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button>解决了
+                        <td>${horario.horario}</td>
+                        <td>${horario.segunda || '-'}</td>
+                        <td>${horario.terca || '-'}</td>
+                        <td>${horario.quarta || '-'}</td>
+                        <td>${horario.quinta || '-'}</td>
+                        <td>${horario.sexta || '-'}</td>
+                        <td>${horario.sabado || '-'}</td>
+                        <td><button class="acao-btn btn-editar" onclick="editarHorario(${horario.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirHorario(${horario.id})"><i class="fas fa-trash"></i></button></td>
                     </tr>`;
                 });
             } catch (error) { console.error(error); }
@@ -371,17 +371,17 @@
                 const tbody = document.getElementById('produtos-tbody');
                 tbody.innerHTML = '';
                 if (produtos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.堰</tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.</td></tr>';
                     return;
                 }
                 produtos.forEach(prod => {
                     tbody.innerHTML += `<tr>
-                        <td>${prod.id}解决了
-                        <td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}解决了
-                        <td>${prod.nome}解决了
-                        <td>${prod.descricao || '-'}解决了
-                        <td>R$ ${parseFloat(prod.preco).toFixed(2)}解决了
-                        <td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button>解决了
+                        <td>${prod.id}</td>
+                        <td>${prod.imagem_url ? `<img src="${prod.imagem_url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">` : '-'}</td>
+                        <td>${prod.nome}</td>
+                        <td>${prod.descricao || '-'}</td>
+                        <td>R$ ${parseFloat(prod.preco).toFixed(2)}</td>
+                        <td><button class="acao-btn btn-editar" onclick="editarProduto(${prod.id})"><i class="fas fa-edit"></i></button><button class="acao-btn btn-excluir" onclick="excluirProduto(${prod.id})"><i class="fas fa-trash"></i></button></td>
                     </tr>`;
                 });
             } catch (error) { console.error(error); }
@@ -483,7 +483,6 @@
             });
         }
         
-        // Função para salvar aluno (corrigida)
         async function salvarAluno() {
             const id = document.getElementById('aluno-id').value;
             const email = document.getElementById('aluno-email').value;
@@ -532,7 +531,6 @@
             }
         }
         
-        // Função para gerar senha aleatória (corrigida)
         function gerarSenhaAleatoria() {
             const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let senha = '';
@@ -583,7 +581,6 @@
             });
         }
         
-        // Função para gerar senha aleatória do professor (corrigida)
         function gerarSenhaProfessor() {
             const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let senha = '';
@@ -592,7 +589,6 @@
             alert(`Senha gerada: ${senha}\n\nA senha será enviada por e-mail quando você salvar o professor.`);
         }
         
-        // Função para salvar professor (corrigida)
         async function salvarProfessor() {
             const id = document.getElementById('professor-id').value;
             let imagem_url = null;
