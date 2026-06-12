@@ -117,7 +117,7 @@
                 <div class="content-header"><h2>Gerenciar Professores</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProfessor()">+ Novo Professor</button>
                 <div class="tabela-container">
-                    <table>
+                    <tr>
                         <thead>
                             <tr>
                                 <th>ID</th><th>Foto</th><th>Nome</th><th>Usuario</th><th>Especialidade</th><th>Email</th><th>Telefone</th><th>Horario</th><th>Ordem</th><th>Acoes</th>
@@ -133,7 +133,7 @@
                 <div class="content-header"><h2>Gerenciar Horarios</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalHorario()">+ Novo Horario</button>
                 <div class="tabela-container">
-                    <table>
+                    </table>
                         <thead>
                             <tr>
                                 <th>Horario</th><th>Segunda</th><th>Terca</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sabado</th><th>Acoes</th>
@@ -149,14 +149,14 @@
                 <div class="content-header"><h2>Gerenciar Produtos</h2></div>
                 <button class="btn-adicionar" onclick="abrirModalProduto()">+ Novo Produto</button>
                 <div class="tabela-container">
-                    <table>
+                    <tr>
                         <thead>
                             <tr>
                                 <th>ID</th><th>Imagem</th><th>Nome</th><th>Descricao</th><th>Preco</th><th>Acoes</th>
                             </tr>
                         </thead>
                         <tbody id="produtos-tbody"></tbody>
-                    </table>
+                    </tr>
                 </div>
             </div>
             
@@ -304,7 +304,7 @@
                 if (!tbody) return;
                 tbody.innerHTML = '';
                 if (alunos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum aluno cadastrado.堰</tr>';
                     return;
                 }
                 alunos.forEach(aluno => {
@@ -335,7 +335,7 @@
                 const professores = await response.json();
                 tbody.innerHTML = '';
                 if (professores.length === 0) { 
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">Nenhum professor cadastrado.堰</tr>';
                     return; 
                 }
                 professores.forEach(prof => {
@@ -369,7 +369,7 @@
                 const horarios = await response.json();
                 tbody.innerHTML = '';
                 if (horarios.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum horario cadastrado.堰</table>';
                     return;
                 }
                 horarios.forEach(horario => {
@@ -400,7 +400,7 @@
                 const produtos = await response.json();
                 tbody.innerHTML = '';
                 if (produtos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Nenhum produto cadastrado.堰</td>';
                     return;
                 }
                 produtos.forEach(prod => {
@@ -463,6 +463,39 @@
         document.getElementById('professor-imagem')?.addEventListener('change', function() { previewImagem(this, 'professor-imagem-preview'); });
         document.getElementById('produto-imagem')?.addEventListener('change', function() { previewImagem(this, 'produto-imagem-preview'); });
         
+        // ==================== FUNCAO DE ENVIO DE E-MAIL ====================
+        async function enviarEmailSenha(email, nome, novaSenha, tipo) {
+            if (!email) {
+                console.log('E-mail nao informado');
+                return false;
+            }
+            
+            console.log('Enviando e-mail para:', email);
+            console.log('Senha:', novaSenha);
+            
+            try {
+                const response = await fetch(`${API_URL}/api/enviar-senha`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, nome, novaSenha, tipo })
+                });
+                
+                const data = await response.json();
+                console.log('Resposta da API:', data);
+                
+                if (response.ok) {
+                    console.log('E-mail enviado com sucesso!');
+                    return true;
+                } else {
+                    console.error('Erro ao enviar e-mail:', data.erro);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Erro ao enviar e-mail:', error);
+                return false;
+            }
+        }
+        
         // Alunos CRUD
         function abrirModalAluno() {
             document.getElementById('modal-aluno-titulo').textContent = 'Novo Aluno';
@@ -523,8 +556,15 @@
                     fecharModal('modal-aluno');
                     await carregarAlunos();
                     await carregarDashboard();
-                    if (senha) {
-                        mostrarMensagem(`Aluno salvo! Senha: ${senha}`);
+                    
+                    if (senha && email) {
+                        mostrarMensagem('Enviando e-mail com a senha...');
+                        const enviado = await enviarEmailSenha(email, nome, senha, 'aluno');
+                        if (enviado) {
+                            mostrarMensagem(`Aluno salvo! Senha enviada para: ${email}`);
+                        } else {
+                            mostrarMensagem(`Aluno salvo! Erro ao enviar e-mail. Senha: ${senha}`);
+                        }
                     } else {
                         mostrarMensagem(id ? 'Aluno atualizado!' : 'Aluno adicionado!');
                     }
@@ -636,8 +676,15 @@
                     fecharModal('modal-professor');
                     await carregarProfessores();
                     await carregarDashboard();
-                    if (senha) {
-                        mostrarMensagem(`Professor salvo! Senha: ${senha}`);
+                    
+                    if (senha && email) {
+                        mostrarMensagem('Enviando e-mail com a senha...');
+                        const enviado = await enviarEmailSenha(email, nome, senha, 'professor');
+                        if (enviado) {
+                            mostrarMensagem(`Professor salvo! Senha enviada para: ${email}`);
+                        } else {
+                            mostrarMensagem(`Professor salvo! Erro ao enviar e-mail. Senha: ${senha}`);
+                        }
                     } else {
                         mostrarMensagem(id ? 'Professor atualizado!' : 'Professor adicionado!');
                     }
